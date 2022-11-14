@@ -1,12 +1,3 @@
----
-name:customPR
-about: Describe this PR template's purpose here.
-title: ''
-labels: ''
-assignees: ''
-
----
-
 ## 개요
 { 업무에 대한 제목 혹은 요약 }
 
