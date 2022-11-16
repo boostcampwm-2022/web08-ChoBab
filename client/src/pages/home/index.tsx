@@ -1,5 +1,5 @@
-import { MainWrapper, Main, Button, Logo } from './Style';
 import { Link } from 'react-router-dom';
+import { MainWrapper, Main, Button, Logo } from './Style';
 
 function Home() {
   return (
