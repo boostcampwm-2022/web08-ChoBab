@@ -6,6 +6,14 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: { '@src': resolve(__dirname, 'src') },
+    alias: {
+      '@assets': resolve(__dirname, 'src/assets'),
+      '@components': resolve(__dirname, 'src/components'),
+      '@constants': resolve(__dirname, 'src/constants'),
+      '@hooks': resolve(__dirname, 'src/hooks'),
+      '@pages': resolve(__dirname, 'src/pages'),
+      '@types': resolve(__dirname, 'src/types'),
+      '@utils': resolve(__dirname, 'src/utils'),
+    },
   },
 });
