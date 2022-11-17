@@ -22,9 +22,9 @@ jobs:
           username: ${{ secrets.RELEASE_USERNAME }}
           password: ${{ secrets.RELEASE_PASSWORD }}
           script: |
-            cd chobab
-            git checkout prod
-            git pull origin prod
+            cd chobab_release
+            git checkout release
+            git pull origin release
             cd client
             npm ci
             cd ../server
@@ -43,9 +43,9 @@ jobs:
           username: ${{ secrets.PROD_USERNAME }}
           password: ${{ secrets.PROD_PASSWORD }}
           script: |
-            cd chobab_release
-            git checkout release
-            git pull origin release
+            cd chobab
+            git checkout prod
+            git pull origin prod
             cd client
             npm ci
             cd ../server
