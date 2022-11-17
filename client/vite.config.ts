@@ -6,6 +6,6 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: [{ find: '@src', replacement: resolve(__dirname, 'src') }],
+    alias: { '@src': resolve(__dirname, 'src') },
   },
 });
