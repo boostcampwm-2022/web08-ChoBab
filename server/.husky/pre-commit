@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+
+cd client && echo 'Linting, client' && npx lint-staged && cd ..
+cd server && echo 'Linting, server' && npx lint-staged && cd ..
