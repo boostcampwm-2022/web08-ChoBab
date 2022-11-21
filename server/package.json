@@ -76,7 +76,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --cache --fix",
+      "eslint --fix",
       "git add"
     ]
   }
