@@ -8,6 +8,7 @@ export const HomePageLayout = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 export const HomePageBox = styled.div`
@@ -27,4 +28,22 @@ export const Button = styled.button`
   font-weight: bolder;
   color: white;
   cursor: pointer;
+`;
+
+export const FooterBox = styled.button`
+  position: absolute;
+  bottom: 0;
+  background: transparent;
+  border: 0;
+  p {
+    text-align: center;
+    margin: 15px 0;
+    color: rgba(255, 255, 255, 50%);
+  }
+`;
+
+export const ButtonBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
