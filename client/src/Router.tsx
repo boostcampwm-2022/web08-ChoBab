@@ -10,7 +10,7 @@ function Router() {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/initRoom" element={<div /> /* <InitRoomPage /> */} />
+          <Route path="/init-room" element={<div /> /* <InitRoomPage /> */} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
