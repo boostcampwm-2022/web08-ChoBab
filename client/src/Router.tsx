@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GlobalStyle, { MainLayout } from '@styles/GlobalStyle';
+import HomePage from '@pages/HomePage';
 
 function Router() {
   return (
@@ -8,7 +9,7 @@ function Router() {
         <GlobalStyle />
 
         <Routes>
-          <Route path="/" element={<div /> /* <HomePage /> */} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/initRoom" element={<div /> /* <InitRoomPage /> */} />
         </Routes>
       </MainLayout>
