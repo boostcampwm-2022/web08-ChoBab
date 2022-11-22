@@ -29,6 +29,12 @@ jobs:
           cd server
           npm ci
 
+      - name: Set client .env
+        run: |
+          cd client
+          rm .env
+          echo "VITE_APP_NAVER_MAP_CLIENTID=${{ secrets.VITE_APP_NAVER_MAP_CLIENTID }}" >> .env
+
       - name: Run client build
         run: |
           cd client
