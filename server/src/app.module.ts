@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import * as Joi from 'joi';
 
 @Module({
@@ -11,6 +12,15 @@ import * as Joi from 'joi';
         MONGODB_USERNAME: Joi.string().required(),
         MONGODB_PASSWORD: Joi.string().required(),
       }),
+    }),
+    MongooseModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => ({
+        uri:
+          `mongodb+srv://${configService.get('MONGODB_USERNAME')}` +
+          `:${configService.get('MONGODB_PASSWORD')}` +
+          `@chobab.opfwdho.mongodb.net/?retryWrites=true&w=majority`,
+      }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [],
