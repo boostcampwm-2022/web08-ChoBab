@@ -33,7 +33,7 @@ jobs:
       - name: Set client .env
         run: |
           cd client
-          rm .env
+          rm -f .env
           echo "VITE_APP_NAVER_MAP_CLIENTID=${{ secrets.VITE_APP_NAVER_MAP_CLIENTID }}" >> .env
 
   # push 의 타겟 브랜치가 main 일 때 작동하는 job
@@ -60,5 +60,5 @@ jobs:
       - name: Set client .env
         run: |
           cd client
-          rm .env
+          rm -f .env
           echo "VITE_APP_NAVER_MAP_CLIENTID=${{ secrets.VITE_APP_NAVER_MAP_CLIENTID }}" >> .env
