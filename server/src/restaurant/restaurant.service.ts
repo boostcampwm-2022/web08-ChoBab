@@ -22,9 +22,9 @@ const restaurantCategory = Object.freeze([
 ]);
 
 const restaurantApiUrl = (
-  latitude: string,
-  longitude: string,
-  radius: string,
+  latitude: number,
+  longitude: number,
+  radius: number,
   category: string,
   page = 1
 ) =>
@@ -32,12 +32,34 @@ const restaurantApiUrl = (
     category
   )}&y=${latitude}&x=${longitude}&category\_group\_code=FD6&radius=${radius}&page=${page}`;
 
+const locationBoundary = {
+  latitude: {
+    min: 33,
+    max: 43,
+  },
+  longitude: {
+    min: 124,
+    max: 132,
+  },
+};
+
+const isInKorea = (latitude: number, longitude: number) => {
+  return (
+    locationBoundary.latitude.min < latitude &&
+    latitude < locationBoundary.latitude.max &&
+    locationBoundary.longitude.min < longitude &&
+    longitude < locationBoundary.longitude.max
+  );
+};
+
+const maxRadius = 5000;
+
 @Injectable()
 export class RestaurantService {
   private async getRestaurantUsingCategory(
-    latitude: string,
-    longitude: string,
-    radius: string,
+    latitude: number,
+    longitude: number,
+    radius: number,
     category: string,
     apiKey: string
   ) {
@@ -80,8 +102,16 @@ export class RestaurantService {
     return preprocessingRestaurantList;
   }
 
-  async getRestaurantList(latitude: string, longitude: string, radius: string, apiKey: string) {
+  async getRestaurantList(latitude: number, longitude: number, radius: number, apiKey: string) {
     try {
+      if (!isInKorea(latitude, longitude)) {
+        throw new Error('대한민국을 벗어난 입력입니다.');
+      }
+
+      if (radius > maxRadius) {
+        throw new Error('최대 탐색 반경을 벗어난 입력입니다.');
+      }
+
       const restaurantSet = new Set();
       /**
        * 순서를 보장을 위한 await 사용을 위해 for of 를 사용했는데, 해당 구문을 Promise.all 로 수정하면 속도 차이가 많이 날까요??
@@ -99,9 +129,15 @@ export class RestaurantService {
         });
       });
 
-      return Array.from(restaurantSet) as restaurant[];
+      return {
+        message: '음식점을 성공적으로 불러왔습니다.',
+        data: Array.from(restaurantSet) as restaurant[],
+      };
     } catch (e) {
-      return [];
+      return {
+        message: e.message,
+        data: [] as restaurant[],
+      };
     }
   }
 }
