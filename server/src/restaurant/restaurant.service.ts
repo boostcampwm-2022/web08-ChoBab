@@ -80,8 +80,8 @@ export class RestaurantService {
         name: name,
         category: category.split('>')[1].trim() || '',
         phone: phone || '',
-        lat: lat,
-        lng: lng,
+        lat: Number.parseFloat(lat),
+        lng: Number.parseFloat(lng),
         address: address,
       };
       return preprocessedRestaurant;

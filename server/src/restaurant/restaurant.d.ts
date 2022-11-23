@@ -13,7 +13,7 @@ export interface preprocessedRestaurant {
   name: string;
   category: string;
   phone: string;
-  lat: string;
-  lng: string;
+  lat: number;
+  lng: number;
   address: string;
 }
