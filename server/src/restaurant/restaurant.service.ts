@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { restaurant } from './restaurant';
+import { restaurantCategory, locationBoundary, maxRadius } from './retaurant.constants';
 
 interface restaurantApiResult {
   meta: {
@@ -10,16 +11,6 @@ interface restaurantApiResult {
   };
   documents: restaurant[];
 }
-
-const restaurantCategory = Object.freeze([
-  '한식',
-  '일식',
-  '중식',
-  '양식',
-  '패스트푸드',
-  '치킨',
-  '분식',
-]);
 
 const restaurantApiUrl = (
   latitude: number,
@@ -32,17 +23,6 @@ const restaurantApiUrl = (
     category
   )}&y=${latitude}&x=${longitude}&category\_group\_code=FD6&radius=${radius}&page=${page}`;
 
-const locationBoundary = {
-  latitude: {
-    min: 33,
-    max: 43,
-  },
-  longitude: {
-    min: 124,
-    max: 132,
-  },
-};
-
 const isInKorea = (latitude: number, longitude: number) => {
   return (
     locationBoundary.latitude.min < latitude &&
@@ -51,8 +31,6 @@ const isInKorea = (latitude: number, longitude: number) => {
     longitude < locationBoundary.longitude.max
   );
 };
-
-const maxRadius = 5000;
 
 @Injectable()
 export class RestaurantService {
