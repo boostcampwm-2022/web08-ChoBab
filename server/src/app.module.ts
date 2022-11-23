@@ -17,11 +17,11 @@ import * as Joi from 'joi';
     }),
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
-        uri:
-          `mongodb+srv://` +
-          `${configService.get('MONGODB_USERNAME')}:${configService.get('MONGODB_PASSWORD')}` +
-          `@chobab.opfwdho.mongodb.net/` +
-          `${configService.get('MONGODB_DB_NAME')}?retryWrites=true&w=majority`,
+        uri: `mongodb+srv://${configService.get('MONGODB_USERNAME')}:${configService.get(
+          'MONGODB_PASSWORD'
+        )}@chobab.opfwdho.mongodb.net/${configService.get(
+          'MONGODB_DB_NAME'
+        )}?retryWrites=true&w=majority`,
       }),
       inject: [ConfigService],
     }),
