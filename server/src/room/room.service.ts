@@ -4,13 +4,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Room, RoomDocument } from './room.schema';
 import { Model } from 'mongoose';
 import { CustomException } from '@common/exceptions/custom.exception';
+import { isInKorea } from '@util/location';
 
 @Injectable()
 export class RoomService {
   constructor(@InjectModel(Room.name) private roomModel: Model<RoomDocument>) {}
 
   async createRoom(lat: number, lng: number): Promise<string> {
-    // TODO : lat, lng 범위 검증
+    if (!isInKorea(lat, lng)) {
+      throw new CustomException('대한민국을 벗어난 입력입니다.');
+    }
 
     try {
       const roomCode = uuid();
