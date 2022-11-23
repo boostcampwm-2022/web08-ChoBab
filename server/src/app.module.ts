@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
+import { RestaurantModule } from '@restaurant/restaurant.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RoomModule } from 'src/room/room.module';
+import { RoomModule } from '@room/room.module';
 import * as Joi from 'joi';
 
 @Module({
   imports: [
+    RestaurantModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -13,6 +15,7 @@ import * as Joi from 'joi';
         MONGODB_USERNAME: Joi.string().required(),
         MONGODB_PASSWORD: Joi.string().required(),
         MONGODB_DB_NAME: Joi.string().required(),
+        KAKAO_API_KEY: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({

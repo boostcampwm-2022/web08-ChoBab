@@ -11,7 +11,9 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@common/*": ["./src/common/*"]
+      "@common/*": ["./src/common/*"],
+      "@restaurant/*": ["./src/restaurant/*"],
+      "@room/*": ["./src/room/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
