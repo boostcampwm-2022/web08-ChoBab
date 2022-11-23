@@ -9,11 +9,11 @@ export const restaurantCategory = Object.freeze([
 ]);
 
 export const locationBoundary = {
-  latitude: {
+  lat: {
     min: 33,
     max: 43,
   },
-  longitude: {
+  lng: {
     min: 124,
     max: 132,
   },

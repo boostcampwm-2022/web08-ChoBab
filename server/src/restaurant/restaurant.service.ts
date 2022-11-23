@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { restaurant } from './restaurant';
+import { originRestaurant, preprocessedRestaurant } from './restaurant';
 import { restaurantCategory, locationBoundary, maxRadius } from './retaurant.constants';
 
 interface restaurantApiResult {
@@ -9,41 +9,35 @@ interface restaurantApiResult {
     pageable_count: number;
     total_count: number;
   };
-  documents: restaurant[];
+  documents: originRestaurant[];
 }
 
-const restaurantApiUrl = (
-  latitude: number,
-  longitude: number,
-  radius: number,
-  category: string,
-  page = 1
-) =>
+const restaurantApiUrl = (lat: number, lng: number, radius: number, category: string, page = 1) =>
   `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURI(
     category
-  )}&y=${latitude}&x=${longitude}&category\_group\_code=FD6&radius=${radius}&page=${page}`;
+  )}&y=${lat}&x=${lng}&category\_group\_code=FD6&radius=${radius}&page=${page}`;
 
-const isInKorea = (latitude: number, longitude: number) => {
+const isInKorea = (lat: number, lng: number) => {
   return (
-    locationBoundary.latitude.min < latitude &&
-    latitude < locationBoundary.latitude.max &&
-    locationBoundary.longitude.min < longitude &&
-    longitude < locationBoundary.longitude.max
+    locationBoundary.lat.min < lat &&
+    lat < locationBoundary.lat.max &&
+    locationBoundary.lng.min < lng &&
+    lng < locationBoundary.lng.max
   );
 };
 
 @Injectable()
 export class RestaurantService {
   private async getRestaurantUsingCategory(
-    latitude: number,
-    longitude: number,
+    lat: number,
+    lng: number,
     radius: number,
     category: string,
     apiKey: string
   ) {
-    let restaurantList: restaurant[] = [];
+    let restaurantList: originRestaurant[] = [];
     const apiResult: restaurantApiResult = (
-      await axios.get(restaurantApiUrl(latitude, longitude, radius, category), {
+      await axios.get(restaurantApiUrl(lat, lng, radius, category), {
         headers: { Authorization: `KakaoAK ${apiKey}` },
       })
     ).data;
@@ -54,7 +48,7 @@ export class RestaurantService {
     while (!isEnd) {
       page += 1;
       const apiResult: restaurantApiResult = (
-        await axios.get(restaurantApiUrl(latitude, longitude, radius, category, page), {
+        await axios.get(restaurantApiUrl(lat, lng, radius, category, page), {
           headers: { Authorization: `KakaoAK ${apiKey}` },
         })
       ).data;
@@ -64,25 +58,34 @@ export class RestaurantService {
     }
     return restaurantList;
   }
-  private restaurantPreprocessing(originRestaurantList: restaurant[]) {
+  private restaurantPreprocessing(originRestaurantList: originRestaurant[]) {
     const preprocessingRestaurantList = originRestaurantList.map((restaurant) => {
-      const preprocessedRestaurant = {
-        id: restaurant.id,
-        name: restaurant.place_name,
-        category: restaurant.category_name.split('>')[1].trim() || '',
-        phone: restaurant.phone || '',
-        latitude: restaurant.y,
-        longitude: restaurant.x,
-        address: restaurant.road_address_name,
+      const {
+        id,
+        place_name: name,
+        category_name: category,
+        phone,
+        y: lat,
+        x: lng,
+        road_address_name: address,
+      } = restaurant;
+      const preprocessedRestaurant: preprocessedRestaurant = {
+        id: id,
+        name: name,
+        category: category.split('>')[1].trim() || '',
+        phone: phone || '',
+        lat: lat,
+        lng: lng,
+        address: address,
       };
       return preprocessedRestaurant;
     });
     return preprocessingRestaurantList;
   }
 
-  async getRestaurantList(latitude: number, longitude: number, radius: number, apiKey: string) {
+  async getRestaurantList(lat: number, lng: number, radius: number, apiKey: string) {
     try {
-      if (!isInKorea(latitude, longitude)) {
+      if (!isInKorea(lat, lng)) {
         throw new Error('대한민국을 벗어난 입력입니다.');
       }
 
@@ -98,7 +101,7 @@ export class RestaurantService {
        */
       const restaurantApiResult = await Promise.all(
         restaurantCategory.map((category) =>
-          this.getRestaurantUsingCategory(latitude, longitude, radius, category, apiKey)
+          this.getRestaurantUsingCategory(lat, lng, radius, category, apiKey)
         )
       );
       restaurantApiResult.forEach((restaurantList) => {
@@ -109,12 +112,12 @@ export class RestaurantService {
 
       return {
         message: '음식점을 성공적으로 불러왔습니다.',
-        data: Array.from(restaurantSet) as restaurant[],
+        data: Array.from(restaurantSet) as preprocessedRestaurant[],
       };
     } catch (e) {
       return {
         message: e.message,
-        data: [] as restaurant[],
+        data: [] as preprocessedRestaurant[],
       };
     }
   }
