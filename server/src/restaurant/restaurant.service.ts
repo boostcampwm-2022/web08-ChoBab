@@ -1,5 +1,6 @@
 import { CustomException } from '@common/exceptions/custom.exception';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { originRestaurant, preprocessedRestaurant } from './restaurant';
 import { RESTAURANT_CATEGORY, LOCATION_BOUNDARY, MAX_RADIUS } from './retaurant.constants';
@@ -29,6 +30,10 @@ const isInKorea = (lat: number, lng: number) => {
 
 @Injectable()
 export class RestaurantService {
+  apiKey: string;
+  constructor(private ConfigService: ConfigService) {
+    this.apiKey = this.ConfigService.get('KAKAO_API_KEY');
+  }
   private async getRestaurantUsingCategory(
     lat: number,
     lng: number,
@@ -84,7 +89,7 @@ export class RestaurantService {
     return preprocessingRestaurantList;
   }
 
-  async getRestaurantList(lat: number, lng: number, radius: number, apiKey: string) {
+  async getRestaurantList(lat: number, lng: number, radius: number) {
     if (!isInKorea(lat, lng)) {
       throw new CustomException('대한민국을 벗어난 입력입니다.');
     }
@@ -101,7 +106,7 @@ export class RestaurantService {
      */
     const restaurantApiResult = await Promise.all(
       RESTAURANT_CATEGORY.map((category) =>
-        this.getRestaurantUsingCategory(lat, lng, radius, category, apiKey)
+        this.getRestaurantUsingCategory(lat, lng, radius, category, this.apiKey)
       )
     );
     restaurantApiResult.forEach((restaurantList) => {
