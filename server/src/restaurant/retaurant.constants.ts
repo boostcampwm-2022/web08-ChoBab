@@ -8,15 +8,15 @@ export const RESTAURANT_CATEGORY = Object.freeze([
   '분식',
 ]);
 
-export const LOCATION_BOUNDARY = {
-  lat: {
+export const LOCATION_BOUNDARY = Object.freeze({
+  LAT: Object.freeze({
     min: 33,
     max: 43,
-  },
-  lng: {
+  }),
+  LNG: Object.freeze({
     min: 124,
     max: 132,
-  },
-};
+  }),
+});
 
 export const MAX_RADIUS = 5000;

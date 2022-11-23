@@ -20,10 +20,10 @@ const restaurantApiUrl = (lat: number, lng: number, radius: number, category: st
 
 const isInKorea = (lat: number, lng: number) => {
   return (
-    LOCATION_BOUNDARY.lat.min < lat &&
-    lat < LOCATION_BOUNDARY.lat.max &&
-    LOCATION_BOUNDARY.lng.min < lng &&
-    lng < LOCATION_BOUNDARY.lng.max
+    LOCATION_BOUNDARY.LAT.min < lat &&
+    lat < LOCATION_BOUNDARY.LAT.max &&
+    LOCATION_BOUNDARY.LNG.min < lng &&
+    lng < LOCATION_BOUNDARY.LNG.max
   );
 };
 
