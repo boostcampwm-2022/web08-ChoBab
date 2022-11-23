@@ -2,7 +2,7 @@ import { CustomException } from '@common/exceptions/custom.exception';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { originRestaurant, preprocessedRestaurant } from './restaurant';
-import { restaurantCategory, locationBoundary, maxRadius } from './retaurant.constants';
+import { RESTAURANT_CATEGORY, LOCATION_BOUNDARY, MAX_RADIUS } from './retaurant.constants';
 
 interface restaurantApiResult {
   meta: {
@@ -20,10 +20,10 @@ const restaurantApiUrl = (lat: number, lng: number, radius: number, category: st
 
 const isInKorea = (lat: number, lng: number) => {
   return (
-    locationBoundary.lat.min < lat &&
-    lat < locationBoundary.lat.max &&
-    locationBoundary.lng.min < lng &&
-    lng < locationBoundary.lng.max
+    LOCATION_BOUNDARY.lat.min < lat &&
+    lat < LOCATION_BOUNDARY.lat.max &&
+    LOCATION_BOUNDARY.lng.min < lng &&
+    lng < LOCATION_BOUNDARY.lng.max
   );
 };
 
@@ -89,7 +89,7 @@ export class RestaurantService {
       throw new CustomException('대한민국을 벗어난 입력입니다.');
     }
 
-    if (radius > maxRadius) {
+    if (radius > MAX_RADIUS) {
       throw new CustomException('최대 탐색 반경을 벗어난 입력입니다.');
     }
 
@@ -100,7 +100,7 @@ export class RestaurantService {
      * Promise.all 로 수정 결과 동일 데이터 불러오는데 1초 소요
      */
     const restaurantApiResult = await Promise.all(
-      restaurantCategory.map((category) =>
+      RESTAURANT_CATEGORY.map((category) =>
         this.getRestaurantUsingCategory(lat, lng, radius, category, apiKey)
       )
     );

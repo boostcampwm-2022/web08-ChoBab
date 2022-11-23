@@ -1,4 +1,4 @@
-export const restaurantCategory = Object.freeze([
+export const RESTAURANT_CATEGORY = Object.freeze([
   '한식',
   '일식',
   '중식',
@@ -8,7 +8,7 @@ export const restaurantCategory = Object.freeze([
   '분식',
 ]);
 
-export const locationBoundary = {
+export const LOCATION_BOUNDARY = {
   lat: {
     min: 33,
     max: 43,
@@ -19,4 +19,4 @@ export const locationBoundary = {
   },
 };
 
-export const maxRadius = 5000;
+export const MAX_RADIUS = 5000;
