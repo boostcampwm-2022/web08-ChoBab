@@ -13,7 +13,8 @@
     "paths": {
       "@common/*": ["./src/common/*"],
       "@restaurant/*": ["./src/restaurant/*"],
-      "@room/*": ["./src/room/*"]
+      "@room/*": ["./src/room/*"],
+      "@socket/*": ["./src/socket/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
