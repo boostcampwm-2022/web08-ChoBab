@@ -1,3 +1,4 @@
+import { CustomException } from '@common/exceptions/custom.exception';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { originRestaurant, preprocessedRestaurant } from './restaurant';
@@ -84,41 +85,34 @@ export class RestaurantService {
   }
 
   async getRestaurantList(lat: number, lng: number, radius: number, apiKey: string) {
-    try {
-      if (!isInKorea(lat, lng)) {
-        throw new Error('대한민국을 벗어난 입력입니다.');
-      }
-
-      if (radius > maxRadius) {
-        throw new Error('최대 탐색 반경을 벗어난 입력입니다.');
-      }
-
-      const restaurantSet = new Set();
-      /**
-       * 순서를 보장을 위한 await 사용을 위해 for of 를 사용했는데, 해당 구문을 Promise.all 로 수정하면 속도 차이가 많이 날까요??
-       * 현재 저희 학교 앞 2km 반경 음식점 300여개 불러오는데 3초 소요
-       * Promise.all 로 수정 결과 동일 데이터 불러오는데 1초 소요
-       */
-      const restaurantApiResult = await Promise.all(
-        restaurantCategory.map((category) =>
-          this.getRestaurantUsingCategory(lat, lng, radius, category, apiKey)
-        )
-      );
-      restaurantApiResult.forEach((restaurantList) => {
-        this.restaurantPreprocessing(restaurantList).forEach((restaurant) => {
-          restaurantSet.add(restaurant);
-        });
-      });
-
-      return {
-        message: '음식점을 성공적으로 불러왔습니다.',
-        data: Array.from(restaurantSet) as preprocessedRestaurant[],
-      };
-    } catch (e) {
-      return {
-        message: e.message,
-        data: [] as preprocessedRestaurant[],
-      };
+    if (!isInKorea(lat, lng)) {
+      throw new CustomException('대한민국을 벗어난 입력입니다.');
     }
+
+    if (radius > maxRadius) {
+      throw new CustomException('최대 탐색 반경을 벗어난 입력입니다.');
+    }
+
+    const restaurantSet = new Set();
+    /**
+     * 순서를 보장을 위한 await 사용을 위해 for of 를 사용했는데, 해당 구문을 Promise.all 로 수정하면 속도 차이가 많이 날까요??
+     * 현재 저희 학교 앞 2km 반경 음식점 300여개 불러오는데 3초 소요
+     * Promise.all 로 수정 결과 동일 데이터 불러오는데 1초 소요
+     */
+    const restaurantApiResult = await Promise.all(
+      restaurantCategory.map((category) =>
+        this.getRestaurantUsingCategory(lat, lng, radius, category, apiKey)
+      )
+    );
+    restaurantApiResult.forEach((restaurantList) => {
+      this.restaurantPreprocessing(restaurantList).forEach((restaurant) => {
+        restaurantSet.add(restaurant);
+      });
+    });
+
+    return {
+      message: '음식점을 성공적으로 불러왔습니다.',
+      data: Array.from(restaurantSet) as preprocessedRestaurant[],
+    };
   }
 }
