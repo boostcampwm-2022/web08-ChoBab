@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import 'dotenv/config';
+import { ConfigService } from '@nestjs/config';
 import { RestaurantService } from './restaurant.service';
 
 /**
@@ -14,11 +14,11 @@ class GetRestaurantDto {
 
 @Controller('/api/restaurant')
 export class RestaurantController {
-  constructor(private RestaurantService: RestaurantService) {}
+  constructor(private RestaurantService: RestaurantService, private ConfigService: ConfigService) {}
   @Post()
   async getRestaurantList(@Body() GetRestaurantDto: GetRestaurantDto) {
     const { latitude, longitude, radius, roomCode } = GetRestaurantDto;
-    const apiKey = process.env.KAKAO_API_KEY;
+    const apiKey = this.ConfigService.get('KAKAO_API_KEY');
 
     const restaurantList = this.RestaurantService.getRestaurantList(
       latitude,

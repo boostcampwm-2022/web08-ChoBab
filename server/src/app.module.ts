@@ -15,6 +15,7 @@ import * as Joi from 'joi';
         MONGODB_USERNAME: Joi.string().required(),
         MONGODB_PASSWORD: Joi.string().required(),
         MONGODB_DB_NAME: Joi.string().required(),
+        KAKAO_API_KEY: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
