@@ -3,11 +3,6 @@ import { Document } from 'mongoose';
 
 export type RoomDocument = Room & Document;
 
-interface IPos {
-  longitude: number;
-  latitude: number;
-}
-
 @Schema()
 export class Room {
   @Prop({ required: true, unique: true })
@@ -19,8 +14,11 @@ export class Room {
   @Prop()
   deletedAt: Date;
 
-  @Prop({ type: Object })
-  pos: IPos;
+  @Prop({ required: true })
+  lng: number;
+
+  @Prop({ required: true })
+  lat: number;
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
