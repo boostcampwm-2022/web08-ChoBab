@@ -2,8 +2,9 @@ import { CustomException } from '@common/exceptions/custom.exception';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { isInKorea } from '@util/location';
 import { originRestaurant, preprocessedRestaurant } from './restaurant';
-import { RESTAURANT_CATEGORY, LOCATION_BOUNDARY, MAX_RADIUS } from './retaurant.constants';
+import { MAX_RADIUS, RESTAURANT_CATEGORY } from './retaurant.constants';
 
 interface restaurantApiResult {
   meta: {
@@ -19,21 +20,14 @@ const restaurantApiUrl = (lat: number, lng: number, radius: number, category: st
     category
   )}&y=${lat}&x=${lng}&category\_group\_code=FD6&radius=${radius}&page=${page}`;
 
-const isInKorea = (lat: number, lng: number) => {
-  return (
-    LOCATION_BOUNDARY.LAT.min < lat &&
-    lat < LOCATION_BOUNDARY.LAT.max &&
-    LOCATION_BOUNDARY.LNG.min < lng &&
-    lng < LOCATION_BOUNDARY.LNG.max
-  );
-};
-
 @Injectable()
 export class RestaurantService {
   apiKey: string;
+
   constructor(private ConfigService: ConfigService) {
     this.apiKey = this.ConfigService.get('KAKAO_API_KEY');
   }
+
   private async getRestaurantUsingCategory(
     lat: number,
     lng: number,
@@ -64,6 +58,7 @@ export class RestaurantService {
     }
     return restaurantList;
   }
+
   private restaurantPreprocessing(originRestaurantList: originRestaurant[]) {
     const preprocessingRestaurantList = originRestaurantList.map((restaurant) => {
       const {

@@ -12,8 +12,9 @@
     "baseUrl": "./",
     "paths": {
       "@common/*": ["./src/common/*"],
+      "@util/*": ["./src/util/*"],
       "@restaurant/*": ["./src/restaurant/*"],
-      "@room/*": ["./src/room/*"]
+      "@room/*": ["./src/room/*"],
     },
     "incremental": true,
     "skipLibCheck": true,
