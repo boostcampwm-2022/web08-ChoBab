@@ -1,4 +1,4 @@
-export interface originRestaurant {
+export interface originRestaurantType {
   id: string;
   road_address_name: string;
   category_name: string;
@@ -8,7 +8,7 @@ export interface originRestaurant {
   y: string;
 }
 
-export interface preprocessedRestaurant {
+export interface preprocessedRestaurantType {
   id: string;
   name: string;
   category: string;
