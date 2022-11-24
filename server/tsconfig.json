@@ -12,6 +12,7 @@
     "baseUrl": "./",
     "paths": {
       "@common/*": ["./src/common/*"],
+      "@constants/*": ["./src/constants/*"],
       "@utils/*": ["./src/utils/*"],
       "@restaurant/*": ["./src/restaurant/*"],
       "@room/*": ["./src/room/*"],

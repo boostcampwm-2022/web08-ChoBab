@@ -1,4 +1,4 @@
-import { LOCATION_BOUNDARY } from '@restaurant/retaurant.constants';
+import { LOCATION_BOUNDARY } from '@constants/location';
 
 export const isInKorea = (lat: number, lng: number) => {
   return (

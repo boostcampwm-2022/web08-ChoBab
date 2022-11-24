@@ -4,7 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { isInKorea } from '@utils/location';
 import { originRestaurant, preprocessedRestaurant } from './restaurant';
-import { MAX_RADIUS, RESTAURANT_CATEGORY } from './retaurant.constants';
+import { RESTAURANT_CATEGORY } from '@constants/restaurant';
+import { MAX_RADIUS } from '@constants/location';
 
 interface restaurantApiResult {
   meta: {
