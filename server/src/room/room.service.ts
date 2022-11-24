@@ -25,10 +25,28 @@ export class RoomService {
     }
   }
 
-  async validRoom(roomCode: string) {
+  async validRoom(roomCode: string): Promise<boolean> {
     try {
       const room = await this.roomModel.findOne({ roomCode });
-      return !!room && !room.deletedAt;
+      if (!room || room.deletedAt) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      throw new CustomException('모임방 검색에 실패했습니다.');
+    }
+  }
+
+  async getRoomInfo(roomCode: string): Promise<any> {
+    try {
+      const room = await this.roomModel.findOne({ roomCode });
+      if (!room) {
+        throw new CustomException('존재하지 않는 모임방입니다.');
+      }
+      if (room.deletedAt) {
+        throw new CustomException('삭제된 모임방입니다.');
+      }
+      return { lat: room.lat, lng: room.lng };
     } catch (error) {
       throw new CustomException('모임방 검색에 실패했습니다.');
     }
