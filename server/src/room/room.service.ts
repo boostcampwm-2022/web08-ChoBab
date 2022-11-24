@@ -24,4 +24,9 @@ export class RoomService {
       throw new CustomException('모임방 생성에 실패했습니다.');
     }
   }
+
+  async validRoom(roomCode: string) {
+    const room = await this.roomModel.findOne({ roomCode });
+    return !!room && !room.deletedAt;
+  }
 }
