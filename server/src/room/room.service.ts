@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Room, RoomDocument } from './room.schema';
 import { Model } from 'mongoose';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { isInKorea } from '@util/location';
+import { isInKorea } from '@utils/location';
 
 @Injectable()
 export class RoomService {

@@ -2,7 +2,7 @@ import { CustomException } from '@common/exceptions/custom.exception';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import { isInKorea } from '@util/location';
+import { isInKorea } from '@utils/location';
 import { originRestaurant, preprocessedRestaurant } from './restaurant';
 import { MAX_RADIUS, RESTAURANT_CATEGORY } from './retaurant.constants';
 

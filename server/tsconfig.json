@@ -12,7 +12,7 @@
     "baseUrl": "./",
     "paths": {
       "@common/*": ["./src/common/*"],
-      "@util/*": ["./src/util/*"],
+      "@utils/*": ["./src/utils/*"],
       "@restaurant/*": ["./src/restaurant/*"],
       "@room/*": ["./src/room/*"],
     },
