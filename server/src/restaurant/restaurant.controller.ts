@@ -9,7 +9,7 @@ export class RestaurantController {
   async getRestaurantList(@Body() getRestaurantDto: GetRestaurantDto) {
     const { lat, lng, radius, roomCode } = getRestaurantDto;
 
-    const restaurantList = this.restaurantService.getRestaurantList(lat, lng, radius);
+    const restaurantList = await this.restaurantService.getRestaurantList(lat, lng, radius);
     /**TODO: roomCode 사용해서 redis 저장 로직 추가하기 */
     return restaurantList;
   }
