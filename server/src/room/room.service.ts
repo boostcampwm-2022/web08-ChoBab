@@ -26,7 +26,11 @@ export class RoomService {
   }
 
   async validRoom(roomCode: string) {
-    const room = await this.roomModel.findOne({ roomCode });
-    return !!room && !room.deletedAt;
+    try {
+      const room = await this.roomModel.findOne({ roomCode });
+      return !!room && !room.deletedAt;
+    } catch (error) {
+      throw new CustomException('모임방 검색에 실패했습니다.');
+    }
   }
 }
