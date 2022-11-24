@@ -8,6 +8,7 @@ import {
 } from '@pages/InitRoomPage/styles';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { ReactComponent as MarkerImage } from '@assets/images/marker.svg';
+import { reverseGeocoding } from '../../apis/location';
 
 function InitRoomPage() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -31,10 +32,14 @@ function InitRoomPage() {
 
     // dragEnd 이벤트 핸들러 생성
     const onDragEnd = (map: naver.maps.Map): naver.maps.MapEventListener => {
-      const dragEndListener = naver.maps.Event.addListener(map, 'dragend', () => {
+      const dragEndListener = naver.maps.Event.addListener(map, 'dragend', async () => {
         console.log(map?.getCenter().x); // lng
         console.log(map?.getCenter().y); // lat
         // TODO: 수정 필요한 부분
+        // reverseGeocoding(map?.getCenter().y, map?.getCenter().x).then((data) => {
+        //   setAddress(data);
+        // });
+        setAddress('주소 수정 필요');
         setAddress('주소 설정');
       });
 
