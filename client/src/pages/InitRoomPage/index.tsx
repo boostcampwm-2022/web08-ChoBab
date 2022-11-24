@@ -11,7 +11,9 @@ function InitRoomPage() {
 
   // 현재 위치 setting
   useEffect(() => {
-    if (!location) return;
+    if (!location) {
+      return;
+    }
 
     setUserLat(location.lat);
     setUserLng(location.lng);
@@ -20,7 +22,9 @@ function InitRoomPage() {
   // 현재 위치에 맞춰 지도 생성
   useEffect(() => {
     const initMap = () => {
-      if (!mapRef.current) return;
+      if (!mapRef.current) {
+        return;
+      }
 
       const map = new naver.maps.Map(mapRef.current, {
         center: new naver.maps.LatLng(userLat, userLng),
