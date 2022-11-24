@@ -25,8 +25,8 @@ const restaurantApiUrl = (lat: number, lng: number, radius: number, category: st
 export class RestaurantService {
   apiKey: string;
 
-  constructor(private ConfigService: ConfigService) {
-    this.apiKey = this.ConfigService.get('KAKAO_API_KEY');
+  constructor(private configService: ConfigService) {
+    this.apiKey = this.configService.get('KAKAO_API_KEY');
   }
 
   private async getRestaurantUsingCategory(
