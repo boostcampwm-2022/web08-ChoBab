@@ -8,12 +8,13 @@ import {
 } from '@pages/InitRoomPage/styles';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { ReactComponent as MarkerImage } from '@assets/images/marker.svg';
+import { NAVER_ADDRESS } from '@constants/map';
 import { reverseGeocoding } from '../../apis/location';
 
 function InitRoomPage() {
   const mapRef = useRef<HTMLDivElement>(null);
   const location = useCurrentLocation();
-  const [address, setAddress] = useState<string>('주소 초기값');
+  const [address, setAddress] = useState<string>(NAVER_ADDRESS);
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -39,7 +40,6 @@ function InitRoomPage() {
         // reverseGeocoding(map?.getCenter().y, map?.getCenter().x).then((data) => {
         //   setAddress(data);
         // });
-        setAddress('주소 수정 필요');
         setAddress('주소 설정');
       });
 
