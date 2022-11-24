@@ -3,17 +3,17 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { isInKorea } from '@utils/location';
-import { originRestaurant, preprocessedRestaurant } from './restaurant';
+import { originRestaurantType, preprocessedRestaurantType } from './restaurant';
 import { RESTAURANT_CATEGORY } from '@constants/restaurant';
 import { MAX_RADIUS } from '@constants/location';
 
-interface restaurantApiResult {
+interface restaurantApiResultType {
   meta: {
     is_end: boolean;
     pageable_count: number;
     total_count: number;
   };
-  documents: originRestaurant[];
+  documents: originRestaurantType[];
 }
 
 const restaurantApiUrl = (lat: number, lng: number, radius: number, category: string, page = 1) =>
@@ -25,8 +25,8 @@ const restaurantApiUrl = (lat: number, lng: number, radius: number, category: st
 export class RestaurantService {
   apiKey: string;
 
-  constructor(private ConfigService: ConfigService) {
-    this.apiKey = this.ConfigService.get('KAKAO_API_KEY');
+  constructor(private configService: ConfigService) {
+    this.apiKey = this.configService.get('KAKAO_API_KEY');
   }
 
   private async getRestaurantUsingCategory(
@@ -36,8 +36,8 @@ export class RestaurantService {
     category: string,
     apiKey: string
   ) {
-    let restaurantList: originRestaurant[] = [];
-    const apiResult: restaurantApiResult = (
+    let restaurantList: originRestaurantType[] = [];
+    const apiResult: restaurantApiResultType = (
       await axios.get(restaurantApiUrl(lat, lng, radius, category), {
         headers: { Authorization: `KakaoAK ${apiKey}` },
       })
@@ -48,7 +48,7 @@ export class RestaurantService {
 
     while (!isEnd) {
       page += 1;
-      const apiResult: restaurantApiResult = (
+      const apiResult: restaurantApiResultType = (
         await axios.get(restaurantApiUrl(lat, lng, radius, category, page), {
           headers: { Authorization: `KakaoAK ${apiKey}` },
         })
@@ -60,7 +60,7 @@ export class RestaurantService {
     return restaurantList;
   }
 
-  private restaurantPreprocessing(originRestaurantList: originRestaurant[]) {
+  private restaurantPreprocessing(originRestaurantList: originRestaurantType[]) {
     const preprocessingRestaurantList = originRestaurantList.map((restaurant) => {
       const {
         id,
@@ -71,7 +71,7 @@ export class RestaurantService {
         x: lng,
         road_address_name: address,
       } = restaurant;
-      const preprocessedRestaurant: preprocessedRestaurant = {
+      const preprocessedRestaurant: preprocessedRestaurantType = {
         id: id,
         name: name,
         category: category.split('>')[1].trim() || '',
@@ -95,11 +95,7 @@ export class RestaurantService {
     }
 
     const restaurantSet = new Set();
-    /**
-     * 순서를 보장을 위한 await 사용을 위해 for of 를 사용했는데, 해당 구문을 Promise.all 로 수정하면 속도 차이가 많이 날까요??
-     * 현재 저희 학교 앞 2km 반경 음식점 300여개 불러오는데 3초 소요
-     * Promise.all 로 수정 결과 동일 데이터 불러오는데 1초 소요
-     */
+
     const restaurantApiResult = await Promise.all(
       RESTAURANT_CATEGORY.map((category) =>
         this.getRestaurantUsingCategory(lat, lng, radius, category, this.apiKey)
@@ -113,7 +109,7 @@ export class RestaurantService {
 
     return {
       message: '음식점을 성공적으로 불러왔습니다.',
-      data: Array.from(restaurantSet) as preprocessedRestaurant[],
+      data: Array.from(restaurantSet) as preprocessedRestaurantType[],
     };
   }
 }

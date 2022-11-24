@@ -4,12 +4,12 @@ import { RestaurantService } from './restaurant.service';
 
 @Controller('restaurant')
 export class RestaurantController {
-  constructor(private RestaurantService: RestaurantService) {}
+  constructor(private restaurantService: RestaurantService) {}
   @Post()
-  async getRestaurantList(@Body() GetRestaurantDto: GetRestaurantDto) {
-    const { lat, lng, radius, roomCode } = GetRestaurantDto;
+  async getRestaurantList(@Body() getRestaurantDto: GetRestaurantDto) {
+    const { lat, lng, radius, roomCode } = getRestaurantDto;
 
-    const restaurantList = this.RestaurantService.getRestaurantList(lat, lng, radius);
+    const restaurantList = await this.restaurantService.getRestaurantList(lat, lng, radius);
     /**TODO: roomCode 사용해서 redis 저장 로직 추가하기 */
     return restaurantList;
   }
