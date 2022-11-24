@@ -6,4 +6,7 @@ export const InitRoomPageLayout = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  &:focus-visible {
+    outline: none;
+  }
 `;
