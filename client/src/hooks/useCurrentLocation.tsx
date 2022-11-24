@@ -7,7 +7,7 @@ interface locationType {
 }
 
 const useCurrentLocation = () => {
-  const [location, setLocation] = useState<locationType>();
+  const [location, setLocation] = useState<locationType>({ lat: NAVER_LAT, lng: NAVER_LNG });
 
   const handleSuccess = (position: GeolocationPosition) => {
     setLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
