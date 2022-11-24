@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { InitRoomPageLayout } from '@pages/InitRoomPage/styles';
 import useCurrentLocation from '@hooks/useCurrentLocation';
+import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 
 function InitRoomPage() {
   const mapRef = useRef<HTMLDivElement>(null);
   const location = useCurrentLocation();
-  const [userLat, setUserLat] = useState<number>(0);
-  const [userLng, setUserLng] = useState<number>(0);
+  const [userLat, setUserLat] = useState<number>(NAVER_LAT);
+  const [userLng, setUserLng] = useState<number>(NAVER_LNG);
 
   // 현재 위치 setting
   useEffect(() => {
