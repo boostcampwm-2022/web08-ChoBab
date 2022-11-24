@@ -10,6 +10,13 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@common/*": ["./src/common/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@restaurant/*": ["./src/restaurant/*"],
+      "@room/*": ["./src/room/*"],
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
