@@ -1,0 +1,45 @@
+name: Build Check
+
+on:
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.18.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.1
+          cache: 'npm'
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
+
+      - name: Install client dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: Install server dependencies
+        run: |
+          cd server
+          npm ci
+
+      - name: Set client .env
+        run: |
+          cd client
+          echo "VITE_APP_NAVER_MAP_CLIENTID=${{ secrets.VITE_APP_NAVER_MAP_CLIENTID }}" >> .env
+
+      - name: Run client build
+        run: |
+          cd client
+          npm run build --if-present
+
+      - name: Run server build
+        run: |
+          cd server
+          npm run build --if-present
