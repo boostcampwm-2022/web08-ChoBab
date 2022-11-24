@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CreateRoomDto } from '@room/dto/create-room.dto';
 import { ResTemplate } from '@common/interceptors/template.interceptor';
 import { RoomService } from '@room/room.service';
+import { CustomException } from '@common/exceptions/custom.exception';
 
 @Controller('room')
 export class RoomController {
@@ -16,9 +17,10 @@ export class RoomController {
   @Get('valid')
   async validRoom(@Query('roomCode') roomCode: string) {
     const isRoomValid = await this.roomService.validRoom(roomCode);
-    return {
-      message: isRoomValid ? '유효한 roomCode 입니다.' : '유효하지 않은 roomCode 입니다.',
-      data: { isRoomValid },
-    };
+    if (!isRoomValid) {
+      throw new CustomException('유효하지 않은 roomCode 입니다.');
+    }
+
+    return { message: '유효한 roomCode 입니다.', data: { isRoomValid } };
   }
 }
