@@ -1,30 +1,41 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { InitRoomPageLayout } from '@pages/InitRoomPage/styles';
+import useCurrentLocation from '@hooks/useCurrentLocation';
 
 function InitRoomPage() {
   const mapRef = useRef<HTMLDivElement>(null);
+  const location = useCurrentLocation();
+  const [userLat, setUserLat] = useState<number>(0);
+  const [userLng, setUserLng] = useState<number>(0);
 
+  // 현재 위치 setting
+  useEffect(() => {
+    if (!location) return;
+
+    setUserLat(location.lat);
+    setUserLng(location.lng);
+  }, [location]);
+
+  // 현재 위치에 맞춰 지도 생성
   useEffect(() => {
     const initMap = () => {
       if (!mapRef.current) return;
 
       const map = new naver.maps.Map(mapRef.current, {
-        // TODO: 지도 시작 좌표를 추후 사용자 위치로 변경
-        center: new naver.maps.LatLng(37.5, 127.039573),
+        center: new naver.maps.LatLng(userLat, userLng),
         zoom: 14,
       });
 
       const marker = new naver.maps.Marker({
-        // TODO: 마커 좌표를 추후 사용자 위치로 변경
-        position: new naver.maps.LatLng(37.5, 127.039573),
+        position: new naver.maps.LatLng(userLat, userLng),
         map,
       });
     };
 
     initMap();
-  }, []);
+  }, [userLat, userLng]);
 
-  return <InitRoomPageLayout id="map" ref={mapRef} />;
+  return <InitRoomPageLayout ref={mapRef} />;
 }
 
 export default InitRoomPage;
