@@ -1,7 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 import { MutableRefObject, useRef } from 'react';
 
-export const useSocket = (): [MutableRefObject<Socket | null>, () => Promise<void>] => {
+export const useSocket = (): [MutableRefObject<Socket | null>, () => Promise<void>, () => void] => {
   const socketRef = useRef<Socket | null>(null);
 
   const connectSocket = (): Promise<void> => {
@@ -25,5 +25,13 @@ export const useSocket = (): [MutableRefObject<Socket | null>, () => Promise<voi
     });
   };
 
-  return [socketRef, connectSocket];
+  const disconnectSocket = (): void => {
+    if (!(socketRef.current instanceof Socket)) {
+      return;
+    }
+
+    socketRef.current.close();
+  };
+
+  return [socketRef, connectSocket, disconnectSocket];
 };

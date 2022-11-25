@@ -5,7 +5,7 @@ import { useSocket } from '@hooks/useSocket';
 function RoomPage() {
   const [isReady, setIsReady] = useState<boolean>(false);
 
-  const [socketRef, connectSocket] = useSocket();
+  const [socketRef, connectSocket, disconnectSocket] = useSocket();
 
   const initSerive = async () => {
     try {
@@ -21,6 +21,10 @@ function RoomPage() {
 
   useEffect(() => {
     initSerive();
+
+    return () => {
+      disconnectSocket();
+    };
   }, []);
 
   useEffect(() => {
