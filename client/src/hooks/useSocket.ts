@@ -2,26 +2,28 @@ import { io, Socket } from 'socket.io-client';
 import { MutableRefObject, useRef } from 'react';
 
 export const useSocket = (): [MutableRefObject<Socket | null>, () => Promise<void>] => {
-  const socket = useRef<Socket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   const connectSocket = (): Promise<void> => {
     return new Promise((resolve, reject) => {
-      if (socket.current !== null) {
+      if (socketRef.current instanceof Socket) {
         resolve();
         return;
       }
 
-      socket.current = io('/room');
+      socketRef.current = io('/room');
 
-      socket.current.on('connect', () => {
+      const socket = socketRef.current;
+
+      socket.on('connect', () => {
         resolve();
       });
 
-      socket.current.on('connect_error', () => {
+      socket.on('connect_error', () => {
         reject();
       });
     });
   };
 
-  return [socket, connectSocket];
+  return [socketRef, connectSocket];
 };

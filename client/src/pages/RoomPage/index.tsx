@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
+import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 
 function RoomPage() {
-  const [ready, setReady] = useState<boolean>(false);
+  const [isReady, setIsReady] = useState<boolean>(false);
 
-  const [socket, connectSocket] = useSocket();
+  const [socketRef, connectSocket] = useSocket();
 
-  const loading = async () => {
+  const initSerive = async () => {
     try {
       // TODO: 소켓연결 작업뿐만이 아닌 다른 로딩관련 작업 추가
       await connectSocket();
 
-      setReady(true);
+      setIsReady(true);
     } catch (error) {
       // TODO: 오류 페이지로 이동관련 로직 추가
       console.log(error);
@@ -19,32 +20,36 @@ function RoomPage() {
   };
 
   useEffect(() => {
-    loading();
+    initSerive();
   }, []);
 
   useEffect(() => {
-    if (socket.current === null) {
+    const socket = socketRef.current;
+
+    if (!(socket instanceof Socket)) {
       return;
     }
 
-    if (!ready) {
+    if (!isReady) {
       return;
     }
 
-    socket.current.on('serverToClient', (data) => {
+    socket.on('serverToClient', (data) => {
       console.log('from server', data);
     });
-  }, [ready]);
+  }, [isReady]);
 
   const sendMessage = () => {
-    if (socket.current === null) {
+    const socket = socketRef.current;
+
+    if (!(socket instanceof Socket)) {
       return;
     }
 
-    socket.current.emit('clientToServer', 'message');
+    socket.emit('clientToServer', 'message');
   };
 
-  return !ready ? (
+  return !isReady ? (
     <div>loading...</div>
   ) : (
     <div>
