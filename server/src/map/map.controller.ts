@@ -6,7 +6,7 @@ import { GetReverseGeocodeDto } from '@map/dto/get-reverse-geocode';
 export class MapController {
   constructor(private readonly mapService: MapService) {}
 
-  @Get('/reversegeocode')
+  @Get('reversegeocode')
   async getReverseGeocode(@Query() getReverseGeocodeDto: GetReverseGeocodeDto) {
     const roadAddr = await this.mapService.reverseGeocode(
       getReverseGeocodeDto.lat,
