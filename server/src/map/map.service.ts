@@ -7,8 +7,8 @@ import { isInKorea } from '@utils/location';
 
 @Injectable()
 export class MapService {
-  NAVER_MAP_CLIENT_ID: string;
-  NAVER_MAP_CLIENT_SECRET: string;
+  private readonly NAVER_MAP_CLIENT_ID: string;
+  private readonly NAVER_MAP_CLIENT_SECRET: string;
 
   constructor(private readonly configService: ConfigService) {
     this.NAVER_MAP_CLIENT_ID = this.configService.get('NAVER_MAP_CLIENT_ID');
