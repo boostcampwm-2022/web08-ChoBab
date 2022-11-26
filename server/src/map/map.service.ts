@@ -4,6 +4,7 @@ import axios from 'axios';
 import { REVERSE_GEOCODE_API_URL } from '@constants/api';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { isInKorea } from '@utils/location';
+import { landType, naverMapReverseGeocodeResType, regionType } from '@map/map';
 
 @Injectable()
 export class MapService {
@@ -35,13 +36,15 @@ export class MapService {
   private async getRegionAndLandData(lat: number, lng: number) {
     const position = `${lng},${lat}`;
     try {
-      const { data } = await axios.get(REVERSE_GEOCODE_API_URL, {
+      const response = await axios.get(REVERSE_GEOCODE_API_URL, {
         headers: {
           'X-NCP-APIGW-API-KEY-ID': this.NAVER_MAP_CLIENT_ID,
           'X-NCP-APIGW-API-KEY': this.NAVER_MAP_CLIENT_SECRET,
         },
         params: { coords: position, output: 'json', orders: 'roadaddr' },
       });
+
+      const data: naverMapReverseGeocodeResType = response.data;
 
       if (data?.status?.code !== 0) {
         throw new Error(); // 성공적 응답이 아닌 경우
@@ -55,7 +58,7 @@ export class MapService {
   /**
    * region과 land 데이터를 조합하여 도로명 주소를 반환
    */
-  private combineRegionAndLandData = (regionData: any, landData: any) => {
+  private combineRegionAndLandData = (regionData: regionType, landData: landType) => {
     const { area1, area2 } = regionData;
     const { name, number1 } = landData;
 
