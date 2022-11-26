@@ -16,6 +16,7 @@
       "@utils/*": ["./src/utils/*"],
       "@restaurant/*": ["./src/restaurant/*"],
       "@room/*": ["./src/room/*"],
+      "@map/*": ["./src/map/*"],
     },
     "incremental": true,
     "skipLibCheck": true,
