@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RoomModule } from '@room/room.module';
 import { RestaurantModule } from '@restaurant/restaurant.module';
+import { MapModule } from '@map/map.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -16,6 +17,8 @@ import * as Joi from 'joi';
         MONGODB_PASSWORD: Joi.string().required(),
         MONGODB_DB_NAME: Joi.string().required(),
         KAKAO_API_KEY: Joi.string().required(),
+        NAVER_MAP_CLIENT_ID: Joi.string().required(),
+        NAVER_MAP_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
@@ -29,6 +32,7 @@ import * as Joi from 'joi';
       inject: [ConfigService],
     }),
     RoomModule,
+    MapModule,
   ],
   controllers: [],
   providers: [],
