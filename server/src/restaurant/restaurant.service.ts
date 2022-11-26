@@ -107,9 +107,6 @@ export class RestaurantService {
       });
     });
 
-    return {
-      message: '음식점을 성공적으로 불러왔습니다.',
-      data: Array.from(restaurantSet) as preprocessedRestaurantType[],
-    };
+    return Array.from(restaurantSet) as preprocessedRestaurantType[];
   }
 }
