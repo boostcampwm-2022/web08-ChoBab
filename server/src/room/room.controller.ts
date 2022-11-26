@@ -10,7 +10,8 @@ export class RoomController {
 
   @Post()
   async createRoom(@Body() createRoomDto: CreateRoomDto): Promise<ResTemplate<any>> {
-    const roomCode = await this.roomService.createRoom(createRoomDto.lat, createRoomDto.lng);
+    const { lat, lng, radius } = createRoomDto;
+    const roomCode = await this.roomService.createRoom(lat, lng, radius);
     return { message: '성공적으로 모임방을 생성했습니다.', data: { roomCode } };
   }
 

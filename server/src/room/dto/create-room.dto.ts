@@ -6,4 +6,7 @@ export class CreateRoomDto {
 
   @IsNumber()
   readonly lng: number;
+
+  @IsNumber()
+  readonly radius: number;
 }
