@@ -7,7 +7,6 @@ import * as Joi from 'joi';
 
 @Module({
   imports: [
-    RestaurantModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
