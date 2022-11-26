@@ -43,17 +43,34 @@ export class RoomService {
       throw new CustomException('모임방 검색에 실패했습니다.');
     }
   }
+  async connectUserToRoom(roomCode: string, userId: string) {
+    try {
+      const { userList } = await this.roomDynamicModel.findOne({ roomCode });
+      await this.roomDynamicModel.findOneAndUpdate(
+        { roomCode },
+        { userList: [...userList, userId] }
+      );
+      return true;
+    } catch (error) {
+      throw new CustomException('사용자를 방에 입장 시키지 못했습니다.');
+    }
+  }
 
   async getRoomInfo(roomCode: string): Promise<any> {
     try {
-      const room = await this.roomModel.findOne({ roomCode });
-      if (!room) {
+      const { lng, lat, createdAt, deletedAt } = await this.roomModel.findOne({
+        roomCode,
+      });
+      const { restaurantList, reserveList, userList } = await this.roomDynamicModel.findOne({
+        roomCode,
+      });
+      if (!createdAt || !restaurantList) {
         throw new CustomException('존재하지 않는 모임방입니다.');
       }
-      if (room.deletedAt) {
+      if (deletedAt) {
         throw new CustomException('삭제된 모임방입니다.');
       }
-      return { lat: room.lat, lng: room.lng };
+      return { roomCode, createdAt, deletedAt, lat, lng, userList, restaurantList, reserveList };
     } catch (error) {
       throw new CustomException('모임방 검색에 실패했습니다.');
     }

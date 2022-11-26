@@ -29,13 +29,13 @@ export class RoomDynamic {
   roomCode: string;
 
   @Prop({ required: true, default: [] })
-  userList: [];
+  userList: [string];
 
   @Prop({ required: true, default: [] })
-  restaurantList: RestaurantType[];
+  restaurantList: [RestaurantType];
 
   @Prop({ required: true, default: [] })
-  reserveList: RestaurantType[];
+  reserveList: [RestaurantType];
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
