@@ -43,6 +43,10 @@ export class RoomService {
   async connectUserToRoom(roomCode: string, userId: string) {
     try {
       const { userList } = await this.roomDynamicModel.findOne({ roomCode });
+      // 이미 사용자가 방에 접속해 있을 경우
+      if (userList.includes(userId)) {
+        return false;
+      }
       await this.roomDynamicModel.findOneAndUpdate(
         { roomCode },
         { userList: [...userList, userId] }

@@ -30,8 +30,11 @@ export class RoomController {
   async connectRoom(@Body() connectRoomDto: ConnectRoomDto) {
     const { roomCode, userId } = connectRoomDto;
     // 위처럼 구조분해할당해서 쓰기 혹은 connectRoomDto.roomCode, connectRoomDto.userId 바로 사용하기 -> 멘토님 질문
-    await this.roomService.connectUserToRoom(roomCode, userId);
+    const isNewConnect = await this.roomService.connectUserToRoom(roomCode, userId);
     const roomInfo = await this.roomService.getRoomInfo(roomCode);
+    if (!isNewConnect) {
+      return { message: '이미 모임에 접속 중입니다.', data: { roomInfo } };
+    }
     return { message: '성공적으로 모임에 접속했습니다.', data: { roomInfo } };
   }
 }
