@@ -38,12 +38,15 @@ function Modal() {
 function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!modalRef.current) {
       return;
     }
+
     modalRef.current.style.visibility = isModalOpen ? 'visible' : 'hidden';
   }, [isModalOpen]);
+
   return (
     <HomePageLayout>
       <HomePageBox>
