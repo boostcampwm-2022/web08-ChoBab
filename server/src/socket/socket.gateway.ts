@@ -1,16 +1,24 @@
 import {
   MessageBody,
+  WebSocketGateway,
+  WebSocketServer,
   SubscribeMessage,
   OnGatewayInit,
-  WebSocketServer,
-  WebSocketGateway,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 
 @WebSocketGateway({ namespace: 'room' })
-export class EventsGateway implements OnGatewayInit {
+export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+
+  @SubscribeMessage('clientToServer')
+  handleClientToServerMessage(@MessageBody() data: any) {
+    console.log('from client', data);
+    this.server.emit('serverToClient', data);
+  }
 
   afterInit() {
     console.log('connection initialize');
@@ -18,12 +26,6 @@ export class EventsGateway implements OnGatewayInit {
 
   handleConnection() {
     console.log('connected');
-  }
-
-  @SubscribeMessage('clientToServer')
-  handleClientToServerMessage(@MessageBody() data) {
-    console.log('from client', data);
-    this.server.emit('serverToClient', data);
   }
 
   handleDisconnect() {
