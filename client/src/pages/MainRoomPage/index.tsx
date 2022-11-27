@@ -5,9 +5,9 @@ import { MainPageLayout } from './styles';
 
 export function MainRoomPage() {
   const { roomCode } = useParams<{ roomCode: string }>();
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(true);
   useEffect(() => {
-    if (isLoading) {
+    if (!isLoading) {
       return;
     }
     axios
@@ -18,7 +18,7 @@ export function MainRoomPage() {
       })
       .then((res) => {
         if (res.status < 300) {
-          setLoading(true);
+          setLoading(false);
           console.log(res.data);
         }
       })
@@ -27,5 +27,5 @@ export function MainRoomPage() {
       });
   }, []);
 
-  return !isLoading ? <div>loading...</div> : <MainPageLayout>메인페이지 구현 예정</MainPageLayout>;
+  return isLoading ? <div>loading...</div> : <MainPageLayout>메인페이지 구현 예정</MainPageLayout>;
 }
