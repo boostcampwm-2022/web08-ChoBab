@@ -27,5 +27,5 @@ export function MainRoomPage() {
       });
   }, []);
 
-  return isLoading && <MainPageLayout>메인페이지 구현 예정</MainPageLayout>;
+  return !isLoading ? <div>loading...</div> : <MainPageLayout>메인페이지 구현 예정</MainPageLayout>;
 }
