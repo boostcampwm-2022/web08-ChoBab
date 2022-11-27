@@ -1,3 +1,4 @@
+import { DEFAULT_RADIUS } from '@constants/location';
 import { IsNumber } from 'class-validator';
 
 export class CreateRoomDto {
@@ -8,5 +9,5 @@ export class CreateRoomDto {
   readonly lng: number;
 
   @IsNumber()
-  readonly radius: number;
+  readonly radius: number = DEFAULT_RADIUS;
 }
