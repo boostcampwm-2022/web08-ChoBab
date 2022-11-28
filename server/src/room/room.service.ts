@@ -6,6 +6,8 @@ import { Model } from 'mongoose';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { isInKorea } from '@utils/location';
 import { RestaurantService } from '@restaurant/restaurant.service';
+import { LOCATION_EXCEPTION } from '@response/location';
+import { ROOM_EXCEPTION } from '@response/room';
 
 @Injectable()
 export class RoomService {
@@ -17,7 +19,7 @@ export class RoomService {
 
   async createRoom(lat: number, lng: number, radius: number): Promise<string> {
     if (!isInKorea(lat, lng)) {
-      throw new CustomException('대한민국을 벗어난 입력입니다.');
+      throw new CustomException(LOCATION_EXCEPTION.OUT_OF_KOREA);
     }
 
     try {
@@ -28,7 +30,7 @@ export class RoomService {
 
       return roomCode;
     } catch (error) {
-      throw new CustomException('모임방 생성에 실패했습니다.');
+      throw new CustomException(ROOM_EXCEPTION.FAIL_CREATE_ROOM);
     }
   }
 
@@ -37,7 +39,7 @@ export class RoomService {
       const room = await this.roomModel.findOne({ roomCode });
       return !!room && !room.deletedAt;
     } catch (error) {
-      throw new CustomException('모임방 검색에 실패했습니다.');
+      throw new CustomException(ROOM_EXCEPTION.FAIL_SEARCH_ROOM);
     }
   }
   async connectUserToRoom(roomCode: string, userId: string) {
@@ -60,26 +62,26 @@ export class RoomService {
   /**TODO: room, roomDynamic 중 하나라도 없을 시 둘다 삭제하는 로직 추가 */
   async getRoomInfo(roomCode: string): Promise<any> {
     try {
-      const { lng, lat, createdAt, deletedAt } = await this.roomModel.findOne({
-        roomCode,
-      });
-      if (!createdAt) {
-        throw new CustomException('존재하지 않는 모임방입니다.');
+      const room = await this.roomModel.findOne({ roomCode });
+      const { lng, lat, createdAt, deletedAt } = room;
+      if (!room) {
+        throw new CustomException(ROOM_EXCEPTION.IS_NOT_EXIST_ROOM);
       }
       if (deletedAt) {
-        throw new CustomException('삭제된 모임방입니다.');
+        throw new CustomException(ROOM_EXCEPTION.ALREADY_DELETED_ROOM);
       }
 
-      const { restaurantList, reserveList, userList } = await this.roomDynamicModel.findOne({
+      const roomDynamic = await this.roomDynamicModel.findOne({
         roomCode,
       });
-      if (!restaurantList) {
-        throw new CustomException('존재하지 않는 모임방입니다.');
+      const { restaurantList, reserveList, userList } = roomDynamic;
+      if (!roomDynamic) {
+        throw new CustomException(ROOM_EXCEPTION.IS_NOT_EXIST_ROOM);
       }
 
       return { roomCode, createdAt, deletedAt, lat, lng, userList, restaurantList, reserveList };
     } catch (error) {
-      throw new CustomException('모임방 검색에 실패했습니다.');
+      throw new CustomException(ROOM_EXCEPTION.FAIL_SEARCH_ROOM);
     }
   }
 }
