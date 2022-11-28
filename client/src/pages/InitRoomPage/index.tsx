@@ -12,7 +12,7 @@ import { NAVER_ADDRESS } from '@constants/map';
 
 function InitRoomPage() {
   const mapRef = useRef<HTMLDivElement>(null);
-  const location = useCurrentLocation();
+  const userLocation = useCurrentLocation();
   const [address, setAddress] = useState<string>(NAVER_ADDRESS);
 
   useEffect(() => {
@@ -20,10 +20,29 @@ function InitRoomPage() {
       return;
     }
 
+    // 좌표 -> 주소 변환 & setAddress
+    const reverseGeocode = (lat: number, lng: number) => {
+      naver.maps.Service.reverseGeocode(
+        {
+          coords: new naver.maps.LatLng(lat, lng),
+          orders: [naver.maps.Service.OrderType.ROAD_ADDR, naver.maps.Service.OrderType.ADDR].join(
+            ','
+          ),
+        },
+        // eslint-disable-next-line consistent-return
+        (status, response) => {
+          if (status !== naver.maps.Service.Status.OK) {
+            alert('주소 변환 실패');
+          }
+          setAddress(response.v2.address.roadAddress || response.v2.address.jibunAddress);
+        }
+      );
+    };
+
     // 현재 위치에 맞춰 지도 생성
     const createMap = (targetDiv: HTMLDivElement) => {
       const map = new naver.maps.Map(targetDiv, {
-        center: new naver.maps.LatLng(location.lat, location.lng),
+        center: new naver.maps.LatLng(userLocation.lat, userLocation.lng),
         zoom: 14,
       });
 
@@ -65,7 +84,7 @@ function InitRoomPage() {
     return () => {
       naver.maps.Event.removeListener(dragEndListener);
     };
-  }, [location]);
+  }, [userLocation]);
 
   return (
     <InitRoomPageLayout>
