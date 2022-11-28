@@ -21,7 +21,7 @@ function InitRoomPage() {
     }
 
     // 좌표 -> 주소 변환 & setAddress
-    const reverseGeocode = (lat: number, lng: number) => {
+    const updateAddress = (lat: number, lng: number) => {
       naver.maps.Service.reverseGeocode(
         {
           coords: new naver.maps.LatLng(lat, lng),
@@ -55,7 +55,7 @@ function InitRoomPage() {
         const lng = map?.getCenter().x;
         const lat = map?.getCenter().y;
 
-        reverseGeocode(lat, lng);
+        updateAddress(lat, lng);
       });
 
       return dragEndListener;
@@ -67,7 +67,7 @@ function InitRoomPage() {
         const lng = map?.getCenter().x;
         const lat = map?.getCenter().y;
 
-        reverseGeocode(lat, lng);
+        updateAddress(lat, lng);
       });
 
       return zoomChangedListener;
@@ -78,7 +78,7 @@ function InitRoomPage() {
     const dragEndListener = onDragEnd(map);
     const zoomChangedListener = onZoomChanged(map);
 
-    reverseGeocode(userLocation.lat, userLocation.lng);
+    updateAddress(userLocation.lat, userLocation.lng);
 
     // eslint-disable-next-line consistent-return
     return () => {
