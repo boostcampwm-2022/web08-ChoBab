@@ -16,6 +16,7 @@
       "@utils/*": ["./src/utils/*"],
       "@restaurant/*": ["./src/restaurant/*"],
       "@room/*": ["./src/room/*"],
+      "@response/*": ["./src/common/response/*"],
       "@socket/*": ["./src/socket/*"]
     },
     "incremental": true,
