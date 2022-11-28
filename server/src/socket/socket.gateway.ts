@@ -10,16 +10,6 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import * as session from 'express-session';
-import { Request } from 'express';
-
-declare module 'http' {
-  interface IncomingMessage {
-    session: session & {
-      nickName: string;
-    };
-    sessionID: string;
-  }
-}
 
 const sessionMiddleware = session({
   resave: false,
@@ -49,7 +39,7 @@ export class EventsGateway
     });
 
     this.server.use((socket: Socket, next) => {
-      const req = socket.request as Request;
+      const req = socket.request;
 
       console.log('session id', req.sessionID);
       console.log('session data', req.session);
