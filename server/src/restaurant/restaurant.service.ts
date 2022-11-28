@@ -6,6 +6,7 @@ import { isInKorea } from '@utils/location';
 import { originRestaurantType, preprocessedRestaurantType } from './restaurant';
 import { RESTAURANT_CATEGORY } from '@constants/restaurant';
 import { MAX_RADIUS } from '@constants/location';
+import { LOCATION_EXCEPTION } from '@response/location';
 
 interface restaurantApiResultType {
   meta: {
@@ -87,11 +88,11 @@ export class RestaurantService {
 
   async getRestaurantList(lat: number, lng: number, radius: number) {
     if (!isInKorea(lat, lng)) {
-      throw new CustomException('대한민국을 벗어난 입력입니다.');
+      throw new CustomException(LOCATION_EXCEPTION.OUT_OF_KOREA);
     }
 
     if (radius > MAX_RADIUS) {
-      throw new CustomException('최대 탐색 반경을 벗어난 입력입니다.');
+      throw new CustomException(LOCATION_EXCEPTION.OUT_OF_MAX_RADIUS);
     }
 
     const restaurantSet = new Set();
@@ -107,9 +108,6 @@ export class RestaurantService {
       });
     });
 
-    return {
-      message: '음식점을 성공적으로 불러왔습니다.',
-      data: Array.from(restaurantSet) as preprocessedRestaurantType[],
-    };
+    return Array.from(restaurantSet) as preprocessedRestaurantType[];
   }
 }
