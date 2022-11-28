@@ -52,37 +52,38 @@ function InitRoomPage() {
     // dragEnd 이벤트 핸들러 생성
     const onDragEnd = (map: naver.maps.Map): naver.maps.MapEventListener => {
       const dragEndListener = naver.maps.Event.addListener(map, 'dragend', async () => {
-        const lng = map?.getCenter().x; // lng
-        const lat = map?.getCenter().y; // lat
-        console.log(lat, lng);
-        naver.maps.Service.reverseGeocode(
-          {
-            coords: new naver.maps.LatLng(lat, lng),
-            orders: [
-              naver.maps.Service.OrderType.ROAD_ADDR,
-              naver.maps.Service.OrderType.ADDR,
-            ].join(','),
-          },
-          // eslint-disable-next-line consistent-return
-          (status, response) => {
-            console.log(response);
-            if (status !== naver.maps.Service.Status.OK) {
-              return alert('주소 변환 실패');
-            }
-            setAddress(response.v2.address.roadAddress || response.v2.address.jibunAddress);
-          }
-        );
+        const lng = map?.getCenter().x;
+        const lat = map?.getCenter().y;
+
+        reverseGeocode(lat, lng);
       });
 
       return dragEndListener;
     };
 
+    // zoom_changed 이벤트 핸들러 생성
+    const onZoomChanged = (map: naver.maps.Map): naver.maps.MapEventListener => {
+      const zoomChangedListener = naver.maps.Event.addListener(map, 'zoom_changed', async () => {
+        const lng = map?.getCenter().x;
+        const lat = map?.getCenter().y;
+
+        reverseGeocode(lat, lng);
+      });
+
+      return zoomChangedListener;
+    };
+
+    // init
     const map = createMap(mapRef.current);
     const dragEndListener = onDragEnd(map);
+    const zoomChangedListener = onZoomChanged(map);
+
+    reverseGeocode(userLocation.lat, userLocation.lng);
 
     // eslint-disable-next-line consistent-return
     return () => {
       naver.maps.Event.removeListener(dragEndListener);
+      naver.maps.Event.removeListener(zoomChangedListener);
     };
   }, [userLocation]);
 
