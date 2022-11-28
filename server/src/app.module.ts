@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RoomModule } from '@room/room.module';
 import { RestaurantModule } from '@restaurant/restaurant.module';
 import * as Joi from 'joi';
+import { EventsGateway } from '@socket/socket.gateway';
 
 @Module({
   imports: [
@@ -31,6 +32,6 @@ import * as Joi from 'joi';
     RoomModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [EventsGateway],
 })
 export class AppModule {}
