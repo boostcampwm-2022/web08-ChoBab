@@ -5,6 +5,8 @@ import { Room, RoomDocument } from './room.schema';
 import { Model } from 'mongoose';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { isInKorea } from '@utils/location';
+import { LOCATION_EXCEPTION } from '@response/location';
+import { ROOM_EXCEPTION } from '@response/room';
 
 @Injectable()
 export class RoomService {
@@ -12,7 +14,7 @@ export class RoomService {
 
   async createRoom(lat: number, lng: number): Promise<string> {
     if (!isInKorea(lat, lng)) {
-      throw new CustomException('대한민국을 벗어난 입력입니다.');
+      throw new CustomException(LOCATION_EXCEPTION.OUT_OF_KOREA);
     }
 
     try {
@@ -21,7 +23,7 @@ export class RoomService {
 
       return roomCode;
     } catch (error) {
-      throw new CustomException('모임방 생성에 실패했습니다.');
+      throw new CustomException(ROOM_EXCEPTION.FAIL_CREATE_ROOM);
     }
   }
 
@@ -33,7 +35,7 @@ export class RoomService {
       }
       return true;
     } catch (error) {
-      throw new CustomException('모임방 검색에 실패했습니다.');
+      throw new CustomException(ROOM_EXCEPTION.FAIL_SEARCH_ROOM);
     }
   }
 
@@ -41,14 +43,14 @@ export class RoomService {
     try {
       const room = await this.roomModel.findOne({ roomCode });
       if (!room) {
-        throw new CustomException('존재하지 않는 모임방입니다.');
+        throw new CustomException(ROOM_EXCEPTION.IS_NOT_EXIST_ROOM);
       }
       if (room.deletedAt) {
-        throw new CustomException('삭제된 모임방입니다.');
+        throw new CustomException(ROOM_EXCEPTION.ALREADY_DELETED_ROOM);
       }
       return { lat: room.lat, lng: room.lng };
     } catch (error) {
-      throw new CustomException('모임방 검색에 실패했습니다.');
+      throw new CustomException(ROOM_EXCEPTION.FAIL_SEARCH_ROOM);
     }
   }
 }
