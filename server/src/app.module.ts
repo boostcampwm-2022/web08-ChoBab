@@ -17,6 +17,7 @@ import { EventsGateway } from '@socket/socket.gateway';
         MONGODB_PASSWORD: Joi.string().required(),
         MONGODB_DB_NAME: Joi.string().required(),
         KAKAO_API_KEY: Joi.string().required(),
+        COOKIE_SECRET: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
