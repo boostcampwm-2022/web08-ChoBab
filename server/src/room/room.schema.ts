@@ -5,6 +5,12 @@ import { preprocessedRestaurantType as RestaurantType } from '@restaurant/restau
 export type RoomDocument = Room & Document;
 export type RoomDynamicDocument = RoomDynamic & Document;
 
+interface UserType {
+  userId: string;
+  userLat: number;
+  userLng: number;
+}
+
 @Schema()
 export class Room {
   @Prop({ required: true, unique: true })
@@ -29,13 +35,13 @@ export class RoomDynamic {
   roomCode: string;
 
   @Prop({ required: true, default: [] })
-  userList: [string];
+  userList: [UserType];
 
   @Prop({ required: true, default: [] })
   restaurantList: [RestaurantType];
 
   @Prop({ required: true, default: [] })
-  reserveList: [RestaurantType];
+  candidateList: [RestaurantType];
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
