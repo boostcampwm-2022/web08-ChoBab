@@ -31,6 +31,7 @@ export const useSocket = (): [MutableRefObject<Socket | null>, () => Promise<voi
     }
 
     socketRef.current.close();
+    socketRef.current = null;
   };
 
   return [socketRef, connectSocket, disconnectSocket];
