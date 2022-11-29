@@ -17,7 +17,6 @@ function Modal() {
   const navigate = useNavigate();
   return (
     <ModalBox>
-      <form>
         <input ref={inputRef} placeholder="모임 코드를 입력하세요." />
         <InputButton
           onClick={(e) => {
@@ -30,7 +29,6 @@ function Modal() {
         >
           입장
         </InputButton>
-      </form>
     </ModalBox>
   );
 }
