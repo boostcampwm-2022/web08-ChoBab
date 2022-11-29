@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RoomModule } from '@room/room.module';
 import * as Joi from 'joi';
-import { EventsGateway } from '@socket/socket.gateway';
+import { SocketModule } from '@socket/socket.module';
 
 @Module({
   imports: [
@@ -28,8 +28,9 @@ import { EventsGateway } from '@socket/socket.gateway';
       inject: [ConfigService],
     }),
     RoomModule,
+    SocketModule,
   ],
   controllers: [],
-  providers: [EventsGateway],
+  providers: [],
 })
 export class AppModule {}
