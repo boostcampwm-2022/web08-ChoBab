@@ -14,10 +14,8 @@ export const MapBox = styled.div`
 
 export const MarkerBox = styled.div`
   z-index: 2;
-  /* TODO: (수정 필요) margin: 현재 깃발 마커 이미지 크기에 따라 중심 위치를 네이버 마커와 맞추기 위해 */
-  /* margin-left: 26px; */
-  /* margin-bottom: 34px; */
-  position: absolute;
-  top: 50%;
+  position: relative;
+  // 마커 이미지 크기를 고려했을 때, 마커의 끝을 43% 지점에 찍어야 지도 중앙을 가리킴
+  top: 43%;
   left: 50%;
 `;
