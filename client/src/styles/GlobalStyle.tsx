@@ -18,7 +18,6 @@ export const MainLayout = styled.div`
   max-width: 420px;
   height: 100%;
   margin: 0 auto;
-  border: 3px solid ${palette.BORDER};
   zoom: 1.25;
 
   @media (max-width: ${palette.BREAKPOINT_TABLET}) {
