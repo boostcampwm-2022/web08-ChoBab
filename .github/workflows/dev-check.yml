@@ -32,7 +32,7 @@ jobs:
       - name: Set client .env
         run: |
           cd client
-          echo "VITE_APP_NAVER_MAP_CLIENTID=${{ secrets.VITE_APP_NAVER_MAP_CLIENTID }}" >> .env
+          echo "VITE_APP_NAVER_MAP_CLIENT_ID=${{ secrets.VITE_APP_NAVER_MAP_CLIENT_ID }}" >> .env
 
       - name: Run client build
         run: |
