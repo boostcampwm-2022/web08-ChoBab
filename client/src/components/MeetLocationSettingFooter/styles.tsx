@@ -20,6 +20,27 @@ export const FooterBox = styled.div`
   border-top: 2px solid ${palette.BORDER};
 `;
 
+export const SearchBarBox = styled.div`
+  display: flex;
+  border: 1.5px solid ${palette.BORDER};
+  border-radius: 8px;
+  padding: 0.5rem;
+  width: 40%;
+
+  input {
+    width: 80%;
+    border: none;
+    outline: none;
+    padding: 0 0.5rem;
+  }
+  button {
+    width: 20%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+  }
+`;
+
 export const StartButton = styled.button`
   width: 8rem;
   height: 2.5rem;

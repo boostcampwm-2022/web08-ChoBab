@@ -5,7 +5,8 @@ import { useMeetLocationStore } from '@store/index';
 import { MapBox, MarkerBox } from './styles';
 
 function MeetLocationSettingMap() {
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapDivRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<naver.maps.Map | null>(null);
   const userLocation = useCurrentLocation();
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
 
@@ -44,14 +45,14 @@ function MeetLocationSettingMap() {
   };
 
   useEffect(() => {
-    if (!mapRef.current) {
+    if (!mapDivRef.current) {
       return;
     }
 
     // init
-    const map = createMap(mapRef.current);
-    const dragEndListener = onDragEnd(map);
-    const zoomChangedListener = onZoomChanged(map);
+    mapRef.current = createMap(mapDivRef.current);
+    const dragEndListener = onDragEnd(mapRef.current);
+    const zoomChangedListener = onZoomChanged(mapRef.current);
 
     updateMeetLocation(userLocation.lat, userLocation.lng);
 
@@ -62,8 +63,17 @@ function MeetLocationSettingMap() {
     };
   }, [userLocation]);
 
+  // 모임 위치(전역 상태) 변경 시 지도 화면 이동
+  useEffect(() => {
+    if (!mapRef.current) {
+      return;
+    }
+
+    mapRef.current.setCenter({ x: meetLocation.lng, y: meetLocation.lat });
+  }, [meetLocation]);
+
   return (
-    <MapBox ref={mapRef}>
+    <MapBox ref={mapDivRef}>
       <MarkerBox>
         <MarkerImage />
       </MarkerBox>
