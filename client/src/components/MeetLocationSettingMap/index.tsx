@@ -55,8 +55,6 @@ function MeetLocationSettingMap() {
     }
 
     updateMeetLocation(userLocation.lat, userLocation.lng);
-
-    mapRef.current.setCenter({ x: userLocation.lng, y: userLocation.lat });
   }, [userLocation]);
 
   // 모임 위치(전역 상태) 변경 시 지도 화면 이동
