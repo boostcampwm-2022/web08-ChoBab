@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { preprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
+import { PreprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
 
 export type RoomDocument = Room & Document;
 export type RoomDynamicDocument = RoomDynamic & Document;

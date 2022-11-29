@@ -15,7 +15,7 @@ import { Model } from 'mongoose';
 import { Server, Socket } from 'socket.io';
 import { sessionMiddleware } from '@utils/session';
 import { Request, Response, NextFunction } from 'express';
-import { preprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
+import { PreprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
 
 interface UserType {
   userId: string;
