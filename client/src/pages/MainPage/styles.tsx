@@ -46,5 +46,5 @@ export const CategoryToggle = styled.div`
   width: 100%;
   height: 40%;
   padding: 1% 3%;
-  border: 1px solid ${palette.PRIMARY}
+  border: 1px solid ${palette.PRIMARY};
 `;
