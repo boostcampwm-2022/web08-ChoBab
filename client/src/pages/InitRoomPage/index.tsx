@@ -1,6 +1,5 @@
 import React from 'react';
 import { InitRoomPageLayout } from '@pages/InitRoomPage/styles';
-
 import MeetLocationSettingMap from '@components/MeetLocationSettingMap';
 import MeetLocationSettingFooter from '@components/MeetLocationSettingFooter';
 
