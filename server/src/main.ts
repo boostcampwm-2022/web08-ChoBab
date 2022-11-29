@@ -3,9 +3,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { TemplateInterceptor } from '@common/interceptors/template.interceptor';
 import { ValidationPipe } from '@nestjs/common';
+import { sessionMiddleware } from '@utils/session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(sessionMiddleware);
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalInterceptors(new TemplateInterceptor());
