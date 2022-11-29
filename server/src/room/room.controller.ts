@@ -3,7 +3,6 @@ import { CreateRoomDto } from '@room/dto/create-room.dto';
 import { ResTemplate } from '@common/interceptors/template.interceptor';
 import { RoomService } from '@room/room.service';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { ConnectRoomDto } from './dto/connect-room.dto';
 import { ROOM_EXCEPTION, ROOM_RES } from '@response/room';
 
 @Controller('room')
@@ -25,17 +24,5 @@ export class RoomController {
     }
 
     return ROOM_RES.SUCCESS_VALID_ROOM;
-  }
-
-  @Post('connect')
-  async connectRoom(@Body() connectRoomDto: ConnectRoomDto) {
-    const { roomCode, userId } = connectRoomDto;
-    // 위처럼 구조분해할당해서 쓰기 혹은 connectRoomDto.roomCode, connectRoomDto.userId 바로 사용하기 -> 멘토님 질문
-    const isNewConnect = await this.roomService.connectUserToRoom(roomCode, userId);
-    const roomInfo = await this.roomService.getRoomInfo(roomCode);
-    if (!isNewConnect) {
-      return { message: '이미 모임에 접속 중입니다.', data: { roomInfo } };
-    }
-    return { message: '성공적으로 모임에 접속했습니다.', data: { roomInfo } };
   }
 }
