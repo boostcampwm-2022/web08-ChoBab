@@ -1,24 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { ReactComponent as MarkerImage } from '@assets/images/marker.svg';
 import { useMeetLocationStore } from '@store/index';
+import { useNaverMaps } from '@hooks/useNaverMaps';
 import { MapBox, MarkerBox } from './styles';
 
 function MeetLocationSettingMap() {
-  const mapDivRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<naver.maps.Map | null>(null);
+  const [mapRef, mapDivRef] = useNaverMaps();
   const userLocation = useCurrentLocation();
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
-
-  // 유저의 현재 위치에 맞춰 지도 생성
-  const createMap = (targetDiv: HTMLDivElement): naver.maps.Map => {
-    const map = new naver.maps.Map(targetDiv, {
-      center: new naver.maps.LatLng(userLocation.lat, userLocation.lng),
-      zoom: 14,
-    });
-
-    return map;
-  };
 
   // dragEnd 이벤트 핸들러 생성
   const onDragEnd = (map: naver.maps.Map): naver.maps.MapEventListener => {
@@ -45,22 +35,28 @@ function MeetLocationSettingMap() {
   };
 
   useEffect(() => {
-    if (!mapDivRef.current) {
+    if (!mapRef.current) {
       return;
     }
 
-    // init
-    mapRef.current = createMap(mapDivRef.current);
     const dragEndListener = onDragEnd(mapRef.current);
     const zoomChangedListener = onZoomChanged(mapRef.current);
-
-    updateMeetLocation(userLocation.lat, userLocation.lng);
 
     // eslint-disable-next-line consistent-return
     return () => {
       naver.maps.Event.removeListener(dragEndListener);
       naver.maps.Event.removeListener(zoomChangedListener);
     };
+  }, []);
+
+  useEffect(() => {
+    if (!mapRef.current) {
+      return;
+    }
+
+    updateMeetLocation(userLocation.lat, userLocation.lng);
+
+    mapRef.current.setCenter({ x: userLocation.lng, y: userLocation.lat });
   }, [userLocation]);
 
   // 모임 위치(전역 상태) 변경 시 지도 화면 이동
