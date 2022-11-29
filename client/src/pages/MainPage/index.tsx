@@ -54,7 +54,7 @@ function MainPage() {
       return;
     }
     const initService = async () => {
-      const connectRoom = (userId: string) => {
+      const connectRoom = () => {
         const clientSocket = socketRef.current;
         if (!(clientSocket instanceof Socket)) {
           throw new Error();
@@ -83,7 +83,7 @@ function MainPage() {
             console.log(data);
           }
         );
-        clientSocket.emit('connectRoom', { roomCode, userId, userLat, userLng });
+        clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
       };
       try {
         await connectSocket();
@@ -97,7 +97,7 @@ function MainPage() {
           throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
         }
 
-        connectRoom('창명');
+        connectRoom();
       } catch (error) {
         console.log(error);
       }

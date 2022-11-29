@@ -58,11 +58,11 @@ export class EventsGateway
   @SubscribeMessage('connectRoom')
   async handleConnectRoom(
     @ConnectedSocket() client: Socket,
-    @MessageBody('userId') userId: string,
     @MessageBody('roomCode') roomCode: string,
     @MessageBody('userLat') userLat: number,
     @MessageBody('userLng') userLng: number
   ) {
+    const { sessionID: userId } = client.request;
     const user = { userId, userLat, userLng };
     console.log(userId, roomCode);
     client.join(roomCode);
