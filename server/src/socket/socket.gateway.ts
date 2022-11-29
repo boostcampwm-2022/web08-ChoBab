@@ -15,6 +15,13 @@ import { Model } from 'mongoose';
 import { Server, Socket } from 'socket.io';
 import { sessionMiddleware } from '@utils/session';
 import { Request, Response, NextFunction } from 'express';
+import { preprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
+
+interface UserType {
+  userId: string;
+  userLat: number;
+  userLng: number;
+}
 
 @WebSocketGateway({ namespace: 'room' })
 export class EventsGateway
@@ -24,6 +31,31 @@ export class EventsGateway
     @InjectModel(RoomDynamic.name) private roomDynamicModel: Model<RoomDynamicDocument>,
     @InjectModel(Room.name) private roomModel: Model<RoomDocument>
   ) {}
+
+  private socketRes() {
+    const dataTemplate = (message: string, data?: unknown) => {
+      if (!data) {
+        return { message };
+      }
+      return {
+        message,
+        data,
+      };
+    };
+    return {
+      CONNECT_FAIL: dataTemplate('접속 실패'),
+      CONNECT_SUCCESS: (
+        roomCode: string,
+        lat: number,
+        lng: number,
+        restaurantList: RestaurantType[],
+        candidateList: RestaurantType[],
+        userList: UserType[]
+      ) =>
+        dataTemplate('접속 성공', { roomCode, lat, lng, restaurantList, candidateList, userList }),
+    };
+  }
+
   @WebSocketServer()
   server: Server; // namespace server instance
 
@@ -64,6 +96,7 @@ export class EventsGateway
   ) {
     const { sessionID: userId } = client.request;
     const user = { userId, userLat, userLng };
+    const { CONNECT_SUCCESS, CONNECT_FAIL } = this.socketRes();
     console.log(userId, roomCode);
     client.join(roomCode);
     try {
@@ -72,10 +105,10 @@ export class EventsGateway
         roomCode,
       });
       if (userList.filter((userData) => userData.userId === userId).length > 0) {
-        client.emit('connectResult', {
-          message: '이미 접속 중인 사용자입니다.',
-          data: { roomCode, lat, lng, restaurantList, candidateList, userList },
-        });
+        client.emit(
+          'connectResult',
+          CONNECT_SUCCESS(roomCode, lat, lng, restaurantList, candidateList, userList)
+        );
         return;
       }
 
@@ -87,12 +120,12 @@ export class EventsGateway
         }
       );
 
-      client.emit('connectResult', {
-        message: '입장 성공',
-        data: { roomCode, lat, lng, restaurantList, candidateList, userList: newUserList },
-      });
+      client.emit(
+        'connectResult',
+        CONNECT_SUCCESS(roomCode, lat, lng, restaurantList, candidateList, newUserList)
+      );
     } catch (error) {
-      client.emit('connectResult', { message: '방 접속에 실패했습니다.' });
+      client.emit('connectResult', CONNECT_FAIL);
     }
   }
 
