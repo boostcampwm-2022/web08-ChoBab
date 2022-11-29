@@ -5,6 +5,7 @@ import { RoomModule } from '@room/room.module';
 import { RestaurantModule } from '@restaurant/restaurant.module';
 import * as Joi from 'joi';
 import { EventsGateway } from '@socket/socket.gateway';
+import { MapModule } from '@map/map.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { EventsGateway } from '@socket/socket.gateway';
       inject: [ConfigService],
     }),
     RoomModule,
+    MapModule,
   ],
   controllers: [],
   providers: [EventsGateway],
