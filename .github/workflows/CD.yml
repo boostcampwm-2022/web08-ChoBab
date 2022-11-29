@@ -27,7 +27,7 @@ jobs:
             git pull origin release
             cd client
             rm -f .env
-            echo "VITE_APP_NAVER_MAP_CLIENTID=${{ secrets.VITE_APP_NAVER_MAP_CLIENTID }}" >> .env
+            echo "VITE_APP_NAVER_MAP_CLIENT_ID=${{ secrets.VITE_APP_NAVER_MAP_CLIENT_ID }}" >> .env
             npm ci
             cd ../server
             npm ci
@@ -50,7 +50,7 @@ jobs:
             git pull origin prod
             cd client
             rm -f .env
-            echo "VITE_APP_NAVER_MAP_CLIENTID=${{ secrets.VITE_APP_NAVER_MAP_CLIENTID }}" >> .env
+            echo "VITE_APP_NAVER_MAP_CLIENT_ID=${{ secrets.VITE_APP_NAVER_MAP_CLIENT_ID }}" >> .env
             npm ci
             cd ../server
             npm ci
