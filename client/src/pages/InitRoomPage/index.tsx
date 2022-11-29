@@ -40,7 +40,7 @@ function InitRoomPage() {
     };
 
     // 현재 위치에 맞춰 지도 생성
-    const createMap = (targetDiv: HTMLDivElement) => {
+    const createMap = (targetDiv: HTMLDivElement): naver.maps.Map => {
       const map = new naver.maps.Map(targetDiv, {
         center: new naver.maps.LatLng(userLocation.lat, userLocation.lng),
         zoom: 14,
