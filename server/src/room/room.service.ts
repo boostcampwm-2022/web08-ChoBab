@@ -37,49 +37,17 @@ export class RoomService {
   async validRoom(roomCode: string): Promise<boolean> {
     try {
       const room = await this.roomModel.findOne({ roomCode });
-      return !!room && !room.deletedAt;
-    } catch (error) {
-      throw new CustomException(ROOM_EXCEPTION.FAIL_SEARCH_ROOM);
-    }
-  }
-  async connectUserToRoom(roomCode: string, userId: string) {
-    try {
-      const { userList } = await this.roomDynamicModel.findOne({ roomCode });
-      // 이미 사용자가 방에 접속해 있을 경우
-      if (userList.includes(userId)) {
+      if (!room || room.deletedAt) {
+        await this.roomDynamicModel.findOneAndDelete({ roomCode });
         return false;
       }
-      await this.roomDynamicModel.findOneAndUpdate(
-        { roomCode },
-        { userList: [...userList, userId] }
-      );
-      return true;
-    } catch (error) {
-      throw new CustomException('사용자를 방에 입장 시키지 못했습니다.');
-    }
-  }
-
-  /**TODO: room, roomDynamic 중 하나라도 없을 시 둘다 삭제하는 로직 추가 */
-  async getRoomInfo(roomCode: string): Promise<any> {
-    try {
-      const room = await this.roomModel.findOne({ roomCode });
-      const { lng, lat, createdAt, deletedAt } = room;
-      if (!room) {
-        throw new CustomException(ROOM_EXCEPTION.IS_NOT_EXIST_ROOM);
-      }
-      if (deletedAt) {
-        throw new CustomException(ROOM_EXCEPTION.ALREADY_DELETED_ROOM);
-      }
-
-      const roomDynamic = await this.roomDynamicModel.findOne({
-        roomCode,
-      });
-      const { restaurantList, reserveList, userList } = roomDynamic;
+      const roomDynamic = await this.roomDynamicModel.findOne({ roomCode });
       if (!roomDynamic) {
-        throw new CustomException(ROOM_EXCEPTION.IS_NOT_EXIST_ROOM);
+        await this.roomModel.findOneAndUpdate({ roomCode }, { deletedAt: Date.now() });
+        return false;
       }
 
-      return { roomCode, createdAt, deletedAt, lat, lng, userList, restaurantList, reserveList };
+      return !!room && !room.deletedAt;
     } catch (error) {
       throw new CustomException(ROOM_EXCEPTION.FAIL_SEARCH_ROOM);
     }
