@@ -104,7 +104,9 @@ function MainPage() {
     };
 
     initService();
-    return () => { // eslint-disable-line consistent-return
+
+    // eslint-disable-next-line consistent-return
+    return () => { 
       disconnectSocket();  
     };
   }, [userLocation]);
