@@ -2,14 +2,14 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export interface ResTemplate<T> {
+export interface ResTemplateType<T> {
   message: string;
   data: T;
 }
 
 @Injectable()
-export class TemplateInterceptor<T> implements NestInterceptor<T, ResTemplate<T>> {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<ResTemplate<T>> {
+export class TemplateInterceptor<T> implements NestInterceptor<T, ResTemplateType<T>> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<ResTemplateType<T>> {
     return next.handle().pipe(
       map((data) => ({
         message: data.message,

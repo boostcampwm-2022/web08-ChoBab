@@ -2,14 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RoomModule } from '@room/room.module';
-import { RestaurantModule } from '@restaurant/restaurant.module';
 import * as Joi from 'joi';
-import { EventsGateway } from '@socket/socket.gateway';
+import { SocketModule } from '@socket/socket.module';
 import { MapModule } from '@map/map.module';
 
 @Module({
   imports: [
-    RestaurantModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -33,9 +31,10 @@ import { MapModule } from '@map/map.module';
       inject: [ConfigService],
     }),
     RoomModule,
+    SocketModule,
     MapModule,
   ],
   controllers: [],
-  providers: [EventsGateway],
+  providers: [],
 })
 export class AppModule {}

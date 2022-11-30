@@ -16,6 +16,7 @@ export default defineConfig({
       '@pages': resolve(__dirname, 'src/pages'),
       '@types': resolve(__dirname, 'src/types'),
       '@utils': resolve(__dirname, 'src/utils'),
+      '@store': resolve(__dirname, 'src/store'),
       '@styles': resolve(__dirname, 'src/styles'),
     },
   },
@@ -23,6 +24,9 @@ export default defineConfig({
     proxy: {
       '/socket.io': {
         target: 'http://localhost:3000',
+      },
+      '/api': { 
+        target: 'http://localhost:3000' 
       },
     },
   },

@@ -3,18 +3,18 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { isInKorea } from '@utils/location';
-import { originRestaurantType, preprocessedRestaurantType } from './restaurant';
+import { OriginRestaurantType, PreprocessedRestaurantType } from './restaurant';
 import { RESTAURANT_CATEGORY } from '@constants/restaurant';
 import { MAX_RADIUS } from '@constants/location';
 import { LOCATION_EXCEPTION } from '@response/location';
 
-interface restaurantApiResultType {
+interface RestaurantApiResultType {
   meta: {
     is_end: boolean;
     pageable_count: number;
     total_count: number;
   };
-  documents: originRestaurantType[];
+  documents: OriginRestaurantType[];
 }
 
 const restaurantApiUrl = (lat: number, lng: number, radius: number, category: string, page = 1) =>
@@ -37,8 +37,8 @@ export class RestaurantService {
     category: string,
     apiKey: string
   ) {
-    let restaurantList: originRestaurantType[] = [];
-    const apiResult: restaurantApiResultType = (
+    let restaurantList: OriginRestaurantType[] = [];
+    const apiResult: RestaurantApiResultType = (
       await axios.get(restaurantApiUrl(lat, lng, radius, category), {
         headers: { Authorization: `KakaoAK ${apiKey}` },
       })
@@ -49,7 +49,7 @@ export class RestaurantService {
 
     while (!isEnd) {
       page += 1;
-      const apiResult: restaurantApiResultType = (
+      const apiResult: RestaurantApiResultType = (
         await axios.get(restaurantApiUrl(lat, lng, radius, category, page), {
           headers: { Authorization: `KakaoAK ${apiKey}` },
         })
@@ -61,7 +61,7 @@ export class RestaurantService {
     return restaurantList;
   }
 
-  private restaurantPreprocessing(originRestaurantList: originRestaurantType[]) {
+  private restaurantPreprocessing(originRestaurantList: OriginRestaurantType[]) {
     const preprocessingRestaurantList = originRestaurantList.map((restaurant) => {
       const {
         id,
@@ -72,7 +72,7 @@ export class RestaurantService {
         x: lng,
         road_address_name: address,
       } = restaurant;
-      const preprocessedRestaurant: preprocessedRestaurantType = {
+      const preprocessedRestaurant: PreprocessedRestaurantType = {
         id: id,
         name: name,
         category: category.split('>')[1].trim() || '',
@@ -108,6 +108,6 @@ export class RestaurantService {
       });
     });
 
-    return Array.from(restaurantSet) as preprocessedRestaurantType[];
+    return Array.from(restaurantSet) as PreprocessedRestaurantType[];
   }
 }
