@@ -3,6 +3,14 @@ import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+
+import RiceImage from '@assets/images/rice.svg';
+import SushiImage from '@assets/images/sushi.svg';
+import DumplingImage from '@assets/images/dumpling.svg';
+import SpaghettiImage from '@assets/images/spaghetti.svg';
+import ChickenImage from '@assets/images/chicken.svg';
+import HamburgerImage from '@assets/images/hamburger.svg';
+import HotdogImage from '@assets/images/hotdog.svg';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { HeaderBox, MainPageLayout, MapBox, CategoryToggle, Header } from './styles';
 
@@ -94,13 +102,34 @@ function MainPage() {
     }
   };
 
+  const getIconUrlByCategory = (category: string) => {
+    switch (category) {
+      case '한식':
+        return RiceImage;
+      case '일식':
+        return SushiImage;
+      case '중식':
+        return DumplingImage;
+      case '양식':
+        return SpaghettiImage;
+      case '치킨':
+        return ChickenImage;
+      case '패스트푸드':
+        return HamburgerImage;
+      case '분식':
+        return HotdogImage;
+      default:
+        return '';
+    }
+  };
+
   const initMap = () => {
     if (!mapRef.current || !roomLocation.lat || !roomLocation.lng) {
       return;
     }
     const map = new naver.maps.Map(mapRef.current, {
       center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
-      zoom: 14,
+      zoom: 16,
     });
 
     const markers: naver.maps.Marker[] = [];
@@ -108,11 +137,15 @@ function MainPage() {
 
     // 음식점 개수만큼 마커, 정보창 생성
     restaurantData.forEach((restaurant) => {
-      // console.log(restaurant);
+      const iconUrl = getIconUrlByCategory(restaurant.category);
+
       const marker = new naver.maps.Marker({
         map,
         title: restaurant.name,
         position: new naver.maps.LatLng(restaurant.lat, restaurant.lng),
+        icon: {
+          content: `<img src=${iconUrl} width="30" height="30" alt="음식 아이콘"/>`,
+        },
       });
       const infoWindow = new naver.maps.InfoWindow({
         content: restaurant.name, // TODO: div로 이모티콘도 꾸며서 넣기
