@@ -11,7 +11,8 @@ export class RoomController {
 
   @Post()
   async createRoom(@Body() createRoomDto: CreateRoomDto): Promise<ResTemplate<any>> {
-    const roomCode = await this.roomService.createRoom(createRoomDto.lat, createRoomDto.lng);
+    const { lat, lng, radius } = createRoomDto;
+    const roomCode = await this.roomService.createRoom(lat, lng, radius);
     return ROOM_RES.SUCCESS_CREATE_ROOM(roomCode);
   }
 

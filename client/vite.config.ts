@@ -24,6 +24,9 @@ export default defineConfig({
       '/socket.io': {
         target: 'http://localhost:3000',
       },
+      '/api': { 
+        target: 'http://localhost:3000' 
+      },
     },
   },
 });
