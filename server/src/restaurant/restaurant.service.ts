@@ -154,7 +154,7 @@ export class RestaurantService {
       const {
         request,
         data: { candidates },
-      } = await axios.get(
+      } = await axios.get<RestaurantDetailResponseType>(
         RESTAURANT_DETAIL_API_URL,
         restaurantDetailApiConfig(name, address, lat, lng, this.googleApiKey)
       );
