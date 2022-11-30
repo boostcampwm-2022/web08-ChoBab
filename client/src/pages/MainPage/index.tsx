@@ -3,6 +3,8 @@ import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+
+import LinkShareButton from '@components/LinkShareButton';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { HeaderBox, MainPageLayout, MapBox, CategoryToggle, Header } from './styles';
 
@@ -142,7 +144,9 @@ function MainPage() {
     <MainPageLayout>
       <MapBox ref={mapRef} />
       <HeaderBox>
-        <Header>헤더</Header>
+        <Header>
+          <LinkShareButton />
+        </Header>
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
     </MainPageLayout>
