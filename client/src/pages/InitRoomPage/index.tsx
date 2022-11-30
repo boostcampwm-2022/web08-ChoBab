@@ -9,11 +9,21 @@ import {
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { ReactComponent as MarkerImage } from '@assets/images/marker.svg';
 import { NAVER_ADDRESS } from '@constants/map';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+interface RoomCreateResponseType {
+  message: string;
+  data: {
+    roomCode: string;
+  };
+}
 
 function InitRoomPage() {
   const mapRef = useRef<HTMLDivElement>(null);
   const userLocation = useCurrentLocation();
   const [address, setAddress] = useState<string>(NAVER_ADDRESS);
+  const navigate = useNavigate();
 
   // 좌표 -> 주소 변환 & setAddress
   const updateAddress = (lat: number, lng: number) => {
@@ -87,6 +97,23 @@ function InitRoomPage() {
     };
   }, [userLocation]);
 
+  const initRoom = async () => {
+    const { lat, lng } = userLocation;
+    try {
+      const {
+        data: {
+          data: { roomCode },
+        },
+      } = await axios.post<RoomCreateResponseType>('/api/room/', {
+        lat,
+        lng,
+      });
+      navigate(`/room/${roomCode}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <InitRoomPageLayout>
       <MapBox ref={mapRef}>
@@ -101,7 +128,15 @@ function InitRoomPage() {
         </span>
         <div>검색창 영역</div>
         <div>{address}</div>
-        <StartButton title="시작하기">시작하기</StartButton>
+        <StartButton
+          title="시작하기"
+          onClick={(e) => {
+            e.preventDefault();
+            initRoom();
+          }}
+        >
+          시작하기
+        </StartButton>
       </FooterBox>
     </InitRoomPageLayout>
   );
