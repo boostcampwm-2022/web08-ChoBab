@@ -8,7 +8,7 @@ export class RestaurantController {
 
   @Get()
   async getRestaurantDetail(
-    @Query('restaurantId') id: string,
+    @Query('restaurantId') id: string, // 이후 상세 정보 캐싱을 위한 키값으로 이용될 예정
     @Query('name') name: string,
     @Query('address') address: string,
     @Query('lat') lat: number,
