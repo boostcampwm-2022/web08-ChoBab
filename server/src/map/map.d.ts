@@ -1,5 +1,5 @@
 interface StartOrGoalType {
-  location: Array<number>;
+  location: number[];
 }
 
 export interface SummaryType {
@@ -14,7 +14,7 @@ export interface SummaryType {
 
 export interface TraoptimalType {
   summary: SummaryType; // 요약 정보
-  path: Array<Array<number>>; // 경로를 구성하는 모든 좌표열
+  path: number[][]; // 경로를 구성하는 모든 좌표열
 }
 
 interface RouteType {

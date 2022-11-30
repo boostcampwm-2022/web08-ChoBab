@@ -1,14 +1,14 @@
 import { failRes, successRes } from '@response/index';
 
 interface DrivingInfoType {
-  start: Array<number>;
-  goal: Array<number>;
+  start: number[];
+  goal: number[];
   distance: number;
   duration: number;
   tollFare: number;
   taxiFare: number;
   fuelPrice: number;
-  path: Array<Array<number>>;
+  path: number[][];
 }
 
 export const MAP_RES = {
