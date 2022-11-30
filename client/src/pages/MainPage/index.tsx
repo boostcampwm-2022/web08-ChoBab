@@ -102,6 +102,42 @@ function MainPage() {
       center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
       zoom: 14,
     });
+
+    const markers: naver.maps.Marker[] = [];
+    const infoWindows: naver.maps.InfoWindow[] = [];
+
+    // 음식점 개수만큼 마커, 정보창 생성
+    restaurantData.forEach((restaurant) => {
+      // console.log(restaurant);
+      const marker = new naver.maps.Marker({
+        map,
+        title: restaurant.name,
+        position: new naver.maps.LatLng(restaurant.lat, restaurant.lng),
+      });
+      const infoWindow = new naver.maps.InfoWindow({
+        content: restaurant.name, // TODO: div로 이모티콘도 꾸며서 넣기
+      });
+      markers.push(marker);
+      infoWindows.push(infoWindow);
+    });
+
+    // 마커 클릭 시 정보창 open/close 처리
+    const handleMarkerClick = (idx: number) => {
+      return () => {
+        const marker = markers[idx];
+        const infoWindow = infoWindows[idx];
+
+        if (infoWindow.getMap()) {
+          infoWindow.close();
+        } else {
+          infoWindow.open(map, marker);
+        }
+      };
+    };
+
+    markers.forEach((marker, idx) => {
+      naver.maps.Event.addListener(marker, 'click', handleMarkerClick(idx));
+    });
   };
 
   useEffect(() => {
