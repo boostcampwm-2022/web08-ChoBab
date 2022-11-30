@@ -17,18 +17,18 @@ function Modal() {
   const navigate = useNavigate();
   return (
     <ModalBox>
-        <input ref={inputRef} placeholder="모임 코드를 입력하세요." />
-        <InputButton
-          onClick={(e) => {
-            e.preventDefault();
-            if (!inputRef.current) {
-              return;
-            }
-            navigate(`/room/${inputRef.current.value}`);
-          }}
-        >
-          입장
-        </InputButton>
+      <input ref={inputRef} type="text" placeholder="모임 코드를 입력하세요." />
+      <InputButton
+        onClick={(e) => {
+          e.preventDefault();
+          if (!inputRef.current) {
+            return;
+          }
+          navigate(`/room/${inputRef.current.value}`);
+        }}
+      >
+        입장
+      </InputButton>
     </ModalBox>
   );
 }
