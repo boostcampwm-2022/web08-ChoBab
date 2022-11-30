@@ -4,14 +4,10 @@ import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
-import RiceImage from '@assets/images/rice.svg';
-import SushiImage from '@assets/images/sushi.svg';
-import DumplingImage from '@assets/images/dumpling.svg';
-import SpaghettiImage from '@assets/images/spaghetti.svg';
-import ChickenImage from '@assets/images/chicken.svg';
-import HamburgerImage from '@assets/images/hamburger.svg';
-import HotdogImage from '@assets/images/hotdog.svg';
 import useCurrentLocation from '@hooks/useCurrentLocation';
+import MainMap from '@components/MainMap';
+import { NAVER_LAT, NAVER_LNG } from '@constants/map';
+
 import { HeaderBox, MainPageLayout, MapBox, CategoryToggle, Header } from './styles';
 
 interface RestaurantType {
@@ -38,16 +34,15 @@ interface UserType {
 }
 
 function MainPage() {
-  const mapRef = useRef<HTMLDivElement>(null);
   const userLocation = useCurrentLocation();
   const { roomCode } = useParams<{ roomCode: string }>();
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [socketRef, connectSocket, disconnectSocket] = useSocket();
 
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const [roomLocation, setRoomLocation] = useState<{ lat: number | null; lng: number | null }>({
-    lat: null,
-    lng: null,
+  const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
+    lat: NAVER_LAT,
+    lng: NAVER_LNG,
   });
 
   const connectRoom = () => {
@@ -102,77 +97,6 @@ function MainPage() {
     }
   };
 
-  const getIconUrlByCategory = (category: string) => {
-    switch (category) {
-      case '한식':
-        return RiceImage;
-      case '일식':
-        return SushiImage;
-      case '중식':
-        return DumplingImage;
-      case '양식':
-        return SpaghettiImage;
-      case '치킨':
-        return ChickenImage;
-      case '패스트푸드':
-        return HamburgerImage;
-      case '분식':
-        return HotdogImage;
-      default:
-        return '';
-    }
-  };
-
-  const initMap = () => {
-    if (!mapRef.current || !roomLocation.lat || !roomLocation.lng) {
-      return;
-    }
-    const map = new naver.maps.Map(mapRef.current, {
-      center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
-      zoom: 16,
-    });
-
-    const markers: naver.maps.Marker[] = [];
-    const infoWindows: naver.maps.InfoWindow[] = [];
-
-    // 음식점 개수만큼 마커, 정보창 생성
-    restaurantData.forEach((restaurant) => {
-      const iconUrl = getIconUrlByCategory(restaurant.category);
-
-      const marker = new naver.maps.Marker({
-        map,
-        title: restaurant.name,
-        position: new naver.maps.LatLng(restaurant.lat, restaurant.lng),
-        icon: {
-          content: `<img src=${iconUrl} width="30" height="30" alt="음식 아이콘"/>`,
-        },
-      });
-      const infoWindow = new naver.maps.InfoWindow({
-        content: restaurant.name, // TODO: div로 이모티콘도 꾸며서 넣기
-      });
-      markers.push(marker);
-      infoWindows.push(infoWindow);
-    });
-
-    // 마커 클릭 시 정보창 open/close 처리
-    const handleMarkerClick = (idx: number) => {
-      return () => {
-        const marker = markers[idx];
-        const infoWindow = infoWindows[idx];
-
-        if (infoWindow.getMap()) {
-          infoWindow.close();
-        } else {
-          infoWindow.open(map, marker);
-        }
-      };
-    };
-
-    markers.forEach((marker, idx) => {
-      naver.maps.Event.addListener(marker, 'click', handleMarkerClick(idx));
-    });
-  };
-
   useEffect(() => {
     if (!userLocation.lat || !userLocation.lng) {
       return;
@@ -192,24 +116,11 @@ function MainPage() {
     };
   }, [userLocation]);
 
-  useEffect(() => {
-    if (!isRoomConnect) {
-      return;
-    }
-    if (!mapRef.current) {
-      return;
-    }
-    if (!roomLocation.lat || !roomLocation.lng) {
-      return;
-    }
-    initMap();
-  }, [isRoomConnect]);
-
   return !isRoomConnect ? (
     <div>loading...</div>
   ) : (
     <MainPageLayout>
-      <MapBox ref={mapRef} />
+      <MainMap restaurantData={restaurantData.slice(80, 100)} roomLocation={roomLocation} />
       <HeaderBox>
         <Header>헤더</Header>
         <CategoryToggle>토글</CategoryToggle>
