@@ -18,6 +18,15 @@ export interface PreprocessedRestaurantType {
   address: string;
 }
 
+export interface RestaurantApiResultType {
+  meta: {
+    is_end: boolean;
+    pageable_count: number;
+    total_count: number;
+  };
+  documents: OriginRestaurantType[];
+}
+
 export interface RestaurantDetail {
   rating?: number;
   photos?: { photo_reference: string }[];

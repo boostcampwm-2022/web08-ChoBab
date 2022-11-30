@@ -6,21 +6,13 @@ import { isInKorea } from '@utils/location';
 import {
   OriginRestaurantType,
   PreprocessedRestaurantType,
+  RestaurantApiResultType,
   RestaurantDetailResponseType,
 } from './restaurant';
 import { RESTAURANT_CATEGORY, RESTAURANT_DETAIL_FIELD } from '@constants/restaurant';
 import { MAX_RADIUS, MAX_DETAIL_SEARCH_RADIUS } from '@constants/location';
 import { LOCATION_EXCEPTION } from '@response/location';
 import { RESTAURANT_EXCEPTION } from '@common/response/restaurant';
-
-interface RestaurantApiResultType {
-  meta: {
-    is_end: boolean;
-    pageable_count: number;
-    total_count: number;
-  };
-  documents: OriginRestaurantType[];
-}
 
 const restaurantListApiUrl = (
   lat: number,
