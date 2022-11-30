@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { isInKorea } from '@utils/location';
-import { NaverDrivingResType, TraoptimalType } from '@map/map';
+import { NaverDrivingResType, SummaryType, TraoptimalType } from '@map/map';
 import { NAVER_DRIVING_API_URL } from '@constants/api';
 import { COMMON_EXCEPTION } from '@response/common';
 import { LOCATION_EXCEPTION } from '@response/location';
@@ -19,6 +19,9 @@ export class MapService {
     this.API_CLIENT_SECRET = configService.get('NAVER_MAP_API_CLIENT_SECRET');
   }
 
+  /**
+   * 좌표 데이터 유효성 검사
+   */
   private validPosData(pos: number[]) {
     if (pos.length !== 2) {
       throw new CustomException(COMMON_EXCEPTION.INVALID_QUERY_PARAMS);
@@ -39,9 +42,12 @@ export class MapService {
     }
 
     const { summary, path } = await this.getDrivingInfo(startPos, goalPos);
-    return { summary, path };
+    return { ...this.summaryDataProcessing(summary), path };
   }
 
+  /**
+   * Naver Map Direction5를 통해 출발/도착지에 대한 길찾기 요청을 보내고 응답을 받음
+   */
   async getDrivingInfo(startPos: string, goalPos: string): Promise<TraoptimalType> {
     try {
       const response = await axios.get(NAVER_DRIVING_API_URL, {
@@ -60,5 +66,15 @@ export class MapService {
     } catch (error) {
       throw new CustomException(MAP_EXCEPTION.FAIL_GET_DRIVING_INFO);
     }
+  }
+
+  /**
+   * 길찾기 요청에 대한 summary 정보를 필요한 부분만 사용하고 필요한 형태로 가공
+   */
+  private summaryDataProcessing(summary: SummaryType) {
+    const { distance, duration, tollFare, taxiFare, fuelPrice } = summary;
+    const start = summary.start.location;
+    const goal = summary.goal.location;
+    return { start, goal, distance, duration, tollFare, taxiFare, fuelPrice };
   }
 }

@@ -1,9 +1,19 @@
 import { failRes, successRes } from '@response/index';
-import { TraoptimalType } from '@map/map';
+
+interface DrivingInfoType {
+  start: Array<number>;
+  goal: Array<number>;
+  distance: number;
+  duration: number;
+  tollFare: number;
+  taxiFare: number;
+  fuelPrice: number;
+  path: Array<Array<number>>;
+}
 
 export const MAP_RES = {
-  SUCCESS_GET_DRIVING_INFO: (traoptimal: TraoptimalType) => {
-    return successRes('성공적으로 경로 정보를 가져왔습니다.', { ...traoptimal });
+  SUCCESS_GET_DRIVING_INFO: (data: DrivingInfoType) => {
+    return successRes('성공적으로 경로 정보를 가져왔습니다.', data);
   },
 };
 

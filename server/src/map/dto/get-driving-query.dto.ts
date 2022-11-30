@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNumber, Length } from 'class-validator';
+import { IsNumber } from 'class-validator';
 
 export class GetDrivingQueryDto {
   @Transform(({ value }) => value.split(',').map((v) => Number(v)))

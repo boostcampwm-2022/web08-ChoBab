@@ -2,7 +2,7 @@ interface StartOrGoalType {
   location: Array<number>;
 }
 
-interface SummaryType {
+export interface SummaryType {
   start: StartOrGoalType; // 출발지
   goal: StartOrGoalType; // 도착지
   distance: number; // 총 거리
