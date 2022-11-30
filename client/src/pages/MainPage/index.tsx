@@ -5,13 +5,16 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { ReactComponent as WhereToVote } from '@assets/images/where-to-vote.svg';
+import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
 import {
+  ButtonInnerTextBox,
   CandidateListButton,
   CategoryToggle,
   Header,
   HeaderBox,
   MainPageLayout,
   MapBox,
+  MapOrListButton,
 } from './styles';
 
 interface RestaurantType {
@@ -156,6 +159,10 @@ function MainPage() {
       <CandidateListButton>
         <WhereToVote />
       </CandidateListButton>
+      <MapOrListButton>
+        <ListIcon />
+        <ButtonInnerTextBox>목록보기</ButtonInnerTextBox>
+      </MapOrListButton>
     </MainPageLayout>
   );
 }

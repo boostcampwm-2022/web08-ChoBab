@@ -64,3 +64,30 @@ export const CandidateListButton = styled.button`
   justify-content: center;
   align-items: center;
 `;
+
+export const MapOrListButton = styled.button`
+  background-color: ${palette.WHITE};
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 110px;
+  height: 36px;
+  margin-bottom: 18px;
+  margin-right: 8px;
+  bottom: 0px;
+  right: 0px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+  gap: 5px;
+  &img {
+    height: 20px;
+  }
+`;
+
+export const ButtonInnerTextBox = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+`;
