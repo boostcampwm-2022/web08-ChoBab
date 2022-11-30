@@ -13,31 +13,46 @@ import { RESTAURANT_CATEGORY, RESTAURANT_DETAIL_FIELD } from '@constants/restaur
 import { MAX_RADIUS, MAX_DETAIL_SEARCH_RADIUS } from '@constants/location';
 import { LOCATION_EXCEPTION } from '@response/location';
 import { RESTAURANT_EXCEPTION } from '@common/response/restaurant';
+import { RESTAURANT_DETAIL_API_URL, RESTAURANT_LIST_API_URL } from '@constants/api';
 
-const restaurantListApiUrl = (
+const restaurantListApiConfig = (
   lat: number,
   lng: number,
   radius: number,
   category: string,
+  apiKey: string,
   page = 1
-) =>
-  `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURI(
-    category
-  )}&y=${lat}&x=${lng}&category\_group\_code=FD6&radius=${radius}&page=${page}`;
+) => {
+  return {
+    headers: { Authorization: `KakaoAK ${apiKey}` },
+    params: {
+      query: category,
+      y: lat,
+      x: lng,
+      category_group_code: 'FD6',
+      radius: radius,
+      page: page,
+    },
+  };
+};
 
-const restaurantDetailApiUrl = (
-  id: string,
+const restaurantDetailApiConfig = (
   name: string,
   address: string,
-  apiKey: string,
   lat: number,
-  lng: number
-) =>
-  `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURI(
-    address + ' ' + name
-  )}&inputtype=textquery&locationrestriction=circle%3A${MAX_DETAIL_SEARCH_RADIUS}%40${lat}%2C${lng}&fields=${RESTAURANT_DETAIL_FIELD.join(
-    '%2C'
-  )}&key=${apiKey}`;
+  lng: number,
+  apiKey: string
+) => {
+  return {
+    params: {
+      input: address + ' ' + name,
+      inputtype: 'textquery',
+      locationrestriction: `circle:${MAX_DETAIL_SEARCH_RADIUS}@${lat},${lng}`,
+      fields: RESTAURANT_DETAIL_FIELD.join(','),
+      key: apiKey,
+    },
+  };
+};
 
 @Injectable()
 export class RestaurantService {
@@ -57,22 +72,20 @@ export class RestaurantService {
     apiKey: string
   ) {
     let restaurantList: OriginRestaurantType[] = [];
-    const apiResult: RestaurantApiResultType = (
-      await axios.get(restaurantListApiUrl(lat, lng, radius, category), {
-        headers: { Authorization: `KakaoAK ${apiKey}` },
-      })
-    ).data;
+    const { data: apiResult } = await axios.get<RestaurantApiResultType>(
+      RESTAURANT_LIST_API_URL,
+      restaurantListApiConfig(lat, lng, radius, category, apiKey)
+    );
     restaurantList = [...restaurantList, ...apiResult.documents];
     let isEnd = apiResult.meta.is_end;
     let page = 1;
 
     while (!isEnd) {
       page += 1;
-      const apiResult: RestaurantApiResultType = (
-        await axios.get(restaurantListApiUrl(lat, lng, radius, category, page), {
-          headers: { Authorization: `KakaoAK ${apiKey}` },
-        })
-      ).data;
+      const { data: apiResult } = await axios.get<RestaurantApiResultType>(
+        RESTAURANT_LIST_API_URL,
+        restaurantListApiConfig(lat, lng, radius, category, apiKey, page)
+      );
       restaurantList = [...restaurantList, ...apiResult.documents];
 
       isEnd = apiResult.meta.is_end;
@@ -139,9 +152,11 @@ export class RestaurantService {
   ) {
     try {
       const {
+        request,
         data: { candidates },
-      } = await axios.get<RestaurantDetailResponseType>(
-        restaurantDetailApiUrl(restaurantId, name, address, this.googleApiKey, lat, lng)
+      } = await axios.get(
+        RESTAURANT_DETAIL_API_URL,
+        restaurantDetailApiConfig(name, address, lat, lng, this.googleApiKey)
       );
       const result = candidates[0];
       if (!result) {
