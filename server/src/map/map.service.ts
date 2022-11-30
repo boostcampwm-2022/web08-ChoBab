@@ -15,16 +15,20 @@ export class MapService {
     this.API_CLIENT_SECRET = configService.get('NAVER_MAP_API_CLIENT_SECRET');
   }
 
-  validStartAndGoalData(start: number[], goal: number[]) {
-    if (start.length !== 2 || goal.length !== 2) {
+  private validPosData(pos: number[]) {
+    if (pos.length !== 2) {
       throw new CustomException(COMMON_EXCEPTION.INVALID_QUERY_PARAMS);
     }
 
-    const [startLng, startLat] = start;
-    const [goalLng, goalLat] = goal;
-
-    if (!isInKorea(startLat, startLng) || !isInKorea(goalLat, goalLng)) {
+    const [lng, lat] = pos;
+    if (!isInKorea(lat, lng)) {
       throw new CustomException(LOCATION_EXCEPTION.OUT_OF_KOREA);
     }
+  }
+
+  drivingInfo(start: number[], goal: number[]) {
+    this.validPosData(start), this.validPosData(goal);
+    console.log(start, goal);
+    return;
   }
 }

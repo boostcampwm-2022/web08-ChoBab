@@ -8,7 +8,7 @@ export class MapController {
 
   @Get('driving')
   getDrivingInfo(@Query() getDrivingQuery: GetDrivingQueryDto) {
-    this.mapService.validStartAndGoalData(getDrivingQuery.start, getDrivingQuery.goal);
+    this.mapService.drivingInfo(getDrivingQuery.start, getDrivingQuery.goal);
 
     return {};
   }
