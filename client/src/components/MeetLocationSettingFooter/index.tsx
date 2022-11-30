@@ -1,14 +1,24 @@
+import axios from 'axios';
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as SearchImage } from '@assets/images/search.svg';
 import { NAVER_ADDRESS } from '@constants/map';
 import { useMeetLocationStore } from '@store/index';
 
 import { FooterBox, SearchBarBox, StartButton } from './styles';
 
+interface RoomCreateResponseType {
+  message: string;
+  data: {
+    roomCode: string;
+  };
+}
+
 function MeetLocationSettingFooter() {
   const [address, setAddress] = useState<string>(NAVER_ADDRESS);
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   // 좌표 -> 주소 변환 & setAddress
   const updateAddress = (lat: number, lng: number) => {
@@ -67,6 +77,23 @@ function MeetLocationSettingFooter() {
     );
   };
 
+  const initRoom = async () => {
+    const { lat, lng } = meetLocation;
+    try {
+      const {
+        data: {
+          data: { roomCode },
+        },
+      } = await axios.post<RoomCreateResponseType>('/api/room/', {
+        lat,
+        lng,
+      });
+      navigate(`/room/${roomCode}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <FooterBox>
       <span>
@@ -80,7 +107,15 @@ function MeetLocationSettingFooter() {
         </button>
       </SearchBarBox>
       <div>{address}</div>
-      <StartButton title="시작하기">시작하기</StartButton>
+      <StartButton
+        title="시작하기"
+        onClick={(e) => {
+          e.preventDefault();
+          initRoom();
+        }}
+      >
+        시작하기
+      </StartButton>
     </FooterBox>
   );
 }
