@@ -1,13 +1,12 @@
 import { MutableRefObject, RefObject, useEffect, useRef } from 'react';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 
-// mutable ref object 와 ref object 의 차이는 뭐지?
 export const useNaverMaps = (): [
   MutableRefObject<naver.maps.Map | null>,
   RefObject<HTMLDivElement>
 ] => {
   const mapRef = useRef<naver.maps.Map | null>(null);
-  const mapDivRef = useRef<HTMLDivElement>(null); // type 에 null 포함시키면 사용이 불가,,
+  const mapDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!mapDivRef.current) {
