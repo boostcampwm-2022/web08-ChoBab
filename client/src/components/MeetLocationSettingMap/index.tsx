@@ -35,7 +35,7 @@ function MeetLocationSettingMap() {
   };
 
   useEffect(() => {
-    if (!mapDivRef.current || !mapRef.current) {
+    if (!mapRef.current) {
       return;
     }
 
