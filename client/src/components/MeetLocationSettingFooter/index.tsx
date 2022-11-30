@@ -8,7 +8,7 @@ import { FooterBox, SearchBarBox, StartButton } from './styles';
 function MeetLocationSettingFooter() {
   const [address, setAddress] = useState<string>(NAVER_ADDRESS);
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
-  const textRef = useRef('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // 좌표 -> 주소 변환 & setAddress
   const updateAddress = (lat: number, lng: number) => {
@@ -36,12 +36,15 @@ function MeetLocationSettingFooter() {
   }, [meetLocation]);
 
   const handleClick = () => {
-    if (!textRef.current) {
+    if (!inputRef.current) {
       return;
     }
+
+    const searchWord = inputRef.current.value;
+
     naver.maps.Service.geocode(
       {
-        query: textRef.current,
+        query: searchWord,
       },
       // eslint-disable-next-line func-names, consistent-return
       function (status, response) {
@@ -53,7 +56,7 @@ function MeetLocationSettingFooter() {
         const items = result.addresses; // 검색 결과의 배열
 
         if (items.length === 0) {
-          // TODO: 어떻게 처리할지 합의 필요
+          // TODO: 추후 토스트 알림으로 변경
           return alert('검색결과가 없습니다.');
         }
 
@@ -64,11 +67,6 @@ function MeetLocationSettingFooter() {
     );
   };
 
-  const handleInput: React.KeyboardEventHandler = (e) => {
-    const target = e.target as HTMLInputElement;
-    textRef.current = target.value;
-  };
-
   return (
     <FooterBox>
       <span>
@@ -76,7 +74,7 @@ function MeetLocationSettingFooter() {
         <p>(추후 수정 가능합니다.)</p>
       </span>
       <SearchBarBox>
-        <input type="text" placeholder="주소 검색" onKeyUp={handleInput} />
+        <input ref={inputRef} type="text" placeholder="주소 검색" />
         <button type="button" onClick={handleClick}>
           <SearchImage />
         </button>
