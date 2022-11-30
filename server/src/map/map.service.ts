@@ -53,7 +53,7 @@ export class MapService {
    */
   async getDrivingInfo(startPos: string, goalPos: string): Promise<TraoptimalType> {
     try {
-      const response = await axios.get(NAVER_DRIVING_API_URL, {
+      const { data } = await axios.get<NaverDrivingResType>(NAVER_DRIVING_API_URL, {
         headers: {
           'X-NCP-APIGW-API-KEY-ID': this.API_CLIENT_ID,
           'X-NCP-APIGW-API-KEY': this.API_CLIENT_SECRET,
@@ -61,7 +61,6 @@ export class MapService {
         params: { start: startPos, goal: goalPos },
       });
 
-      const data: NaverDrivingResType = response.data;
       if (data?.code !== 0) {
         throw new Error();
       }
