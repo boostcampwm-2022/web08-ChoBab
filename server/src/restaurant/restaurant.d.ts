@@ -17,3 +17,17 @@ export interface PreprocessedRestaurantType {
   lng: number;
   address: string;
 }
+
+export interface RestaurantDetail {
+  rating?: number;
+  photos?: { photo_reference: string }[];
+  opening_hours?: {
+    open_now?: boolean;
+  };
+  price_level?: number;
+}
+
+export interface RestaurantDetailResponseType {
+  candidates: RestaurantDetail[];
+  status: string;
+}
