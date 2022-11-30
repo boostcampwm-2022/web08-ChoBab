@@ -34,7 +34,10 @@ export class MapService {
   }
 
   async drivingInfo(start: number[], goal: number[]) {
-    this.validPosData(start), this.validPosData(goal);
+    // 출발지, 도착지 좌표 데이터 유효성 검사
+    this.validPosData(start);
+    this.validPosData(goal);
+
     const startPos = start.join(',');
     const goalPos = goal.join(',');
     if (startPos === goalPos) {
