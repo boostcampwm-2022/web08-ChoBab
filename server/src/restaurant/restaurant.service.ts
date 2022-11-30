@@ -56,8 +56,8 @@ const restaurantDetailApiConfig = (
 
 @Injectable()
 export class RestaurantService {
-  kakaoApiKey: string;
-  googleApiKey: string;
+  private readonly kakaoApiKey: string;
+  private readonly googleApiKey: string;
 
   constructor(private configService: ConfigService) {
     this.kakaoApiKey = this.configService.get('KAKAO_API_KEY');
