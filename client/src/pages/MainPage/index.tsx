@@ -1,10 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import useCurrentLocation from '@hooks/useCurrentLocation';
-import { HeaderBox, MainPageLayout, MapBox, CategoryToggle, Header } from './styles';
+import { ReactComponent as WhereToVote } from '@assets/images/where-to-vote.svg';
+import {
+  CandidateListButton,
+  CategoryToggle,
+  Header,
+  HeaderBox,
+  MainPageLayout,
+  MapBox,
+} from './styles';
 
 interface RestaurantType {
   id: string;
@@ -145,6 +153,9 @@ function MainPage() {
         <Header>헤더</Header>
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
+      <CandidateListButton>
+        <WhereToVote />
+      </CandidateListButton>
     </MainPageLayout>
   );
 }
