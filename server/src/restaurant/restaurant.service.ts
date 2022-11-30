@@ -149,7 +149,7 @@ export class RestaurantService {
       }
       const {
         rating,
-        photos,
+        photos, // 이 후 이미지 API 를 위해 일단 놔둠
         opening_hours: { open_now: openNow },
         price_level: priceLevel,
       } = result;
