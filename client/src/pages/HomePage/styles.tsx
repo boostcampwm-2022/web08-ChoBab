@@ -47,3 +47,28 @@ export const ButtonBox = styled.div`
   flex-direction: column;
   gap: 20px;
 `;
+
+export const ModalLayout = styled.div`
+  display: flex;
+  visibility: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 60%);
+`;
+
+export const ModalBox = styled.div`
+  margin: auto;
+  display: flex;
+  width: 50%;
+  height: 20%;
+  background-color: ${palette.PRIMARY};;
+  border: 1px solid ${palette.BORDER};
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const InputButton = styled.button`
+  
+`
