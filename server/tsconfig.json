@@ -17,7 +17,8 @@
       "@restaurant/*": ["./src/restaurant/*"],
       "@room/*": ["./src/room/*"],
       "@response/*": ["./src/common/response/*"],
-      "@socket/*": ["./src/socket/*"]
+      "@socket/*": ["./src/socket/*"],
+      "@map/*": ["./src/map/*"],
     },
     "incremental": true,
     "skipLibCheck": true,
