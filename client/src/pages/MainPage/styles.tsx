@@ -66,7 +66,7 @@ export const CandidateListButton = styled.button`
 `;
 
 export const MapOrListButton = styled.button`
-  background-color: ${palette.WHITE};
+  background-color: white;
   position: absolute;
   z-index: 3;
   display: flex;
