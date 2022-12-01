@@ -38,7 +38,6 @@ export const Header = styled.header`
   background-color: ${palette.PRIMARY};
   width: 100%;
   height: 60%;
-  padding: 3% 5%;
 `;
 
 export const CategoryToggle = styled.div`
