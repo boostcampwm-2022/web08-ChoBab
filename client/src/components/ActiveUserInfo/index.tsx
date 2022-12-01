@@ -21,7 +21,7 @@ interface PropsType {
 }
 
 function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: PropsType) {
-  const [isListOpen, setListOpen] = useState<boolean>(true);
+  const [isListOpen, setListOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const clientSocket = socketRef.current;
