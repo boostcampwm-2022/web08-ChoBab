@@ -27,7 +27,7 @@ export interface RestaurantApiResultType {
   documents: OriginRestaurantType[];
 }
 
-export interface RestaurantDetail {
+export interface RestaurantDetailType {
   rating?: number;
   photos?: { photo_reference: string }[];
   opening_hours?: {
