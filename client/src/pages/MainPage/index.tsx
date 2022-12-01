@@ -6,6 +6,8 @@ import { useParams } from 'react-router-dom';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
+import ActiveUserInfo from '@components/ActiveUserInfo';
+import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -34,10 +36,11 @@ interface RoomValidResponseType {
   };
 }
 
-interface UserType {
+export interface UserType {
   userId: string;
   userLat: number;
   userLng: number;
+  userName: string;
 }
 
 function MainPage() {
@@ -46,6 +49,10 @@ function MainPage() {
   const { roomCode } = useParams<{ roomCode: string }>();
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [socketRef, connectSocket, disconnectSocket] = useSocket();
+
+  const [myId, setMyId] = useState<string>('');
+  const [myName, setMyName] = useState<string>('');
+  const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
 
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number | null; lng: number | null }>({
@@ -70,17 +77,30 @@ function MainPage() {
           userList: UserType[];
           restaurantList: RestaurantType[];
           candidateList: RestaurantType[];
+          userId: string;
+          userName: string;
         };
       }) => {
         if (!data.data) {
           console.log(data.message);
           return;
         }
-        const { lat, lng, userList, restaurantList, candidateList } = data.data;
+
+        const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
+
+        const map = new Map();
+        userList.forEach((userInfo) => {
+          if (userInfo.userId !== userId) {
+            map.set(userInfo.userId, userInfo);
+          }
+        });
+
+        setMyId(userId);
+        setMyName(userName);
         setRoomConnect(true);
+        setJoinList(map);
         setRestaurantData(restaurantList);
         setRoomLocation({ ...roomLocation, ...{ lat, lng } });
-        console.log(data);
       }
     );
     clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
@@ -88,7 +108,10 @@ function MainPage() {
 
   const initService = async () => {
     try {
-      await connectSocket();
+      /**
+       * connect 순서 매우 중요
+       * 세션 객체 생성을 위해 rest api 가 먼저 호출되어야 한다.
+       */
       const {
         data: {
           data: { isRoomValid },
@@ -98,6 +121,8 @@ function MainPage() {
       if (!isRoomValid) {
         throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
       }
+
+      await connectSocket();
 
       connectRoom();
     } catch (error) {
@@ -116,7 +141,11 @@ function MainPage() {
   };
 
   useEffect(() => {
-    if (!userLocation.lat || !userLocation.lng) {
+    /** 
+     * 아래 pr 이 머지되지 않아 임시로 NAVER_LAT, LNG 값을 사용함
+     * https://github.com/boostcampwm-2022/web08-ChoBab/pull/92/files
+     */
+    if (userLocation.lat === NAVER_LAT || userLocation.lng === NAVER_LNG) {
       return;
     }
     if (!roomCode) {
@@ -153,7 +182,15 @@ function MainPage() {
     <MainPageLayout>
       <MapBox ref={mapRef} />
       <HeaderBox>
-        <Header>헤더</Header>
+        <Header>
+          <ActiveUserInfo
+            myId={myId}
+            myName={myName}
+            socketRef={socketRef}
+            joinList={joinList}
+            setJoinList={setJoinList}
+          />
+        </Header>
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
       <CandidateListButton>
