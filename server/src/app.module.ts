@@ -5,6 +5,7 @@ import { RoomModule } from '@room/room.module';
 import * as Joi from 'joi';
 import { SocketModule } from '@socket/socket.module';
 import { MapModule } from '@map/map.module';
+import { RestaurantModule } from '@restaurant/restaurant.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MapModule } from '@map/map.module';
         MONGODB_PASSWORD: Joi.string().required(),
         MONGODB_DB_NAME: Joi.string().required(),
         KAKAO_API_KEY: Joi.string().required(),
+        GOOGLE_API_KEY: Joi.string().required(),
         NAVER_MAP_API_CLIENT_ID: Joi.string().required(),
         NAVER_MAP_API_CLIENT_SECRET: Joi.string().required(),
       }),
@@ -30,6 +32,7 @@ import { MapModule } from '@map/map.module';
       }),
       inject: [ConfigService],
     }),
+    RestaurantModule,
     RoomModule,
     SocketModule,
     MapModule,

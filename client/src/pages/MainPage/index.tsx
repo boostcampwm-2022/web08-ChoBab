@@ -1,10 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import useCurrentLocation from '@hooks/useCurrentLocation';
-import { HeaderBox, MainPageLayout, MapBox, CategoryToggle, Header } from './styles';
+import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
+import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
+import {
+  ButtonInnerTextBox,
+  CandidateListButton,
+  CategoryToggle,
+  Header,
+  HeaderBox,
+  MainPageLayout,
+  MapBox,
+  MapOrListButton,
+} from './styles';
 
 interface RestaurantType {
   id: string;
@@ -145,6 +156,13 @@ function MainPage() {
         <Header>헤더</Header>
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
+      <CandidateListButton>
+        <CandidateListIcon />
+      </CandidateListButton>
+      <MapOrListButton>
+        <ListIcon />
+        <ButtonInnerTextBox>목록보기</ButtonInnerTextBox>
+      </MapOrListButton>
     </MainPageLayout>
   );
 }
