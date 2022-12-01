@@ -56,12 +56,12 @@ const restaurantDetailApiConfig = (
 
 @Injectable()
 export class RestaurantService {
-  private readonly kakaoApiKey: string;
-  private readonly googleApiKey: string;
+  private readonly KAKAO_API_KEY: string;
+  private readonly GOOGLE_API_KEY: string;
 
   constructor(private configService: ConfigService) {
-    this.kakaoApiKey = this.configService.get('KAKAO_API_KEY');
-    this.googleApiKey = this.configService.get('GOOGLE_API_KEY');
+    this.KAKAO_API_KEY = this.configService.get('KAKAO_API_KEY');
+    this.GOOGLE_API_KEY = this.configService.get('GOOGLE_API_KEY');
   }
 
   private async getRestaurantUsingCategory(
@@ -131,7 +131,7 @@ export class RestaurantService {
 
     const restaurantApiResult = await Promise.all(
       RESTAURANT_CATEGORY.map((category) =>
-        this.getRestaurantUsingCategory(lat, lng, radius, category, this.kakaoApiKey)
+        this.getRestaurantUsingCategory(lat, lng, radius, category, this.KAKAO_API_KEY)
       )
     );
     restaurantApiResult.forEach((restaurantList) => {
@@ -156,7 +156,7 @@ export class RestaurantService {
         data: { candidates },
       } = await axios.get<RestaurantDetailResponseType>(
         RESTAURANT_DETAIL_API_URL,
-        restaurantDetailApiConfig(name, address, lat, lng, this.googleApiKey)
+        restaurantDetailApiConfig(name, address, lat, lng, this.GOOGLE_API_KEY)
       );
       const result = candidates[0];
       if (!result) {
