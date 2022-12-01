@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
+import { RestaurantDetailModal } from '@components/RestaurantDetailModal';
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -163,6 +164,7 @@ function MainPage() {
         <ListIcon />
         <ButtonInnerTextBox>목록보기</ButtonInnerTextBox>
       </MapOrListButton>
+      <RestaurantDetailModal />
     </MainPageLayout>
   );
 }
