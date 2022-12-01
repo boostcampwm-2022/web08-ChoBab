@@ -3,31 +3,65 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { isInKorea } from '@utils/location';
-import { OriginRestaurantType, PreprocessedRestaurantType } from './restaurant';
-import { RESTAURANT_CATEGORY } from '@constants/restaurant';
-import { MAX_RADIUS } from '@constants/location';
+import {
+  OriginRestaurantType,
+  PreprocessedRestaurantType,
+  RestaurantApiResultType,
+  RestaurantDetailResponseType,
+} from './restaurant';
+import { RESTAURANT_CATEGORY, RESTAURANT_DETAIL_FIELD } from '@constants/restaurant';
+import { MAX_RADIUS, MAX_DETAIL_SEARCH_RADIUS } from '@constants/location';
 import { LOCATION_EXCEPTION } from '@response/location';
+import { RESTAURANT_EXCEPTION } from '@common/response/restaurant';
+import { RESTAURANT_DETAIL_API_URL, RESTAURANT_LIST_API_URL } from '@constants/api';
 
-interface RestaurantApiResultType {
-  meta: {
-    is_end: boolean;
-    pageable_count: number;
-    total_count: number;
+const restaurantListApiConfig = (
+  lat: number,
+  lng: number,
+  radius: number,
+  category: string,
+  apiKey: string,
+  page = 1
+) => {
+  return {
+    headers: { Authorization: `KakaoAK ${apiKey}` },
+    params: {
+      query: category,
+      y: lat,
+      x: lng,
+      category_group_code: 'FD6',
+      radius: radius,
+      page: page,
+    },
   };
-  documents: OriginRestaurantType[];
-}
+};
 
-const restaurantApiUrl = (lat: number, lng: number, radius: number, category: string, page = 1) =>
-  `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURI(
-    category
-  )}&y=${lat}&x=${lng}&category\_group\_code=FD6&radius=${radius}&page=${page}`;
+const restaurantDetailApiConfig = (
+  name: string,
+  address: string,
+  lat: number,
+  lng: number,
+  apiKey: string
+) => {
+  return {
+    params: {
+      input: address + ' ' + name,
+      inputtype: 'textquery',
+      locationrestriction: `circle:${MAX_DETAIL_SEARCH_RADIUS}@${lat},${lng}`,
+      fields: RESTAURANT_DETAIL_FIELD.join(','),
+      key: apiKey,
+    },
+  };
+};
 
 @Injectable()
 export class RestaurantService {
-  apiKey: string;
+  private readonly KAKAO_API_KEY: string;
+  private readonly GOOGLE_API_KEY: string;
 
   constructor(private configService: ConfigService) {
-    this.apiKey = this.configService.get('KAKAO_API_KEY');
+    this.KAKAO_API_KEY = this.configService.get('KAKAO_API_KEY');
+    this.GOOGLE_API_KEY = this.configService.get('GOOGLE_API_KEY');
   }
 
   private async getRestaurantUsingCategory(
@@ -38,22 +72,20 @@ export class RestaurantService {
     apiKey: string
   ) {
     let restaurantList: OriginRestaurantType[] = [];
-    const apiResult: RestaurantApiResultType = (
-      await axios.get(restaurantApiUrl(lat, lng, radius, category), {
-        headers: { Authorization: `KakaoAK ${apiKey}` },
-      })
-    ).data;
+    const { data: apiResult } = await axios.get<RestaurantApiResultType>(
+      RESTAURANT_LIST_API_URL,
+      restaurantListApiConfig(lat, lng, radius, category, apiKey)
+    );
     restaurantList = [...restaurantList, ...apiResult.documents];
     let isEnd = apiResult.meta.is_end;
     let page = 1;
 
     while (!isEnd) {
       page += 1;
-      const apiResult: RestaurantApiResultType = (
-        await axios.get(restaurantApiUrl(lat, lng, radius, category, page), {
-          headers: { Authorization: `KakaoAK ${apiKey}` },
-        })
-      ).data;
+      const { data: apiResult } = await axios.get<RestaurantApiResultType>(
+        RESTAURANT_LIST_API_URL,
+        restaurantListApiConfig(lat, lng, radius, category, apiKey, page)
+      );
       restaurantList = [...restaurantList, ...apiResult.documents];
 
       isEnd = apiResult.meta.is_end;
@@ -99,7 +131,7 @@ export class RestaurantService {
 
     const restaurantApiResult = await Promise.all(
       RESTAURANT_CATEGORY.map((category) =>
-        this.getRestaurantUsingCategory(lat, lng, radius, category, this.apiKey)
+        this.getRestaurantUsingCategory(lat, lng, radius, category, this.KAKAO_API_KEY)
       )
     );
     restaurantApiResult.forEach((restaurantList) => {
@@ -109,5 +141,37 @@ export class RestaurantService {
     });
 
     return Array.from(restaurantSet) as PreprocessedRestaurantType[];
+  }
+
+  async getRestaurantDetail(
+    restaurantId: string,
+    address: string,
+    name: string,
+    lat: number,
+    lng: number
+  ) {
+    try {
+      const {
+        request,
+        data: { candidates },
+      } = await axios.get<RestaurantDetailResponseType>(
+        RESTAURANT_DETAIL_API_URL,
+        restaurantDetailApiConfig(name, address, lat, lng, this.GOOGLE_API_KEY)
+      );
+      const result = candidates[0];
+      if (!result) {
+        throw new Error();
+      }
+      const {
+        rating,
+        photos, // 이 후 이미지 API 를 위해 일단 놔둠
+        opening_hours: { open_now: openNow },
+        price_level: priceLevel,
+      } = result;
+
+      return { rating, openNow, priceLevel };
+    } catch (error) {
+      throw new CustomException(RESTAURANT_EXCEPTION.FAIL_SEARCH_RESTAURANT_DETAIL);
+    }
   }
 }

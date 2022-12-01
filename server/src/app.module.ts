@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RoomModule } from '@room/room.module';
 import * as Joi from 'joi';
 import { SocketModule } from '@socket/socket.module';
+import { RestaurantModule } from '@restaurant/restaurant.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { SocketModule } from '@socket/socket.module';
         MONGODB_PASSWORD: Joi.string().required(),
         MONGODB_DB_NAME: Joi.string().required(),
         KAKAO_API_KEY: Joi.string().required(),
+        GOOGLE_API_KEY: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
@@ -27,6 +29,7 @@ import { SocketModule } from '@socket/socket.module';
       }),
       inject: [ConfigService],
     }),
+    RestaurantModule,
     RoomModule,
     SocketModule,
   ],
