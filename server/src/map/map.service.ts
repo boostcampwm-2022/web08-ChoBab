@@ -11,12 +11,12 @@ import { MAP_EXCEPTION } from '@response/map';
 
 @Injectable()
 export class MapService {
-  private readonly API_CLIENT_ID: string;
-  private readonly API_CLIENT_SECRET: string;
+  private readonly NAVER_MAP_API_CLIENT_ID: string;
+  private readonly NAVER_MAP_API_CLIENT_SECRET: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.API_CLIENT_ID = configService.get('NAVER_MAP_API_CLIENT_ID');
-    this.API_CLIENT_SECRET = configService.get('NAVER_MAP_API_CLIENT_SECRET');
+    this.NAVER_MAP_API_CLIENT_ID = configService.get('NAVER_MAP_API_CLIENT_ID');
+    this.NAVER_MAP_API_CLIENT_SECRET = configService.get('NAVER_MAP_API_CLIENT_SECRET');
   }
 
   /**
@@ -55,8 +55,8 @@ export class MapService {
     try {
       const { data } = await axios.get<NaverDrivingResType>(NAVER_DRIVING_API_URL, {
         headers: {
-          'X-NCP-APIGW-API-KEY-ID': this.API_CLIENT_ID,
-          'X-NCP-APIGW-API-KEY': this.API_CLIENT_SECRET,
+          'X-NCP-APIGW-API-KEY-ID': this.NAVER_MAP_API_CLIENT_ID,
+          'X-NCP-APIGW-API-KEY': this.NAVER_MAP_API_CLIENT_SECRET,
         },
         params: { start: startPos, goal: goalPos },
       });
