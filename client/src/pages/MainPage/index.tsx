@@ -4,7 +4,7 @@ import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import useCurrentLocation from '@hooks/useCurrentLocation';
-import { ReactComponent as WhereToVote } from '@assets/images/where-to-vote.svg';
+import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
 import {
   ButtonInnerTextBox,
@@ -157,7 +157,7 @@ function MainPage() {
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
       <CandidateListButton>
-        <WhereToVote />
+        <CandidateListIcon />
       </CandidateListButton>
       <MapOrListButton>
         <ListIcon />
