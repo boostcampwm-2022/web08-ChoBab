@@ -1,4 +1,7 @@
 import * as session from 'express-session';
+import * as fileStoreCreateFunction from 'session-file-store';
+
+const FileStore = fileStoreCreateFunction(session);
 
 export const sessionMiddleware = session({
   resave: false,
@@ -12,4 +15,5 @@ export const sessionMiddleware = session({
     // 적당한 세션쿠키 유효시간을 설정해 줌 (1시간)
     maxAge: 1000 * 60 * 60,
   },
+  store: new FileStore(),
 });
