@@ -22,3 +22,6 @@ npm-debug.log*
 
 # env
 .env
+
+# session file store
+sessions/
