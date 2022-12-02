@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as palette from '@styles/Variables';
 import { ReactComponent as BackwardIcon } from '@assets/images/backward-arrow-icon.svg';
 import { ReactComponent as MarkerIcon } from '@assets/images/marker.svg';
+import { ReactComponent as PhoneIcon } from '@assets/images/phone-icon.svg';
+import { useNaverMaps } from '@hooks/useNaverMaps';
 import {
   ImageCarousel,
   ModalBody,
@@ -16,6 +18,9 @@ import {
   AddressBox,
   BackwardButton,
   PhoneBox,
+  IconBox,
+  MapBox,
+  MapLayout,
 } from './styles';
 
 interface RestaurantDataType {
@@ -46,6 +51,22 @@ function RestaurantDetailModalFooter({
   const [isSelectLeft, setSelectLeft] = useState<boolean>(true);
   const operationInfoButtonRef = useRef<HTMLDivElement>(null);
   const getDirectionButtonRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapSetting = useCallback(() => {
+    if (!isSelectLeft) {
+      return;
+    }
+    if (!mapRef.current) {
+      return;
+    }
+    const map = new naver.maps.Map(mapRef.current, {
+      center: new naver.maps.LatLng(lat, lng),
+    });
+    const marker = new naver.maps.Marker({
+      map,
+      position: new naver.maps.LatLng(lat, lng),
+    });
+  }, [isSelectLeft]);
 
   useEffect(() => {
     const operationInfoButton = operationInfoButtonRef.current;
@@ -53,6 +74,7 @@ function RestaurantDetailModalFooter({
     if (!operationInfoButton || !getDirectionButton) {
       return;
     }
+    mapSetting();
     if (!isSelectLeft) {
       getDirectionButton.style.color = palette.PRIMARY;
       operationInfoButton.style.color = 'black';
@@ -85,10 +107,20 @@ function RestaurantDetailModalFooter({
       {isSelectLeft ? (
         <ScrollTest>
           <AddressBox>
-            <MarkerIcon />
+            <IconBox>
+              <MarkerIcon />
+            </IconBox>
             <p>{address}</p>
           </AddressBox>
-          <PhoneBox>{phone}</PhoneBox>
+          <PhoneBox>
+            <IconBox>
+              <PhoneIcon />
+            </IconBox>
+            <p>{phone}</p>
+          </PhoneBox>
+          <MapLayout>
+            <MapBox ref={mapRef} />
+          </MapLayout>
         </ScrollTest>
       ) : (
         <ScrollTest>길찾기</ScrollTest>
@@ -107,8 +139,8 @@ export function RestaurantDetailModal() {
         name: '진우동',
         category: '일식',
         address: '경기 성남시 분당구 황새울로335번길 8 덕산빌딩',
-        lat: 0,
-        lng: 0,
+        lat: 37.2432821,
+        lng: 127.0727357,
         rating: 4.2,
         phone: '010-123-1234',
       };

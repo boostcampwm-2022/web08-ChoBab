@@ -12,8 +12,8 @@ export const ModalLayout = styled.div`
 
 export const BackwardButton = styled.div`
   position: absolute;
-  top:10px;
-  left:10px;
+  top: 10px;
+  left: 10px;
 `;
 
 export const ModalBox = styled.div`
@@ -77,18 +77,45 @@ export const ModalFooterNav = styled.div`
 export const OperationInfoBody = styled.div``;
 
 export const ScrollTest = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
   padding: 20px 10px;
-  height: 500px;
+  //height: 500px;
+  gap: 10px;
 `;
 
 export const AddressBox = styled.div`
   display: flex;
   flex-direction: row;
+  gap: 5px;
   svg {
-    height: 16px;
+    height: 22px;
   }
 `;
 
+export const IconBox = styled.div`
+  width: 26px;
+  height: 26px;
+`;
 
-export const PhoneBox = styled.div``;
+export const PhoneBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  svg {
+    height: 22px;
+  }
+`;
+
+export const MapLayout = styled.div`
+  width: 100%;
+  padding: 5px;
+`;
+
+export const MapBox = styled.div`
+  width: 100%;
+  height: 200px;
+  border: 0.1px solid gray;
+  border-radius: 5px;
+`;
