@@ -67,6 +67,8 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
     const restaurantCnt = restaurantData.length;
 
     // forEach문으로 작성 시 mapRef.current쪽에서 타입 에러 발생
+    // forEach 사용 시 내부에서 if (!mapRef.current) { return; } 필요
+    // 그럼에도 불구하고 함수형 프로그래밍으로 작성하는게 좋을지 의문
     for (let i = 0; i < restaurantCnt; i += 1) {
       const restaurant = restaurantData[i];
 
@@ -100,7 +102,6 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
   // 마커 클릭 시 정보창 open/close 처리
   const handleMarkerClick = (idx: number) => {
     return () => {
-      console.log(idx);
       const marker = markersRef.current[idx];
       const infoWindow = infoWindowsRef.current[idx];
 
@@ -108,22 +109,28 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
         return;
       }
 
-      if (infoWindow.getMap()) {
-        infoWindow.close();
-      } else {
-        infoWindow.open(mapRef.current, marker);
-      }
+      infoWindow.open(mapRef.current, marker);
     };
+  };
+
+  const closeAllMaker = () => {
+    infoWindowsRef.current.forEach((infoWindow) => {
+      infoWindow.close();
+    });
   };
 
   // 마커 최적화 로직
   function showMarker(map: naver.maps.Map, marker: naver.maps.Marker) {
-    if (marker.getMap()) return;
+    if (marker.getMap()) {
+      return;
+    }
     marker.setMap(map);
   }
 
   function hideMarker(map: naver.maps.Map, marker: naver.maps.Marker) {
-    if (!marker.getMap()) return;
+    if (!marker.getMap()) {
+      return;
+    }
     marker.setMap(null);
   }
 
@@ -159,6 +166,18 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
     return onIdleListener;
   };
 
+  const onClick = (map: naver.maps.Map): naver.maps.MapEventListener => {
+    const onClickListener = naver.maps.Event.addListener(map, 'click', () => {
+      if (!map) {
+        return;
+      }
+
+      closeAllMaker();
+    });
+
+    return onClickListener;
+  };
+
   const initMap = () => {
     if (!mapRef.current || !roomLocation) {
       return;
@@ -178,11 +197,13 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
     }
 
     const idleListener = onIdle(mapRef.current);
+    const clickListener = onClick(mapRef.current);
     initMap();
 
     // eslint-disable-next-line consistent-return
     return () => {
       naver.maps.Event.removeListener(idleListener);
+      naver.maps.Event.removeListener(clickListener);
     };
   }, []);
 
