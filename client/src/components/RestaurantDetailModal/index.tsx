@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as palette from '@styles/Variables';
 import { ReactComponent as BackwardIcon } from '@assets/images/backward-arrow-icon.svg';
+import { ReactComponent as MarkerIcon } from '@assets/images/marker.svg';
 import {
   ImageCarousel,
   ModalBody,
@@ -14,6 +15,7 @@ import {
   ModalFooterNav,
   AddressBox,
   BackwardButton,
+  PhoneBox,
 } from './styles';
 
 interface RestaurantDataType {
@@ -28,7 +30,19 @@ interface RestaurantDataType {
   rating?: number;
 }
 
-function RestaurantDetailModalFooter({ address }: { address: string }) {
+function RestaurantDetailModalFooter({
+  id,
+  address,
+  lat,
+  lng,
+  phone,
+}: {
+  id: string;
+  address: string;
+  lat: number;
+  lng: number;
+  phone: string;
+}) {
   const [isSelectLeft, setSelectLeft] = useState<boolean>(true);
   const operationInfoButtonRef = useRef<HTMLDivElement>(null);
   const getDirectionButtonRef = useRef<HTMLDivElement>(null);
@@ -70,7 +84,11 @@ function RestaurantDetailModalFooter({ address }: { address: string }) {
       </ModalFooterNav>
       {isSelectLeft ? (
         <ScrollTest>
-          <AddressBox>{address}</AddressBox>
+          <AddressBox>
+            <MarkerIcon />
+            <p>{address}</p>
+          </AddressBox>
+          <PhoneBox>{phone}</PhoneBox>
         </ScrollTest>
       ) : (
         <ScrollTest>길찾기</ScrollTest>
@@ -92,6 +110,7 @@ export function RestaurantDetailModal() {
         lat: 0,
         lng: 0,
         rating: 4.2,
+        phone: '010-123-1234',
       };
       setRestaurantData({ ...restaurantData, ...mockRestaurantData });
     }, 3000);
@@ -107,7 +126,7 @@ export function RestaurantDetailModal() {
             <BackwardIcon />
           </BackwardButton>
           <ModalBox>
-            <ImageCarousel>사진</ImageCarousel>
+            <ImageCarousel />
             <ModalBody>
               <NameBox>{restaurantData.name}</NameBox>
               <CategoryBox>{restaurantData.category}</CategoryBox>
@@ -115,7 +134,13 @@ export function RestaurantDetailModal() {
                 {!restaurantData.rating ? '평점 정보 없음' : `평점: ${restaurantData.rating}`}
               </RatingBox>
             </ModalBody>
-            <RestaurantDetailModalFooter address={restaurantData.address} />
+            <RestaurantDetailModalFooter
+              id={restaurantData.id}
+              address={restaurantData.address}
+              lat={restaurantData.lat}
+              lng={restaurantData.lng}
+              phone={restaurantData?.phone || ''}
+            />
           </ModalBox>
         </>
       )}

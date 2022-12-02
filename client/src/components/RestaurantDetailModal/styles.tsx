@@ -32,7 +32,7 @@ export const ModalBox = styled.div`
 export const ImageCarousel = styled.div`
   width: 100%;
   height: 45%;
-  flex: 2;
+  background-color: aliceblue;
 `;
 
 export const ModalBody = styled.div`
@@ -71,7 +71,7 @@ export const ModalFooterNav = styled.div`
   flex-direction: row;
   justify-content: space-around;
   align-content: center;
-  border-bottom: 1px solid;
+  border-bottom: 0.1px solid gray;
 `;
 
 export const OperationInfoBody = styled.div``;
@@ -82,4 +82,13 @@ export const ScrollTest = styled.div`
   height: 500px;
 `;
 
-export const AddressBox = styled.div``;
+export const AddressBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  svg {
+    height: 16px;
+  }
+`;
+
+
+export const PhoneBox = styled.div``;
