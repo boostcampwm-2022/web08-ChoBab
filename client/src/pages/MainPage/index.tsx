@@ -19,6 +19,13 @@ import {
   MapOrListButton,
 } from './styles';
 
+export interface UserType {
+  userId: string;
+  userLat: number;
+  userLng: number;
+  userName: string;
+}
+
 interface RestaurantType {
   id: string;
   name: string;
@@ -29,17 +36,23 @@ interface RestaurantType {
   address: string;
 }
 
-interface RoomValidResponseType {
+interface ResTemplateType<T> {
   message: string;
-  data: {
-    isRoomValid: boolean;
-  };
+  data: T;
 }
 
-export interface UserType {
+interface RoomValidType {
+  isRoomValid: boolean;
+}
+
+interface RoomDataType {
+  roomCode: string;
+  lat: number;
+  lng: number;
+  userList: UserType[];
+  restaurantList: RestaurantType[];
+  candidateList: RestaurantType[];
   userId: string;
-  userLat: number;
-  userLng: number;
   userName: string;
 }
 
@@ -66,43 +79,28 @@ function MainPage() {
     if (!(clientSocket instanceof Socket)) {
       throw new Error();
     }
-    clientSocket.on(
-      'connectResult',
-      (data: {
-        message: string;
-        data?: {
-          roomCode: string;
-          lat: number;
-          lng: number;
-          userList: UserType[];
-          restaurantList: RestaurantType[];
-          candidateList: RestaurantType[];
-          userId: string;
-          userName: string;
-        };
-      }) => {
-        if (!data.data) {
-          console.log(data.message);
-          return;
-        }
-
-        const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
-
-        const map = new Map();
-        userList.forEach((userInfo) => {
-          if (userInfo.userId !== userId) {
-            map.set(userInfo.userId, userInfo);
-          }
-        });
-
-        setMyId(userId);
-        setMyName(userName);
-        setRoomConnect(true);
-        setJoinList(map);
-        setRestaurantData(restaurantList);
-        setRoomLocation({ ...roomLocation, ...{ lat, lng } });
+    clientSocket.on('connectResult', (data: ResTemplateType<RoomDataType>) => {
+      if (!data.data) {
+        console.log(data.message);
+        return;
       }
-    );
+
+      const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
+
+      const map = new Map();
+      userList.forEach((userInfo) => {
+        if (userInfo.userId !== userId) {
+          map.set(userInfo.userId, userInfo);
+        }
+      });
+
+      setMyId(userId);
+      setMyName(userName);
+      setRoomConnect(true);
+      setJoinList(map);
+      setRestaurantData(restaurantList);
+      setRoomLocation({ ...roomLocation, ...{ lat, lng } });
+    });
     clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
   };
 
@@ -116,7 +114,7 @@ function MainPage() {
         data: {
           data: { isRoomValid },
         },
-      } = await axios.get<RoomValidResponseType>(`/api/room/valid?roomCode=${roomCode}`);
+      } = await axios.get<ResTemplateType<RoomValidType>>(`/api/room/valid?roomCode=${roomCode}`);
 
       if (!isRoomValid) {
         throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
