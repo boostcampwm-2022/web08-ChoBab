@@ -17,3 +17,26 @@ export interface PreprocessedRestaurantType {
   lng: number;
   address: string;
 }
+
+export interface RestaurantApiResultType {
+  meta: {
+    is_end: boolean;
+    pageable_count: number;
+    total_count: number;
+  };
+  documents: OriginRestaurantType[];
+}
+
+export interface RestaurantDetailType {
+  rating?: number;
+  photos?: { photo_reference: string }[];
+  opening_hours?: {
+    open_now?: boolean;
+  };
+  price_level?: number;
+}
+
+export interface RestaurantDetailResponseType {
+  candidates: RestaurantDetail[];
+  status: string;
+}
