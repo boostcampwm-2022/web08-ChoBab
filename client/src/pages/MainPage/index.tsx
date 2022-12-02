@@ -1,13 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import useCurrentLocation from '@hooks/useCurrentLocation';
+
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
 import ActiveUserInfo from '@components/ActiveUserInfo';
+import MainMap from '@components/MainMap';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
+import useCurrentLocation from '@hooks/useCurrentLocation';
+
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -15,7 +18,6 @@ import {
   Header,
   HeaderBox,
   MainPageLayout,
-  MapBox,
   MapOrListButton,
 } from './styles';
 
@@ -57,7 +59,6 @@ interface RoomDataType {
 }
 
 function MainPage() {
-  const mapRef = useRef<HTMLDivElement>(null);
   const userLocation = useCurrentLocation();
   const { roomCode } = useParams<{ roomCode: string }>();
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
@@ -68,9 +69,9 @@ function MainPage() {
   const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
 
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const [roomLocation, setRoomLocation] = useState<{ lat: number | null; lng: number | null }>({
-    lat: null,
-    lng: null,
+  const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
+    lat: NAVER_LAT,
+    lng: NAVER_LNG,
   });
 
   const connectRoom = () => {
@@ -128,16 +129,6 @@ function MainPage() {
     }
   };
 
-  const initMap = () => {
-    if (!mapRef.current || !roomLocation.lat || !roomLocation.lng) {
-      return;
-    }
-    const map = new naver.maps.Map(mapRef.current, {
-      center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
-      zoom: 14,
-    });
-  };
-
   useEffect(() => {
     // userLocation 의 초기값을 {lat:null, lng:null} 로 지정.
     // 따라서 사용자의 위치 정보의 로딩이 끝나기 전까지(위치 정보 불러오기 성공 혹은 실패) 해당 if 문을 통해 initService가 작동하지 않게 됨.
@@ -161,24 +152,11 @@ function MainPage() {
     };
   }, [userLocation]);
 
-  useEffect(() => {
-    if (!isRoomConnect) {
-      return;
-    }
-    if (!mapRef.current) {
-      return;
-    }
-    if (!roomLocation.lat || !roomLocation.lng) {
-      return;
-    }
-    initMap();
-  }, [isRoomConnect]);
-
   return !isRoomConnect ? (
     <div>loading...</div>
   ) : (
     <MainPageLayout>
-      <MapBox ref={mapRef} />
+      <MainMap restaurantData={restaurantData.slice(80, 100)} roomLocation={roomLocation} />
       <HeaderBox>
         <Header>
           <ActiveUserInfo
