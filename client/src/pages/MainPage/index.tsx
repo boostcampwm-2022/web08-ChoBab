@@ -141,11 +141,11 @@ function MainPage() {
   };
 
   useEffect(() => {
-    /** 
-     * 아래 pr 이 머지되지 않아 임시로 NAVER_LAT, LNG 값을 사용함
-     * https://github.com/boostcampwm-2022/web08-ChoBab/pull/92/files
-     */
-    if (userLocation.lat === NAVER_LAT || userLocation.lng === NAVER_LNG) {
+    // userLocation 의 초기값을 {lat:null, lng:null} 로 지정.
+    // 따라서 사용자의 위치 정보의 로딩이 끝나기 전까지(위치 정보 불러오기 성공 혹은 실패) 해당 if 문을 통해 initService가 작동하지 않게 됨.
+    // userLocation으로 사용자의 위치 정보를 불러오는 과정이 비동기로 이루어지기 때문에 initService가 여러번 발생할 위험이 있었는데 이를 차단.
+    // PR: https://github.com/boostcampwm-2022/web08-ChoBab/pull/92
+    if (!userLocation.lat || !userLocation.lng) {
       return;
     }
     if (!roomCode) {
