@@ -14,7 +14,6 @@ import {
 
 function Modal() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
   return (
     <ModalBox>
       <input ref={inputRef} type="text" placeholder="모임 코드를 입력하세요." />
@@ -24,7 +23,7 @@ function Modal() {
           if (!inputRef.current) {
             return;
           }
-          navigate(`/room/${inputRef.current.value}`);
+          document.location.href = inputRef.current.value;
         }}
       >
         입장
