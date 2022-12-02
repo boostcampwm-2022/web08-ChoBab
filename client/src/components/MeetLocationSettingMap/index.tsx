@@ -5,9 +5,13 @@ import { useMeetLocationStore } from '@store/index';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 import { MapBox, MarkerBox } from './styles';
 
-function MeetLocationSettingMap() {
+interface LocationType {
+  lat: number | null;
+  lng: number | null;
+}
+
+function MeetLocationSettingMap({ userLocation }: { userLocation: LocationType }) {
   const [mapRef, mapDivRef] = useNaverMaps();
-  const userLocation = useCurrentLocation();
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
 
   // dragEnd 이벤트 핸들러 생성
@@ -51,6 +55,9 @@ function MeetLocationSettingMap() {
 
   useEffect(() => {
     if (!mapRef.current) {
+      return;
+    }
+    if (!userLocation.lat || !userLocation.lng) {
       return;
     }
 
