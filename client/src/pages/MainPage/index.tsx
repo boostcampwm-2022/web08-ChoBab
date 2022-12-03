@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
+import LinkShareButton from '@components/LinkShareButton';
 import MainMap from '@components/MainMap';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import useCurrentLocation from '@hooks/useCurrentLocation';
@@ -136,7 +137,9 @@ function MainPage() {
     <MainPageLayout>
       <MainMap restaurantData={restaurantData.slice(80, 100)} roomLocation={roomLocation} />
       <HeaderBox>
-        <Header>헤더</Header>
+        <Header>
+          <LinkShareButton />
+        </Header>
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
       <CandidateListButton>
