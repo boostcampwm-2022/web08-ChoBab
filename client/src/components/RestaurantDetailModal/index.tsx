@@ -1,27 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import * as palette from '@styles/Variables';
+import React, { useEffect, useState } from 'react';
 import { ReactComponent as BackwardIcon } from '@assets/images/backward-arrow-icon.svg';
-import { ReactComponent as MarkerIcon } from '@assets/images/marker.svg';
-import { ReactComponent as PhoneIcon } from '@assets/images/phone-icon.svg';
-import { useNaverMaps } from '@hooks/useNaverMaps';
-import {
-  ImageCarousel,
-  ModalBody,
-  ModalBox,
-  ModalFooter,
-  ModalLayout,
-  ScrollTest,
-  NameBox,
-  CategoryBox,
-  RatingBox,
-  ModalFooterNav,
-  AddressBox,
-  BackwardButton,
-  PhoneBox,
-  IconBox,
-  MapBox,
-  MapLayout,
-} from './styles';
+import { RestaurantDetailModalFooter } from '@components/RestaurantDetailModalFooter';
+import { RestaurantDetailModalBody } from '@components/RestaurantDetailModalBody';
+import { LoadingComponent } from '@components/LoadingComponent';
+import { RestaurantDetailCarousel } from '@components/RestaurantDetailModalCarousel';
+import { ModalBox, ModalLayout, BackwardButton, AddCandidatesButton } from './styles';
 
 interface RestaurantDataType {
   id: string;
@@ -33,106 +16,18 @@ interface RestaurantDataType {
   lat: number;
   lng: number;
   rating?: number;
+  imageUrlList: string[];
 }
 
-function RestaurantDetailModalFooter({
-  id,
-  address,
-  lat,
-  lng,
-  phone,
-}: {
-  id: string;
-  address: string;
-  lat: number;
-  lng: number;
-  phone: string;
-}) {
-  const [isSelectLeft, setSelectLeft] = useState<boolean>(true);
-  const operationInfoButtonRef = useRef<HTMLDivElement>(null);
-  const getDirectionButtonRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapSetting = useCallback(() => {
-    if (!isSelectLeft) {
-      return;
-    }
-    if (!mapRef.current) {
-      return;
-    }
-    const map = new naver.maps.Map(mapRef.current, {
-      center: new naver.maps.LatLng(lat, lng),
-    });
-    const marker = new naver.maps.Marker({
-      map,
-      position: new naver.maps.LatLng(lat, lng),
-    });
-  }, [isSelectLeft]);
-
-  useEffect(() => {
-    const operationInfoButton = operationInfoButtonRef.current;
-    const getDirectionButton = getDirectionButtonRef.current;
-    if (!operationInfoButton || !getDirectionButton) {
-      return;
-    }
-    mapSetting();
-    if (!isSelectLeft) {
-      getDirectionButton.style.color = palette.PRIMARY;
-      operationInfoButton.style.color = 'black';
-      return;
-    }
-    getDirectionButton.style.color = 'black';
-    operationInfoButton.style.color = palette.PRIMARY;
-  }, [isSelectLeft]);
-
-  return (
-    <ModalFooter>
-      <ModalFooterNav
-        onClick={(e) => {
-          if (!(e.target instanceof HTMLDivElement)) {
-            return;
-          }
-          const eventTarget = e.target as HTMLDivElement;
-          if (
-            eventTarget !== operationInfoButtonRef.current &&
-            eventTarget !== getDirectionButtonRef.current
-          ) {
-            return;
-          }
-          setSelectLeft(eventTarget === operationInfoButtonRef.current);
-        }}
-      >
-        <div ref={operationInfoButtonRef}>영업 정보</div>
-        <div ref={getDirectionButtonRef}>길찾기</div>
-      </ModalFooterNav>
-      {isSelectLeft ? (
-        <ScrollTest>
-          <AddressBox>
-            <IconBox>
-              <MarkerIcon />
-            </IconBox>
-            <p>{address}</p>
-          </AddressBox>
-          <PhoneBox>
-            <IconBox>
-              <PhoneIcon />
-            </IconBox>
-            <p>{phone}</p>
-          </PhoneBox>
-          <MapLayout>
-            <MapBox ref={mapRef} />
-          </MapLayout>
-        </ScrollTest>
-      ) : (
-        <ScrollTest>길찾기</ScrollTest>
-      )}
-    </ModalFooter>
-  );
+interface PropsType {
+  setRestaurantDetailModalOn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function RestaurantDetailModal() {
+export function RestaurantDetailModal({ setRestaurantDetailModalOn }: PropsType) {
   const [restaurantData, setRestaurantData] = useState<RestaurantDataType | null>(null);
 
   useEffect(() => {
+    // 데이터를 비동기로 가져오는 요청을 표현하기 위해 임시로 mock 데이터를 setTimeout을 통해 가져오게 했습니다.
     setTimeout(() => {
       const mockRestaurantData = {
         id: '123456',
@@ -143,29 +38,44 @@ export function RestaurantDetailModal() {
         lng: 127.0727357,
         rating: 4.2,
         phone: '010-123-1234',
+        imageUrlList: [
+          'https://cdn.dribbble.com/users/808903/screenshots/3831862/dribbble_szablon__1_1.png',
+          'https://github.com/pmndrs/zustand/blob/main/bear.jpg?raw=true',
+          'https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg',
+        ],
       };
       setRestaurantData({ ...restaurantData, ...mockRestaurantData });
     }, 3000);
   }, []);
 
   return (
-    <ModalLayout>
+    <ModalLayout
+      initial={{ opacity: 0, y: 999 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 999 }}
+      transition={{ duration: 1 }}
+    >
       {!restaurantData ? (
-        <div>loading...</div>
+        <LoadingComponent />
       ) : (
         <>
-          <BackwardButton>
-            <BackwardIcon />
+          <BackwardButton
+            onClick={() => {
+              setRestaurantDetailModalOn(false);
+            }}
+          >
+            <BackwardIcon fill="white"/>
           </BackwardButton>
+          <AddCandidatesButton>후보 추가</AddCandidatesButton>
           <ModalBox>
-            <ImageCarousel />
-            <ModalBody>
-              <NameBox>{restaurantData.name}</NameBox>
-              <CategoryBox>{restaurantData.category}</CategoryBox>
-              <RatingBox>
-                {!restaurantData.rating ? '평점 정보 없음' : `평점: ${restaurantData.rating}`}
-              </RatingBox>
-            </ModalBody>
+            <RestaurantDetailCarousel
+              imageUrlList={restaurantData.imageUrlList}
+            />
+            <RestaurantDetailModalBody
+              name={restaurantData.name}
+              category={restaurantData.category}
+              rating={restaurantData.rating}
+            />
             <RestaurantDetailModalFooter
               id={restaurantData.id}
               address={restaurantData.address}

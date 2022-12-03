@@ -7,6 +7,7 @@ import useCurrentLocation from '@hooks/useCurrentLocation';
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
 import { RestaurantDetailModal } from '@components/RestaurantDetailModal';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -53,6 +54,8 @@ function MainPage() {
     lat: null,
     lng: null,
   });
+
+  const [isRestaurantDetailModalOn, setRestaurantDetailModalOn] = useState<boolean>(false);
 
   const connectRoom = () => {
     const clientSocket = socketRef.current;
@@ -117,10 +120,10 @@ function MainPage() {
   };
 
   useEffect(() => {
-    // userLocation 의 초기값을 {lat:null, lng:null} 로 지정. 
-    // 따라서 사용자의 위치 정보의 로딩이 끝나기 전까지(위치 정보 불러오기 성공 혹은 실패) 해당 if 문을 통해 initService가 작동하지 않게 됨. 
+    // userLocation 의 초기값을 {lat:null, lng:null} 로 지정.
+    // 따라서 사용자의 위치 정보의 로딩이 끝나기 전까지(위치 정보 불러오기 성공 혹은 실패) 해당 if 문을 통해 initService가 작동하지 않게 됨.
     // userLocation으로 사용자의 위치 정보를 불러오는 과정이 비동기로 이루어지기 때문에 initService가 여러번 발생할 위험이 있었는데 이를 차단.
-    // PR: https://github.com/boostcampwm-2022/web08-ChoBab/pull/92 
+    // PR: https://github.com/boostcampwm-2022/web08-ChoBab/pull/92
     if (!userLocation.lat || !userLocation.lng) {
       return;
     }
@@ -152,6 +155,22 @@ function MainPage() {
     initMap();
   }, [isRoomConnect]);
 
+  // 모달 발생 이벤트를 상정하기 위해 임시로 만든 훅입니다.
+  useEffect(() => {
+    if (!isRoomConnect) {
+      return;
+    }
+    if (!mapRef.current) {
+      return;
+    }
+    if (!roomLocation.lat || !roomLocation.lng) {
+      return;
+    }
+    setTimeout(() => {
+      setRestaurantDetailModalOn(true);
+    }, 3000);
+  }, [isRoomConnect]);
+
   return !isRoomConnect ? (
     <div>loading...</div>
   ) : (
@@ -168,7 +187,11 @@ function MainPage() {
         <ListIcon />
         <ButtonInnerTextBox>목록보기</ButtonInnerTextBox>
       </MapOrListButton>
-      <RestaurantDetailModal />
+      <AnimatePresence>
+        {isRestaurantDetailModalOn && (
+          <RestaurantDetailModal setRestaurantDetailModalOn={setRestaurantDetailModalOn} />
+        )}
+      </AnimatePresence>
     </MainPageLayout>
   );
 }

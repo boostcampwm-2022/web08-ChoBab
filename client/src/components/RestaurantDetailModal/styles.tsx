@@ -1,19 +1,37 @@
 import styled from 'styled-components';
 import * as palette from '@styles/Variables';
+import { motion } from 'framer-motion';
 
-export const ModalLayout = styled.div`
+export const ModalLayout = styled(motion.div)`
   width: 100%;
   height: 100%;
   max-height: 100%;
   position: absolute;
   visibility: visible;
-  z-index: 999; // 음식점 상세정보보다 더 상위에 겹쳐질 요소가 없다고 판단
+  z-index: 998; // 음식점 상세정보보다 더 상위에 겹쳐질 요소가 없다고 판단
 `;
 
 export const BackwardButton = styled.div`
   position: absolute;
   top: 10px;
   left: 10px;
+  z-index: 999;
+`;
+
+export const AddCandidatesButton = styled.div`
+  position: absolute;
+  top:10px;
+  right: 10px;
+  display: flex;
+  height: 20px;
+  width: 60px;
+  background-color: ${palette.PRIMARY};
+  border-radius: 10px;
+  font-size: 12px;
+  justify-content: center;
+  align-items: center;
+  color:white;
+  z-index: 999;
 `;
 
 export const ModalBox = styled.div`
@@ -22,100 +40,9 @@ export const ModalBox = styled.div`
   background-color: white;
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow-y: auto;
   -ms-overflow-style: none;
   ::-webkit-scrollbar {
     display: none;
   }
-`;
-
-export const ImageCarousel = styled.div`
-  width: 100%;
-  height: 45%;
-  background-color: aliceblue;
-`;
-
-export const ModalBody = styled.div`
-  width: 100%;
-  height: 20%;
-  display: flex;
-  flex-direction: column;
-  padding: 10px 10px;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  box-shadow: 0px 4px 10px rgba(51, 51, 51, 0.1), 0px 0px 4px rgba(51, 51, 51, 0.05);
-`;
-
-export const NameBox = styled.div`
-  font-size: 20px;
-  font-weight: 700;
-`;
-
-export const CategoryBox = styled.div`
-  font-size: 16px;
-`;
-
-export const RatingBox = styled.div``;
-
-export const ModalFooter = styled.div`
-  width: 100%;
-  height: 35%;
-  padding: 30px;
-`;
-
-export const ModalFooterNav = styled.div`
-  width: 100%;
-  height: 20%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-content: center;
-  border-bottom: 0.1px solid gray;
-`;
-
-export const OperationInfoBody = styled.div``;
-
-export const ScrollTest = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 20px 10px;
-  //height: 500px;
-  gap: 10px;
-`;
-
-export const AddressBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  svg {
-    height: 22px;
-  }
-`;
-
-export const IconBox = styled.div`
-  width: 26px;
-  height: 26px;
-`;
-
-export const PhoneBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  svg {
-    height: 22px;
-  }
-`;
-
-export const MapLayout = styled.div`
-  width: 100%;
-  padding: 5px;
-`;
-
-export const MapBox = styled.div`
-  width: 100%;
-  height: 200px;
-  border: 0.1px solid gray;
-  border-radius: 5px;
 `;
