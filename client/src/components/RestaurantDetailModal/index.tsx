@@ -39,9 +39,9 @@ export function RestaurantDetailModal({ setRestaurantDetailModalOn }: PropsType)
         rating: 4.2,
         phone: '010-123-1234',
         imageUrlList: [
-          'https://cdn.dribbble.com/users/808903/screenshots/3831862/dribbble_szablon__1_1.png',
-          'https://github.com/pmndrs/zustand/blob/main/bear.jpg?raw=true',
-          'https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg',
+          'https://w.namu.la/s/229b93bd8eaaae25da6f41784895671d784988f598388c1419f7b3247f3a225138951c9b4c6c79d50ed3262505766c3212ab00c074f8d51c5281beef7f7b8cb6426c2876a3971743578d50832d0b0cbb938b83d193f896cfe59405fb389046da',
+          'https://w.namu.la/s/fe2a2f4481797e81ce0a283cb8de363d4f3fcfc746b1317e0febde46634aea496a91350b279b06ae1def613872eafd36d9d780e3c70f2c2fd0f63cbca992ec3ded4e16acdc4d1e3baeb60b57d50177f2010f8669d0e8d04482718b5c866bb2dd2ddcb2c19080355f7f5945250337f4d6',
+          'https://w.namu.la/s/e46ab8199b07958a7c8ee51aa3d7484e64cd32fe75c3af4ceaad1687afd10a2f421f3451d0e1501d07f8d046276a36f91bc2a320cb1d2a2435423581ba802c13261c7c543c8d4f64d82c7f7f38848a0b4d9d970e2c9a7c796b030b9db855d6d9',
         ],
       };
       setRestaurantData({ ...restaurantData, ...mockRestaurantData });
@@ -64,13 +64,11 @@ export function RestaurantDetailModal({ setRestaurantDetailModalOn }: PropsType)
               setRestaurantDetailModalOn(false);
             }}
           >
-            <BackwardIcon fill="white"/>
+            <BackwardIcon fill="white" />
           </BackwardButton>
           <AddCandidatesButton>후보 추가</AddCandidatesButton>
           <ModalBox>
-            <RestaurantDetailCarousel
-              imageUrlList={restaurantData.imageUrlList}
-            />
+            <RestaurantDetailCarousel imageUrlList={restaurantData.imageUrlList} />
             <RestaurantDetailModalBody
               name={restaurantData.name}
               category={restaurantData.category}
