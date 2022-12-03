@@ -135,7 +135,7 @@ function MainPage() {
     <div>loading...</div>
   ) : (
     <MainPageLayout>
-      <MainMap restaurantData={restaurantData.slice(80, 100)} roomLocation={roomLocation} />
+      <MainMap restaurantData={restaurantData} roomLocation={roomLocation} />
       <HeaderBox>
         <Header>
           <LinkShareButton />

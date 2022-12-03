@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import RiceImage from '@assets/images/rice.svg';
 import SushiImage from '@assets/images/sushi.svg';
@@ -32,138 +32,160 @@ interface PropsType {
   roomLocation: RoomLocationType;
 }
 
+const getIconUrlByCategory = (category: string) => {
+  switch (category) {
+    case '일식':
+      return SushiImage;
+    case '중식':
+      return DumplingImage;
+    case '양식':
+      return SpaghettiImage;
+    case '치킨':
+      return ChickenImage;
+    case '패스트푸드':
+      return HamburgerImage;
+    case '분식':
+      return HotdogImage;
+    case '한식':
+    default:
+      return RiceImage;
+  }
+};
+
 function MainMap({ restaurantData, roomLocation }: PropsType) {
   const [mapRef, mapDivRef] = useNaverMaps(); // zoomlevel 16 props로
-  const markersRef = useRef<naver.maps.Marker[]>([]);
+
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 
-  const getIconUrlByCategory = (category: string) => {
-    switch (category) {
-      case '한식':
-        return RiceImage;
-      case '일식':
-        return SushiImage;
-      case '중식':
-        return DumplingImage;
-      case '양식':
-        return SpaghettiImage;
-      case '치킨':
-        return ChickenImage;
-      case '패스트푸드':
-        return HamburgerImage;
-      case '분식':
-        return HotdogImage;
-      default:
-        return '';
-    }
-  };
-
-  // 음식점 개수만큼 마커 생성
-  const createMarkers = () => {
-    if (!mapRef.current) {
-      return;
-    }
-
-    const restaurantCnt = restaurantData.length;
-
-    // forEach문으로 작성 시 mapRef.current쪽에서 타입 에러 발생
-    // forEach 사용 시 내부에서 if (!mapRef.current) { return; } 필요
-    // 그럼에도 불구하고 함수형 프로그래밍으로 작성하는게 좋을지 의문
-    for (let i = 0; i < restaurantCnt; i += 1) {
-      const restaurant = restaurantData[i];
-
-      const { name, category, lat, lng } = restaurant;
-      const iconUrl = getIconUrlByCategory(category);
-
-      const marker = new naver.maps.Marker({
-        map: mapRef.current,
-        title: name,
-        position: new naver.maps.LatLng(lat, lng),
-        icon: {
-          content: `<img src=${iconUrl} width="30" height="30" alt=${name}/>`,
-        },
-      });
-      markersRef.current.push(marker);
-    }
-  };
-
-  // 음식점 개수만큼 정보창 생성
-  const createInfoWindows = () => {
-    restaurantData.forEach((restaurant) => {
-      const { name } = restaurant;
-      const infoWindow = new naver.maps.InfoWindow({
-        content: name, // TODO: div로 이모티콘도 꾸며서 넣기
-      });
-
-      infoWindowsRef.current.push(infoWindow);
-    });
-  };
-
-  // 마커 클릭 시 정보창 open/close 처리
-  const handleMarkerClick = (idx: number) => {
-    return () => {
-      const marker = markersRef.current[idx];
-      const infoWindow = infoWindowsRef.current[idx];
-
-      if (!mapRef.current) {
-        return;
-      }
-
-      infoWindow.open(mapRef.current, marker);
-    };
-  };
-
-  const closeAllMaker = () => {
+  const closeAllMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
       infoWindow.close();
     });
   };
 
-  // 마커 최적화 로직
-  function showMarker(map: naver.maps.Map, marker: naver.maps.Marker) {
-    if (marker.getMap()) {
-      return;
-    }
-    marker.setMap(map);
-  }
+  const initMarkers = (map: naver.maps.Map) => {
+    const mapBounds = map.getBounds() as naver.maps.LatLngBounds;
 
-  function hideMarker(map: naver.maps.Map, marker: naver.maps.Marker) {
-    if (!marker.getMap()) {
-      return;
-    }
-    marker.setMap(null);
-  }
+    const restaurantClassifyCategory: Map<string, RestaurantType[]> = new Map();
 
-  // 최적화 - 현재 화면에 마커가 보이는지에 따라 show/hide
-  const updateMarkers = (map: naver.maps.Map, markers: naver.maps.Marker[]) => {
-    if (!map) {
-      return;
-    }
-    // any 사용 이유: naver.maps.Bounds에 hasLatLng type이 등록되어있지 않아 TS 에러 발생
-    const mapBounds: any = map.getBounds();
+    // 카테고리로 분류
+    restaurantData.forEach((restaurant) => {
+      const { category } = restaurant;
 
-    markers.forEach((marker) => {
-      const position = marker.getPosition();
-
-      if (mapBounds.hasLatLng(position)) {
-        showMarker(map, marker);
-      } else {
-        hideMarker(map, marker);
+      if (!restaurantClassifyCategory.has(category)) {
+        restaurantClassifyCategory.set(category, []);
       }
+
+      restaurantClassifyCategory.get(category)?.push(restaurant);
+    });
+
+    // 카테고리별 클러스터 생성
+    restaurantClassifyCategory.forEach((value, key) => {
+      const markers: naver.maps.Marker[] = [];
+
+      const restaurants = value;
+
+      const category = key;
+
+      const iconUrl = getIconUrlByCategory(category);
+
+      restaurants.forEach((restaurant) => {
+        const { lat, lng } = restaurant;
+
+        if (!mapBounds.hasLatLng(new naver.maps.LatLng(lat, lng))) {
+          return;
+        }
+
+        if (!map) {
+          return;
+        }
+
+        const { name } = restaurant;
+
+        // (map 에 반영시키지 않는)마커 객체 생성
+        const marker = new naver.maps.Marker({
+          title: name,
+          position: new naver.maps.LatLng(lat, lng),
+          icon: {
+            content: `<img src=${iconUrl} width="30" height="30" alt=${name}/>`,
+          },
+        });
+
+        markers.push(marker);
+
+        // 인포윈도우 객체 생성
+        const infoWindow = new naver.maps.InfoWindow({
+          content: name,
+        });
+
+        infoWindowsRef.current.push(infoWindow);
+
+        // 마커 클릭 이벤트 등록
+        naver.maps.Event.addListener(marker, 'click', () => {
+          infoWindow.open(map, marker);
+        });
+      });
+
+      const markerClustering = new MarkerClustering({
+        map: mapRef.current,
+        markers,
+        maxZoom: 19,
+        gridSize: 300,
+        disableClickZoom: false,
+        icons: [
+          {
+            content: `
+            <div style="position:relative">
+              <div
+                name="counter"
+                style="
+                  position:absolute;
+                  top:-10px;
+                  right:-10px;
+                  background:rgba(0,0,0,40%);
+                  border-radius:30px;
+                  width:20px;
+                  height:20px;
+                  color:white;
+                  font-size:9px;
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                "
+              >
+                5
+              </div>
+              <img src=${iconUrl} width="30" height="30" />
+            </div>
+            `,
+          },
+        ],
+        indexGenerator: [0],
+        // @types/navermaps 에 Marker 클래스 타입에 getElement 메서드가 정의되어 있질 않다.
+        stylingFunction: (clusterMarker: any, count) => {
+          const markerDom = clusterMarker.getElement() as HTMLElement;
+
+          const counterDOM = markerDom.querySelector('div[name="counter"]');
+
+          if (!(counterDOM instanceof HTMLElement)) {
+            return;
+          }
+
+          counterDOM.innerText = `${count}`;
+        },
+      });
     });
   };
 
-  // idle 이벤트 핸들러 생성
-  const onIdle = (map: naver.maps.Map): naver.maps.MapEventListener => {
-    const onIdleListener = naver.maps.Event.addListener(map, 'idle', () => {
+  const onInit = (map: naver.maps.Map): naver.maps.MapEventListener => {
+    const onInitListener = naver.maps.Event.addListener(map, 'init', () => {
       if (!map) {
         return;
       }
 
-      updateMarkers(map, markersRef.current);
+      initMarkers(map);
     });
-
-    return onIdleListener;
+    return onInitListener;
   };
 
   const onClick = (map: naver.maps.Map): naver.maps.MapEventListener => {
@@ -172,23 +194,10 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
         return;
       }
 
-      closeAllMaker();
+      closeAllMarkerInfoWindow();
     });
 
     return onClickListener;
-  };
-
-  const initMap = () => {
-    if (!mapRef.current || !roomLocation) {
-      return;
-    }
-    createMarkers();
-    createInfoWindows();
-
-    // marker 클릭 이벤트 등록
-    markersRef.current.forEach((marker, idx) => {
-      naver.maps.Event.addListener(marker, 'click', handleMarkerClick(idx));
-    });
   };
 
   useEffect(() => {
@@ -196,14 +205,13 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
       return;
     }
 
-    const idleListener = onIdle(mapRef.current);
     const clickListener = onClick(mapRef.current);
-    initMap();
+    const initListener = onInit(mapRef.current);
 
     // eslint-disable-next-line consistent-return
     return () => {
-      naver.maps.Event.removeListener(idleListener);
       naver.maps.Event.removeListener(clickListener);
+      naver.maps.Event.removeListener(initListener);
     };
   }, []);
 
