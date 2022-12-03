@@ -7,3 +7,10 @@ export const RESTAURANT_CATEGORY = Object.freeze([
   '치킨',
   '분식',
 ]);
+
+export const RESTAURANT_DETAIL_FIELD = Object.freeze([
+  'rating',
+  'opening_hours',
+  'photo',
+  'price_level',
+]);
