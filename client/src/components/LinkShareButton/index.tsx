@@ -26,11 +26,10 @@ function LinkShareButton() {
         .catch((error) => {
           console.log(error);
         });
+      return;
     }
     // Web share API 사용 불가능 환경 -> 클립보드 복사 기능
-    else {
-      copyClipboard(location);
-    }
+    copyClipboard(location);
   };
 
   return (
