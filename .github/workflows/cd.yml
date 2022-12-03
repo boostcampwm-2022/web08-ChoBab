@@ -23,6 +23,7 @@ jobs:
           password: ${{ secrets.RELEASE_PASSWORD }}
           script: |
             cd chobab_release
+            git clean -fd
             git checkout release
             git pull origin release
             sh script/client-deploy.sh
@@ -42,6 +43,7 @@ jobs:
           password: ${{ secrets.PROD_PASSWORD }}
           script: |
             cd chobab
+            git clean -fd
             git checkout prod
             git pull origin prod
             sh script/client-deploy.sh
