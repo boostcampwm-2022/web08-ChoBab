@@ -26,7 +26,7 @@ function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: Prop
   useEffect(() => {
     const clientSocket = socketRef.current;
 
-    if (clientSocket === null) {
+    if (!clientSocket) {
       return;
     }
 

@@ -88,17 +88,19 @@ function MainPage() {
 
       const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
 
-      const map = new Map();
+      const tmp = new Map();
+
       userList.forEach((userInfo) => {
         if (userInfo.userId !== userId) {
-          map.set(userInfo.userId, userInfo);
+          tmp.set(userInfo.userId, userInfo);
         }
       });
+
+      setJoinList(tmp);
 
       setMyId(userId);
       setMyName(userName);
       setRoomConnect(true);
-      setJoinList(map);
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
     });
