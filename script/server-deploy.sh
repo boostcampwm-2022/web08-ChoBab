@@ -1,21 +1,21 @@
 #!/bin/bash
 cd server
 
-npm cache verify
-npm ci
+npm cache clean --force && npm ci
 if [ $? -eq 0 ];then
     echo "Server dependencies installed successfully!"
 else
-    npm cache clean --force && npm ci
-    if [ $? -eq 0 ];then
-        echo "Server cache cleaned & dependencies installed successfully!"
-    else
-        echo "Server dependencies installed failed!"
-        exit 100
-    fi
+    echo "Server dependencies installed failed!"
+    exit 100
 fi
 
 npm run build
+if [ $? -eq 0 ];then
+    echo "Server build successfully!"
+else
+    echo "Server build failed!"
+    exit 100
+fi
 
 pm2 reload chobab
 if [ $? -eq 0 ];then
