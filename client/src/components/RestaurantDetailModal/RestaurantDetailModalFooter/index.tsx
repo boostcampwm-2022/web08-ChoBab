@@ -33,13 +33,14 @@ export function RestaurantDetailModalFooter({ id, address, lat, lng, phone }: Pr
     if (!mapRef.current) {
       return;
     }
+    const restaurantLocation = new naver.maps.LatLng(lat, lng);
     const map = new naver.maps.Map(mapRef.current, {
-      center: new naver.maps.LatLng(lat, lng),
+      center: restaurantLocation,
       scrollWheel: false,
     });
     const marker = new naver.maps.Marker({
       map,
-      position: new naver.maps.LatLng(lat, lng),
+      position: restaurantLocation,
     });
   }, [isSelectLeft]);
 
