@@ -64,7 +64,9 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
   };
 
   const initMarkers = (map: naver.maps.Map) => {
-    const mapBounds = map.getBounds() as naver.maps.LatLngBounds;
+    if (!map) {
+      return;
+    }
 
     const restaurantClassifyCategory: Map<string, RestaurantType[]> = new Map();
 
@@ -90,17 +92,7 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
       const iconUrl = getIconUrlByCategory(category);
 
       restaurants.forEach((restaurant) => {
-        const { lat, lng } = restaurant;
-
-        if (!mapBounds.hasLatLng(new naver.maps.LatLng(lat, lng))) {
-          return;
-        }
-
-        if (!map) {
-          return;
-        }
-
-        const { name } = restaurant;
+        const { name, lat, lng } = restaurant;
 
         // (map 에 반영시키지 않는)마커 객체 생성
         const marker = new naver.maps.Marker({
@@ -127,7 +119,7 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
       });
 
       const markerClustering = new MarkerClustering({
-        map: mapRef.current,
+        map,
         markers,
         maxZoom: 19,
         gridSize: 300,
