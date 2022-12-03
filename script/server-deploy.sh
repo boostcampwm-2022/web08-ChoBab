@@ -1,12 +1,18 @@
 #!/bin/bash
 cd server
 
+npm cache verify
 npm ci
 if [ $? -eq 0 ];then
     echo "Server dependencies installed successfully!"
 else
-    echo "Server dependencies installation failed!"
-    exit 100
+    npm cache clean --force && npm ci
+    if [ $? -eq 0 ];then
+        echo "Server cache cleaned & dependencies installed successfully!"
+    else
+        echo "Server dependencies installed failed!"
+        exit 100
+    fi
 fi
 
 npm run build
