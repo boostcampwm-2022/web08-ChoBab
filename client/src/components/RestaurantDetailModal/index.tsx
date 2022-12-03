@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as BackwardIcon } from '@assets/images/backward-arrow-icon.svg';
-import { RestaurantDetailModalFooter } from '@components/RestaurantDetailModalFooter';
-import { RestaurantDetailModalBody } from '@components/RestaurantDetailModalBody';
+import { RestaurantDetailModalFooter } from '@components/RestaurantDetailModal/RestaurantDetailModalFooter';
+import { RestaurantDetailModalBody } from '@components/RestaurantDetailModal/RestaurantDetailModalBody';
 import { LoadingComponent } from '@components/LoadingComponent';
-import { RestaurantDetailCarousel } from '@components/RestaurantDetailModalCarousel';
+import { RestaurantDetailCarousel } from '@components/RestaurantDetailModal/RestaurantDetailModalCarousel';
 import { ModalBox, ModalLayout, BackwardButton, AddCandidatesButton } from './styles';
 
 interface RestaurantDataType {

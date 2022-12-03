@@ -1,5 +1,6 @@
 import { LoadingBox, LoadingLayout } from './styles';
 
+// 음식점 상세 모달을 만들면서 작성한 로딩 화면입니다.
 export function LoadingComponent() {
   return (
     <LoadingLayout>
