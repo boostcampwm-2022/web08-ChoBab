@@ -74,7 +74,7 @@ export function RestaurantDetailModal({ setRestaurantDetailModalOn }: PropsType)
             <RestaurantDetailModalBody
               name={restaurantData.name}
               category={restaurantData.category}
-              rating={restaurantData.rating}
+              rating={restaurantData.rating || 0}
             />
             <RestaurantDetailModalFooter
               id={restaurantData.id}
