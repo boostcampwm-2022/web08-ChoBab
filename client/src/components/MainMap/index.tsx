@@ -53,7 +53,7 @@ const getIconUrlByCategory = (category: string) => {
 };
 
 function MainMap({ restaurantData, roomLocation }: PropsType) {
-  const [mapRef, mapDivRef] = useNaverMaps(); // zoomlevel 16 props로
+  const [mapRef, mapDivRef] = useNaverMaps();
 
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 
