@@ -159,20 +159,21 @@ export class EventsGateway
   async handleDisconnect(client: Socket) {
     const { sessionID, roomCode } = client;
 
-    let sessionIDs = [];
+    // 같은 방의 접속자 세션 아이디를 전부 가져오는 작업
+    const roomSessionIDs =
+      this.server.sockets instanceof Map
+        ? [...this.server.sockets]
+            .filter(([key, value]) => value.roomCode === roomCode)
+            .map(([key, value]) => value.sessionID)
+        : [];
 
-    // 아래 조건문이 없으면 Map 이 아닌 Namespace 로 인식해서 전개연산자를 사용할수가 없다.
-    if (this.server.sockets instanceof Map) {
-      sessionIDs = [...this.server.sockets]
-        .filter(([key, value]) => value.roomCode === roomCode)
-        .map(([key, value]) => value.sessionID);
-    }
-
-    if (!sessionIDs.includes(sessionID)) {
+    // 방안에 같은 세션 접속자가 없을 때 퇴장 처리 (DB, Client 에서 모두 제거)
+    if (!roomSessionIDs.includes(sessionID)) {
       await this.roomDynamicModel.updateOne(
         { roomCode: roomCode },
         { $pull: { userList: { userId: sessionID } } }
       );
+
       client.to(roomCode).emit('leave', sessionID);
     }
 
