@@ -50,10 +50,10 @@ export function RestaurantDetailModal({ setRestaurantDetailModalOn }: PropsType)
 
   return (
     <ModalLayout
-      initial={{ opacity: 0, y: 999 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 999 }}
-      transition={{ duration: 1 }}
+      initial={{ opacity: 0, x: 999 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 999 }}
+      transition={{ duration: 1.5 }}
     >
       {!restaurantData ? (
         <LoadingComponent />
