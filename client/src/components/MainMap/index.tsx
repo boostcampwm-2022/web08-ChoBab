@@ -10,6 +10,8 @@ import HotdogImage from '@assets/images/hotdog.svg';
 
 import { useNaverMaps } from '@hooks/useNaverMaps';
 
+import classes from '@styles/test.module.css';
+
 import { MapBox } from './styles';
 
 interface RestaurantType {
@@ -118,54 +120,39 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
         });
       });
 
-      const markerClustering = new MarkerClustering({
-        map,
-        markers,
-        maxZoom: 19,
-        gridSize: 300,
-        disableClickZoom: false,
-        icons: [
-          {
-            content: `
-            <div style="position:relative">
-              <div
-                name="counter"
-                style="
-                  position:absolute;
-                  top:-10px;
-                  right:-10px;
-                  background:rgba(0,0,0,40%);
-                  border-radius:30px;
-                  width:20px;
-                  height:20px;
-                  color:white;
-                  font-size:9px;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                "
-              >
-                5
-              </div>
-              <img src=${iconUrl} width="30" height="30" />
-            </div>
-            `,
+      // eslint 의 no-new, no-undef 에러를 피하기 위해 즉시실행함수로 작성
+      (() => {
+        return new MarkerClustering({
+          map,
+          markers,
+          maxZoom: 19,
+          gridSize: 300,
+          disableClickZoom: false,
+          icons: [
+            {
+              content: `
+                <div class="${classes.clusterMarkerLayout}">
+                  <div name="counter" class="${classes.clusterMarkerCountBox}">0</div>
+                  <img src=${iconUrl} width="30" height="30" />
+                </div>
+              `,
+            },
+          ],
+          indexGenerator: [0],
+          // @types/navermaps 에 Marker 클래스 타입에 getElement 메서드가 정의되어 있질 않다.
+          stylingFunction: (clusterMarker: any, count) => {
+            const markerDom = clusterMarker.getElement() as HTMLElement;
+
+            const counterDOM = markerDom.querySelector('div[name="counter"]');
+
+            if (!(counterDOM instanceof HTMLElement)) {
+              return;
+            }
+
+            counterDOM.innerText = `${count}`;
           },
-        ],
-        indexGenerator: [0],
-        // @types/navermaps 에 Marker 클래스 타입에 getElement 메서드가 정의되어 있질 않다.
-        stylingFunction: (clusterMarker: any, count) => {
-          const markerDom = clusterMarker.getElement() as HTMLElement;
-
-          const counterDOM = markerDom.querySelector('div[name="counter"]');
-
-          if (!(counterDOM instanceof HTMLElement)) {
-            return;
-          }
-
-          counterDOM.innerText = `${count}`;
-        },
-      });
+        });
+      })();
     });
   };
 
