@@ -10,7 +10,7 @@ import HotdogImage from '@assets/images/hotdog.svg';
 
 import { useNaverMaps } from '@hooks/useNaverMaps';
 
-import classes from '@styles/test.module.css';
+import classes from '@styles/marker.module.css';
 
 import { MapBox } from './styles';
 
