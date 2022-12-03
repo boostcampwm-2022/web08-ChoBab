@@ -16,6 +16,7 @@ import { Server, Socket } from 'socket.io';
 import { sessionMiddleware } from '@utils/session';
 import { Request, Response, NextFunction } from 'express';
 import { PreprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
+import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
 
 interface UserType {
   userId: string;
@@ -94,10 +95,10 @@ export class EventsGateway
   @SubscribeMessage('connectRoom')
   async handleConnectRoom(
     @ConnectedSocket() client: Socket,
-    @MessageBody('roomCode') roomCode: string,
-    @MessageBody('userLat') userLat: number,
-    @MessageBody('userLng') userLng: number
+    @MessageBody() connectRoomDto: ConnectRoomDto
   ) {
+    const { roomCode, userLat, userLng } = connectRoomDto;
+
     client.roomCode = roomCode;
 
     client.join(roomCode);
