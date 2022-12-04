@@ -11,6 +11,8 @@ import MainMap from '@components/MainMap';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 
+import { AnimatePresence } from 'framer-motion';
+import { ReactComponent as MapLocationDotIcon } from '@assets/images/map-location-dot.svg';
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -55,6 +57,8 @@ function MainPage() {
     lat: NAVER_LAT,
     lng: NAVER_LNG,
   });
+
+  const [isCandidateListOn, setCandidateListOn] = useState<boolean>(false);
 
   const connectRoom = () => {
     const clientSocket = socketRef.current;
@@ -142,8 +146,12 @@ function MainPage() {
         </Header>
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
-      <CandidateListButton>
-        <CandidateListIcon />
+      <CandidateListButton
+        onClick={() => {
+          setCandidateListOn(!isCandidateListOn);
+        }}
+      >
+        {isCandidateListOn ? <MapLocationDotIcon /> : <CandidateListIcon />}
       </CandidateListButton>
       <MapOrListButton>
         <ListIcon />
