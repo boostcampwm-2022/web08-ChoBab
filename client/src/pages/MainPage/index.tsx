@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
+import ActiveUserInfo from '@components/ActiveUserInfo';
 import LinkShareButton from '@components/LinkShareButton';
 import MainMap from '@components/MainMap';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
@@ -24,6 +25,13 @@ import {
   MapOrListButton,
 } from './styles';
 
+export interface UserType {
+  userId: string;
+  userLat: number;
+  userLng: number;
+  userName: string;
+}
+
 interface RestaurantType {
   id: string;
   name: string;
@@ -34,17 +42,24 @@ interface RestaurantType {
   address: string;
 }
 
-interface RoomValidResponseType {
+interface ResTemplateType<T> {
   message: string;
-  data: {
-    isRoomValid: boolean;
-  };
+  data: T;
 }
 
-interface UserType {
+interface RoomValidType {
+  isRoomValid: boolean;
+}
+
+interface RoomDataType {
+  roomCode: string;
+  lat: number;
+  lng: number;
+  userList: UserType[];
+  restaurantList: RestaurantType[];
+  candidateList: RestaurantType[];
   userId: string;
-  userLat: number;
-  userLng: number;
+  userName: string;
 }
 
 function MainPage() {
@@ -52,6 +67,10 @@ function MainPage() {
   const { roomCode } = useParams<{ roomCode: string }>();
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [socketRef, connectSocket, disconnectSocket] = useSocket();
+
+  const [myId, setMyId] = useState<string>('');
+  const [myName, setMyName] = useState<string>('');
+  const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
 
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
@@ -67,45 +86,50 @@ function MainPage() {
     if (!(clientSocket instanceof Socket)) {
       throw new Error();
     }
-    clientSocket.on(
-      'connectResult',
-      (data: {
-        message: string;
-        data?: {
-          roomCode: string;
-          lat: number;
-          lng: number;
-          userList: UserType[];
-          restaurantList: RestaurantType[];
-          candidateList: RestaurantType[];
-        };
-      }) => {
-        if (!data.data) {
-          console.log(data.message);
-          return;
-        }
-        const { lat, lng, userList, restaurantList, candidateList } = data.data;
-        setRoomConnect(true);
-        setRestaurantData(restaurantList);
-        setRoomLocation({ ...roomLocation, ...{ lat, lng } });
-        console.log(data);
+    clientSocket.on('connectResult', (data: ResTemplateType<RoomDataType>) => {
+      if (!data.data) {
+        console.log(data.message);
+        return;
       }
-    );
+
+      const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
+
+      const tmp = new Map();
+
+      userList.forEach((userInfo) => {
+        if (userInfo.userId !== userId) {
+          tmp.set(userInfo.userId, userInfo);
+        }
+      });
+
+      setJoinList(tmp);
+
+      setMyId(userId);
+      setMyName(userName);
+      setRoomConnect(true);
+      setRestaurantData(restaurantList);
+      setRoomLocation({ ...roomLocation, ...{ lat, lng } });
+    });
     clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
   };
 
   const initService = async () => {
     try {
-      await connectSocket();
+      /**
+       * connect 순서 매우 중요
+       * 세션 객체 생성을 위해 rest api 가 먼저 호출되어야 한다.
+       */
       const {
         data: {
           data: { isRoomValid },
         },
-      } = await axios.get<RoomValidResponseType>(`/api/room/valid?roomCode=${roomCode}`);
+      } = await axios.get<ResTemplateType<RoomValidType>>(`/api/room/valid?roomCode=${roomCode}`);
 
       if (!isRoomValid) {
         throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
       }
+
+      await connectSocket();
 
       connectRoom();
     } catch (error) {
@@ -140,9 +164,16 @@ function MainPage() {
     <div>loading...</div>
   ) : (
     <MainPageLayout>
-      <MainMap restaurantData={restaurantData.slice(80, 100)} roomLocation={roomLocation} />
+      <MainMap restaurantData={restaurantData} roomLocation={roomLocation} />
       <HeaderBox>
         <Header>
+          <ActiveUserInfo
+            myId={myId}
+            myName={myName}
+            socketRef={socketRef}
+            joinList={joinList}
+            setJoinList={setJoinList}
+          />
           <LinkShareButton />
         </Header>
         <CategoryToggle>토글</CategoryToggle>
