@@ -19,7 +19,7 @@ export const ActiveUserInfoBox = styled.div`
   font-size: 11px;
   padding: 10px;
   width: 220px;
-  max-height: 100px;
+  max-height: 200px;
   overflow-y: scroll;
   box-shadow: 0px 4px 4px rgba(104, 94, 94, 0.25), inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 
