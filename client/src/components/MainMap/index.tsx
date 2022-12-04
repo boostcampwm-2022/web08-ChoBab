@@ -75,26 +75,22 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
       return;
     }
 
-    const restaurantClassifyCategory: Map<string, RestaurantType[]> = new Map();
+    const restaurantListByCategory: Map<string, RestaurantType[]> = new Map();
 
     // 카테고리로 분류
     restaurantData.forEach((restaurant) => {
       const { category } = restaurant;
 
-      if (!restaurantClassifyCategory.has(category)) {
-        restaurantClassifyCategory.set(category, []);
+      if (!restaurantListByCategory.has(category)) {
+        restaurantListByCategory.set(category, []);
       }
 
-      restaurantClassifyCategory.get(category)?.push(restaurant);
+      restaurantListByCategory.get(category)?.push(restaurant);
     });
 
     // 카테고리별 클러스터 생성
-    restaurantClassifyCategory.forEach((value, key) => {
+    restaurantListByCategory.forEach((restaurants, category) => {
       const markers: naver.maps.Marker[] = [];
-
-      const restaurants = value;
-
-      const category = key;
 
       const iconUrl = getIconUrlByCategory(category);
 
