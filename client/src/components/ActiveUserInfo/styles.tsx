@@ -9,7 +9,7 @@ export const ListToggleButton = styled.button`
   border: none;
   background: none;
   height: 100%;
-  padding: 10px;
+  aspect-ratio: 1 / 1;
   cursor: pointer;
 `;
 
