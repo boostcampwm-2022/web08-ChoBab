@@ -5,9 +5,46 @@ on:
     branches: [ dev ]
 
 jobs:
-  build:
+  changes:
+    name: Check for changes
     runs-on: ubuntu-latest
+    outputs:
+      client: ${{steps.filter.outputs.client}}
+      server: ${{steps.filter.outputs.server}}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            client:
+              - 'client/**'
+            server:
+              - 'server/**'
 
+  client:
+    needs: changes
+    if : ${{ needs.changes.outputs.client == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.18.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.1
+          cache: 'npm'
+          cache-dependency-path: |
+            client/package-lock.json
+
+      - name: Install client dependencies
+        run: cd client && npm ci
+
+      - name: Run client build
+        run: cd client && npm run build --if-present
+
+  server:
+    needs: changes
+    if : ${{ needs.changes.outputs.server == 'true' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 16.18.1
@@ -17,29 +54,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: |
             server/package-lock.json
-            client/package-lock.json
 
-      - name: Install client dependencies
-        run: |
-          cd client
-          npm ci
+      - name: Install Server dependencies
+        run: cd server && npm ci
 
-      - name: Install server dependencies
-        run: |
-          cd server
-          npm ci
-
-      - name: Set client .env
-        run: |
-          cd client
-          echo "VITE_APP_NAVER_MAP_CLIENT_ID=${{ secrets.VITE_APP_NAVER_MAP_CLIENT_ID }}" >> .env
-
-      - name: Run client build
-        run: |
-          cd client
-          npm run build --if-present
-
-      - name: Run server build
-        run: |
-          cd server
-          npm run build --if-present
+      - name: Run Server build
+        run: cd server && npm run build --if-present
