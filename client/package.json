@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/navermaps": "^3.6.1",
     "@vitejs/plugin-react": "^2.2.0",
     "axios": "^1.2.0",
     "react": "^18.2.0",
@@ -23,6 +22,7 @@
     "zustand": "^4.1.4"
   },
   "devDependencies": {
+    "@types/navermaps": "^3.6.1",
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
