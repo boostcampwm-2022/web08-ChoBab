@@ -5,41 +5,75 @@ on:
     branches: [ dev ]
 
 jobs:
-  build:
+  changes:
+    # client, server 폴더에 변화가 있는지 체크
+    name: Check for changes
     runs-on: ubuntu-latest
+    outputs:
+      client: ${{steps.filter.outputs.client}}
+      server: ${{steps.filter.outputs.server}}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            client:
+              - 'client/**'
+            server:
+              - 'server/**'
 
+  client:
+    # client 폴더에 변화가 있는 경우 Job이 실행됨
+    needs: changes
+    if : ${{ needs.changes.outputs.client == 'true' }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 16.18.1
+      - name: Setup Node.js(v16.18.1)
         uses: actions/setup-node@v3
         with:
           node-version: 16.18.1
-          cache: 'npm'
-          cache-dependency-path: |
-            server/package-lock.json
-            client/package-lock.json
+
+      - name: Cache Client dependencies
+        id: client-cache
+        uses: actions/cache@v3
+        with:
+          path: client/node_modules
+          key: npm-packages-client-${{hashFiles('**/package-lock.json')}}
+          restore-keys: |
+            npm-packages-client-
 
       - name: Install client dependencies
-        run: |
-          cd client
-          npm ci
-
-      - name: Install server dependencies
-        run: |
-          cd server
-          npm ci
-
-      - name: Set client .env
-        run: |
-          cd client
-          echo "VITE_APP_NAVER_MAP_CLIENT_ID=${{ secrets.VITE_APP_NAVER_MAP_CLIENT_ID }}" >> .env
+        if: ${{steps.client-cache.outputs.cache-hit != 'true'}}
+        run: cd client && npm ci
 
       - name: Run client build
-        run: |
-          cd client
-          npm run build --if-present
+        run: cd client && npm run build --if-present
 
-      - name: Run server build
-        run: |
-          cd server
-          npm run build --if-present
+  server:
+    # server 폴더에 변화가 있는 경우 Job이 실행됨
+    needs: changes
+    if : ${{ needs.changes.outputs.server == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js(v16.18.1)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.1
+
+      - name: Cache Server dependencies
+        id: server-cache
+        uses: actions/cache@v3
+        with:
+          path: server/node_modules
+          key: npm-packages-server-${{hashFiles('**/package-lock.json')}}
+          restore-keys: |
+            npm-packages-server-
+
+      - name: Install Server dependencies
+        if: ${{steps.server-cache.outputs.cache-hit != 'true'}}
+        run: cd server && npm ci
+
+      - name: Run Server build
+        run: cd server && npm run build --if-present
