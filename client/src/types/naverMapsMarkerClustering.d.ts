@@ -9,13 +9,13 @@
 
 type HTMLString = string;
 
-interface MarkerIcon {
+interface MarkerIconType {
   content: HTMLString;
   size?: N.Size;
   anchor?: N.Point;
 }
 
-interface MarkerClusteringOptionsTypes {
+interface MarkerClusteringOptionsType {
   // 클러스터 마커를 올릴 지도입니다.
   map?: naver.maps.Map | null;
 
@@ -35,7 +35,7 @@ interface MarkerClusteringOptionsTypes {
   gridSize?: number;
 
   // 클러스터 마커의 아이콘입니다. NAVER Maps JavaScript API v3에서 제공하는 아이콘, 심볼, HTML 마커 유형을 모두 사용할 수 있습니다.
-  icons?: MarkerIcon[];
+  icons?: MarkerIconType[];
 
   // 클러스터 마커의 아이콘 배열에서 어떤 아이콘을 선택할 것인지 인덱스를 결정합니다.
   indexGenerator?: number[];
@@ -48,7 +48,7 @@ interface MarkerClusteringOptionsTypes {
 }
 
 declare class MarkerClustering {
-  constructor(options: MarkerClusteringOptionsTypes);
+  constructor(options: MarkerClusteringOptionsType);
 
   // 많은 메서드가 있지만 당장 사용되지 않아 선언하지 않았습니다.
 }
