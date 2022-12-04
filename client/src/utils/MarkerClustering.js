@@ -753,3 +753,5 @@ Cluster.prototype = {
     return new naver.maps.Point(averageCenter[0], averageCenter[1]);
   },
 };
+
+window.MarkerClustering = MarkerClustering;

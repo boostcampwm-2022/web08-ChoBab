@@ -12,6 +12,8 @@ import { useNaverMaps } from '@hooks/useNaverMaps';
 
 import classes from '@styles/marker.module.css';
 
+import '@utils/MarkerClustering.js';
+
 import { MapBox } from './styles';
 
 interface RestaurantType {
