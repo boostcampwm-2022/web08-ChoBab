@@ -15,7 +15,7 @@ export const useNaverMaps = (): [
 
     mapRef.current = new naver.maps.Map(mapDivRef.current, {
       center: new naver.maps.LatLng(NAVER_LAT, NAVER_LNG),
-      zoom: 14,
+      zoom: 16,
     });
   }, []);
 

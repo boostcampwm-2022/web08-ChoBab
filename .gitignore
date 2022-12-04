@@ -23,3 +23,6 @@ vite.config.ts.timestamp-*.mjs
 
 # env
 .env
+
+# session file store
+sessions/
