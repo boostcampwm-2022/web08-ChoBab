@@ -168,6 +168,17 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
     return onInitListener;
   };
 
+  const onDragend = (map: naver.maps.Map): naver.maps.MapEventListener => {
+    const onDragendListener = naver.maps.Event.addListener(map, 'dragend', () => {
+      if (!map) {
+        return;
+      }
+
+      closeAllMarkerInfoWindow();
+    });
+    return onDragendListener;
+  };
+
   const onClick = (map: naver.maps.Map): naver.maps.MapEventListener => {
     const onClickListener = naver.maps.Event.addListener(map, 'click', () => {
       if (!map) {
@@ -213,15 +224,17 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
       return;
     }
 
-    const clickListener = onClick(mapRef.current);
     const initListener = onInit(mapRef.current);
+    const clickListener = onClick(mapRef.current);
+    const dragendListener = onDragend(mapRef.current);
     const zoomingListener = onZooming(mapRef.current);
     const zoomChangedListener = onZoomChanged(mapRef.current);
 
     // eslint-disable-next-line consistent-return
     return () => {
-      naver.maps.Event.removeListener(clickListener);
       naver.maps.Event.removeListener(initListener);
+      naver.maps.Event.removeListener(clickListener);
+      naver.maps.Event.removeListener(dragendListener);
       naver.maps.Event.removeListener(zoomingListener);
       naver.maps.Event.removeListener(zoomChangedListener);
     };
