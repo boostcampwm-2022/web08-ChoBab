@@ -13,6 +13,7 @@ import useCurrentLocation from '@hooks/useCurrentLocation';
 
 import { AnimatePresence } from 'framer-motion';
 import { ReactComponent as MapLocationDotIcon } from '@assets/images/map-location-dot.svg';
+import { CandidateListModal } from '@components/CandidateListModal';
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -151,12 +152,17 @@ function MainPage() {
           setCandidateListOn(!isCandidateListOn);
         }}
       >
-        {isCandidateListOn ? <MapLocationDotIcon /> : <CandidateListIcon />}
+        {isCandidateListOn ? (
+          <MapLocationDotIcon fill="white" width="30px" height="auto" />
+        ) : (
+          <CandidateListIcon />
+        )}
       </CandidateListButton>
       <MapOrListButton>
         <ListIcon />
         <ButtonInnerTextBox>목록보기</ButtonInnerTextBox>
       </MapOrListButton>
+      <AnimatePresence>{isCandidateListOn && <CandidateListModal />}</AnimatePresence>
     </MainPageLayout>
   );
 }
