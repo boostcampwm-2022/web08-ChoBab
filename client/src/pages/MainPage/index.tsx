@@ -1,13 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import useCurrentLocation from '@hooks/useCurrentLocation';
+
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
 import { RestaurantDetailModal } from '@components/RestaurantDetailModal';
 import { AnimatePresence, motion } from 'framer-motion';
+import LinkShareButton from '@components/LinkShareButton';
+import MainMap from '@components/MainMap';
+import { NAVER_LAT, NAVER_LNG } from '@constants/map';
+import useCurrentLocation from '@hooks/useCurrentLocation';
+
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -15,7 +20,6 @@ import {
   Header,
   HeaderBox,
   MainPageLayout,
-  MapBox,
   MapOrListButton,
 } from './styles';
 
@@ -43,16 +47,15 @@ interface UserType {
 }
 
 function MainPage() {
-  const mapRef = useRef<HTMLDivElement>(null);
   const userLocation = useCurrentLocation();
   const { roomCode } = useParams<{ roomCode: string }>();
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [socketRef, connectSocket, disconnectSocket] = useSocket();
 
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const [roomLocation, setRoomLocation] = useState<{ lat: number | null; lng: number | null }>({
-    lat: null,
-    lng: null,
+  const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
+    lat: NAVER_LAT,
+    lng: NAVER_LNG,
   });
 
   const [isRestaurantDetailModalOn, setRestaurantDetailModalOn] = useState<boolean>(false);
@@ -109,16 +112,6 @@ function MainPage() {
     }
   };
 
-  const initMap = () => {
-    if (!mapRef.current || !roomLocation.lat || !roomLocation.lng) {
-      return;
-    }
-    const map = new naver.maps.Map(mapRef.current, {
-      center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
-      zoom: 14,
-    });
-  };
-
   useEffect(() => {
     // userLocation 의 초기값을 {lat:null, lng:null} 로 지정.
     // 따라서 사용자의 위치 정보의 로딩이 끝나기 전까지(위치 정보 불러오기 성공 혹은 실패) 해당 if 문을 통해 initService가 작동하지 않게 됨.
@@ -142,42 +135,15 @@ function MainPage() {
     };
   }, [userLocation]);
 
-  useEffect(() => {
-    if (!isRoomConnect) {
-      return;
-    }
-    if (!mapRef.current) {
-      return;
-    }
-    if (!roomLocation.lat || !roomLocation.lng) {
-      return;
-    }
-    initMap();
-  }, [isRoomConnect]);
-
-  // 모달 발생 이벤트를 상정하기 위해 임시로 만든 훅입니다.
-  useEffect(() => {
-    if (!isRoomConnect) {
-      return;
-    }
-    if (!mapRef.current) {
-      return;
-    }
-    if (!roomLocation.lat || !roomLocation.lng) {
-      return;
-    }
-    setTimeout(() => {
-      setRestaurantDetailModalOn(true);
-    }, 3000);
-  }, [isRoomConnect]);
-
   return !isRoomConnect ? (
     <div>loading...</div>
   ) : (
     <MainPageLayout>
-      <MapBox ref={mapRef} />
+      <MainMap restaurantData={restaurantData.slice(80, 100)} roomLocation={roomLocation} />
       <HeaderBox>
-        <Header>헤더</Header>
+        <Header>
+          <LinkShareButton />
+        </Header>
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
       <CandidateListButton>
