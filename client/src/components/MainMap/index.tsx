@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import RiceImage from '@assets/images/rice.svg';
 import SushiImage from '@assets/images/sushi.svg';
@@ -7,6 +7,7 @@ import SpaghettiImage from '@assets/images/spaghetti.svg';
 import ChickenImage from '@assets/images/chicken.svg';
 import HamburgerImage from '@assets/images/hamburger.svg';
 import HotdogImage from '@assets/images/hotdog.svg';
+import { ReactComponent as LoadingSpinner } from '@assets/images/loading-spinner.svg';
 
 import { useNaverMaps } from '@hooks/useNaverMaps';
 
@@ -14,7 +15,7 @@ import classes from '@styles/marker.module.css';
 
 import '@utils/MarkerClustering.js';
 
-import { MapBox } from './styles';
+import { MapLayout, MapLoadingBox, MapBox } from './styles';
 
 interface RestaurantType {
   id: string;
@@ -58,6 +59,8 @@ const getIconUrlByCategory = (category: string) => {
 
 function MainMap({ restaurantData, roomLocation }: PropsType) {
   const [mapRef, mapDivRef] = useNaverMaps();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 
@@ -181,6 +184,34 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
     return onClickListener;
   };
 
+  const onZooming = (map: naver.maps.Map): naver.maps.MapEventListener => {
+    const onZoomingListener = naver.maps.Event.addListener(mapRef.current, 'zooming', () => {
+      if (!map) {
+        return;
+      }
+
+      setLoading(true);
+    });
+
+    return onZoomingListener;
+  };
+
+  const onZoomChanged = (map: naver.maps.Map): naver.maps.MapEventListener => {
+    const onZoomChangedListener = naver.maps.Event.addListener(
+      mapRef.current,
+      'zoom_changed',
+      () => {
+        if (!map) {
+          return;
+        }
+
+        setLoading(false);
+      }
+    );
+
+    return onZoomChangedListener;
+  };
+
   useEffect(() => {
     if (!mapRef.current) {
       return;
@@ -188,11 +219,15 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
 
     const clickListener = onClick(mapRef.current);
     const initListener = onInit(mapRef.current);
+    const zoomingListener = onZooming(mapRef.current);
+    const zoomChangedListener = onZoomChanged(mapRef.current);
 
     // eslint-disable-next-line consistent-return
     return () => {
       naver.maps.Event.removeListener(clickListener);
       naver.maps.Event.removeListener(initListener);
+      naver.maps.Event.removeListener(zoomingListener);
+      naver.maps.Event.removeListener(zoomChangedListener);
     };
   }, []);
 
@@ -205,7 +240,16 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
     mapRef.current.setCenter({ x: roomLocation.lng, y: roomLocation.lat });
   }, [roomLocation]);
 
-  return <MapBox ref={mapDivRef} />;
+  return (
+    <MapLayout>
+      {loading && (
+        <MapLoadingBox>
+          <LoadingSpinner />
+        </MapLoadingBox>
+      )}
+      <MapBox ref={mapDivRef} />;
+    </MapLayout>
+  );
 }
 
 export default MainMap;
