@@ -14,11 +14,24 @@ export const ListToggleButton = styled.button`
 `;
 
 export const ActiveUserInfoBox = styled.div`
+  // TODO: 색상변수 정리 필요
   background-color: white;
   font-size: 11px;
   padding: 10px;
-  width: 200px;
+  width: 220px;
+  max-height: 100px;
+  overflow-y: scroll;
   box-shadow: 0px 4px 4px rgba(104, 94, 94, 0.25), inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: #dfdfdf;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a3a3a3;
+    border-radius: 4px;
+  }
 `;
 
 export const ActiveUserInfoList = styled.ul``;
