@@ -17,6 +17,7 @@ import { sessionMiddleware } from '@utils/session';
 import { Request, Response, NextFunction } from 'express';
 import { PreprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
 import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
+import { makeUserRandomNickname } from '@utils/nickname';
 
 interface UserType {
   userId: string;
@@ -71,13 +72,6 @@ export class EventsGateway
     };
   }
 
-  private createRandomNickname() {
-    const firstName = ['박', '이', '권', '강'];
-    const LastName = ['정현', '창명', '유리', '윤희'];
-
-    return firstName[Math.floor(Math.random() * 4)] + LastName[Math.floor(Math.random() * 4)];
-  }
-
   onModuleInit() {
     this.server.use((socket, next) => {
       sessionMiddleware(socket.request as Request, {} as Response, next as NextFunction);
@@ -124,7 +118,7 @@ export class EventsGateway
         user = userList[userIndex];
         newUserList = userList;
       } else {
-        user = { userId, userLat, userLng, userName: this.createRandomNickname() };
+        user = { userId, userLat, userLng, userName: makeUserRandomNickname() };
         newUserList = [...userList, user];
         await this.roomDynamicModel.findOneAndUpdate({ roomCode }, { userList: newUserList });
       }
