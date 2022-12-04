@@ -1,4 +1,8 @@
 import * as session from 'express-session';
+import * as fileStoreCreateFunction from 'session-file-store';
+import { ONE_HOUR_MILLISECOND } from '@constants/time';
+
+const FileStore = fileStoreCreateFunction(session);
 
 export const sessionMiddleware = session({
   resave: false,
@@ -10,6 +14,7 @@ export const sessionMiddleware = session({
     secure: false,
     // expires 를 따로 설정해주지 않으면 브라우저가 닫혔을 때 세션쿠키가 삭제되기 때문에
     // 적당한 세션쿠키 유효시간을 설정해 줌 (1시간)
-    maxAge: 1000 * 60 * 60,
+    maxAge: ONE_HOUR_MILLISECOND,
   },
+  store: new FileStore(),
 });

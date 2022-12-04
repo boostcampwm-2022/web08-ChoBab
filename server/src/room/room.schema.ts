@@ -9,6 +9,7 @@ interface UserType {
   userId: string;
   userLat: number;
   userLng: number;
+  userName: string;
 }
 
 @Schema()
