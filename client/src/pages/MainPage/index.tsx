@@ -184,7 +184,7 @@ function MainPage() {
         }}
       >
         {isCandidateListOn ? (
-          <MapLocationDotIcon fill="white" width="30px" height="auto" />
+          <MapLocationDotIcon fill="white" width="30px" height="30px" />
         ) : (
           <CandidateListIcon />
         )}
@@ -193,7 +193,11 @@ function MainPage() {
         <ListIcon />
         <ButtonInnerTextBox>목록보기</ButtonInnerTextBox>
       </MapOrListButton>
-      <AnimatePresence>{isCandidateListOn && <CandidateListModal />}</AnimatePresence>
+      <AnimatePresence>
+        {isCandidateListOn && (
+          <CandidateListModal roomLat={roomLocation.lat} roomLng={roomLocation.lng} />
+        )}
+      </AnimatePresence>
     </MainPageLayout>
   );
 }
