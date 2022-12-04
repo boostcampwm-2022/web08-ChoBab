@@ -540,7 +540,7 @@ Cluster.prototype = {
       this._clusterMarker,
       'click',
       naver.maps.Util.bind(function (e) {
-        map.morph(e.coord, map.getZoom() + 1);
+        map.morph(this._clusterMarker.getPosition(), map.getZoom() + 1);
       }, this)
     );
   },
