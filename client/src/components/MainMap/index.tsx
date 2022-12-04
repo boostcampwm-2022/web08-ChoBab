@@ -247,7 +247,7 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
           <LoadingSpinner />
         </MapLoadingBox>
       )}
-      <MapBox ref={mapDivRef} />;
+      <MapBox ref={mapDivRef} />
     </MapLayout>
   );
 }
