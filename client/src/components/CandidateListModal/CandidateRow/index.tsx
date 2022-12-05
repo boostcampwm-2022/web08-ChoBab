@@ -1,4 +1,4 @@
-import { CandidateRowBox, ThumbnailBox } from './styles';
+import { CandidateRowBox, ImageBox, ThumbnailImage } from './styles';
 
 interface CandidateType {
   id: string;
@@ -19,7 +19,9 @@ export function CandidateRow({ candidateRestaurant }: PropsType) {
   const { id, name, category, lat, lng, like, rating, thumbnailImage } = candidateRestaurant;
   return (
     <CandidateRowBox>
-      <ThumbnailBox style={{ backgroundImage: `url(${thumbnailImage})` }} />
+      <ImageBox>
+        <ThumbnailImage style={{ backgroundImage: `url(${thumbnailImage})` }} />
+      </ImageBox>
     </CandidateRowBox>
   );
 }
