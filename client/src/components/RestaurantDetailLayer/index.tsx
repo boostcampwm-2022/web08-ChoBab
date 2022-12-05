@@ -2,10 +2,24 @@ import { useRestaurantDetailStateStore } from '@store/index';
 import { LayerBox } from './styles';
 
 function RestaurantDetailLayer() {
-  const { restaurantDetailState } = useRestaurantDetailStateStore((state) => state);
+  const { restaurantDetailState, updateRestaurantDetailState } = useRestaurantDetailStateStore(
+    (state) => state
+  );
 
   if (restaurantDetailState) {
-    return <LayerBox>restaurant detail page</LayerBox>;
+    return (
+      <LayerBox>
+        restaurant detail page
+        <button
+          type="button"
+          onClick={() => {
+            updateRestaurantDetailState(null);
+          }}
+        >
+          닫기
+        </button>
+      </LayerBox>
+    );
   }
 
   return <div />;
