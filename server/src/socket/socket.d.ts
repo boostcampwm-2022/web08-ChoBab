@@ -12,5 +12,6 @@ declare module 'http' {
 declare module 'socket.io' {
   class Socket {
     sessionID: string;
+    roomCode: string;
   }
 }

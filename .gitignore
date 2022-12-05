@@ -8,6 +8,7 @@ dist-ssr
 logs
 *.log
 npm-debug.log*
+vite.config.ts.timestamp-*.mjs
 
 # OS
 .DS_Store
@@ -22,3 +23,6 @@ npm-debug.log*
 
 # env
 .env
+
+# session file store
+sessions/

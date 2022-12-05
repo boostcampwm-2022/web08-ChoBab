@@ -1,0 +1,18 @@
+.clusterMarkerLayout {
+  position: relative;
+}
+
+.clusterMarkerCountBox {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: rgba(0, 0, 0, 40%);
+  border-radius: 30px;
+  width: 20px;
+  height: 20px;
+  color: white;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
