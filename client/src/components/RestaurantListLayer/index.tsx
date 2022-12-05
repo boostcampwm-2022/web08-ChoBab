@@ -1,15 +1,20 @@
 import { useRestaurantListStateStore } from '@store/index';
-import RestaurantList from '@components/RestaurantList';
+import RestaurantFiltered from '@components/RestaurantFiltered';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { LayerBox } from './styles';
 
-function RestaurantListLayer() {
+interface PropsType {
+  restaurantData: RestaurantType[];
+  candidateData: RestaurantType[];
+}
+
+function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
   const { restaurantListState } = useRestaurantListStateStore((state) => state);
 
   if (restaurantListState === RESTAURANT_LIST_TYPES.category) {
     return (
       <LayerBox>
-        <RestaurantList />
+        <RestaurantFiltered restaurantData={restaurantData} />
       </LayerBox>
     );
   }
