@@ -6,7 +6,6 @@ export const LayerBox = styled.div`
   bottom: 0;
   width: 100%;
   height: calc(100% - ${palette.HEADER_HEIGHT_RATIO});
-  background: white;
   z-index: ${palette.RESTAURANT_LAYER_Z_INDEX};
 
   overflow-y: overlay;
