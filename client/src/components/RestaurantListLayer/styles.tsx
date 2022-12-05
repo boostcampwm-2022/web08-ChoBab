@@ -6,14 +6,16 @@ export const LayerBox = styled.div`
   bottom: 0;
   width: 100%;
   height: calc(100% - ${palette.HEADER_HEIGHT_RATIO});
-  background: yellow;
+  background: white;
   z-index: ${palette.RESTAURANT_LAYER_Z_INDEX};
 
-  overflow-y: scroll;
+  overflow-y: overlay;
   &::-webkit-scrollbar {
+    width: 8px;
     background-color: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    color: ${palette.SCROLL_THUMB_COLOR};
+    background-color: ${palette.SCROLL_THUMB_COLOR};
+    border-radius: 4px;
   }
 `;
