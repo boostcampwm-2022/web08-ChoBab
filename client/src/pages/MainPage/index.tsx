@@ -87,12 +87,44 @@ function MainPage() {
     (state) => state
   );
 
+  const isMap = () => {
+    return fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden;
+  };
+
+  const isRestaurantList = () => {
+    return fullScreenModalState === FULL_SCREEN_MODAL_TYPES.restaurantList;
+  };
+
+  const isRestaurantCandidateList = () => {
+    return fullScreenModalState === FULL_SCREEN_MODAL_TYPES.restaurantCandidateList;
+  };
+
+  const handleSwitchCandidateList = () => {
+    if (isMap() || isRestaurantList()) {
+      updatefullScreenModalState(FULL_SCREEN_MODAL_TYPES.restaurantCandidateList);
+      return;
+    }
+
+    updatefullScreenModalState(FULL_SCREEN_MODAL_TYPES.hidden);
+  };
+
+  const handleSwitchRestaurantList = () => {
+    if (isMap()) {
+      updatefullScreenModalState(FULL_SCREEN_MODAL_TYPES.restaurantList);
+      return;
+    }
+
+    updatefullScreenModalState(FULL_SCREEN_MODAL_TYPES.hidden);
+  };
+
   const connectRoom = () => {
     const clientSocket = socketRef.current;
     const { lat: userLat, lng: userLng } = userLocation;
+
     if (!(clientSocket instanceof Socket)) {
       throw new Error();
     }
+
     clientSocket.on('connectResult', (data: ResTemplateType<RoomDataType>) => {
       if (!data.data) {
         console.log(data.message);
@@ -117,6 +149,7 @@ function MainPage() {
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
     });
+
     clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
   };
 
@@ -186,37 +219,16 @@ function MainPage() {
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
 
-      {/* (토글) 지도 화면 <-> 식당 후보 목록 */}
-      <CandidateListButton
-        onClick={() => {
-          updatefullScreenModalState(
-            fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden
-              ? FULL_SCREEN_MODAL_TYPES.restaurantCandidateList
-              : FULL_SCREEN_MODAL_TYPES.hidden
-          );
-        }}
-      >
-        {fullScreenModalState === FULL_SCREEN_MODAL_TYPES.restaurantCandidateList ? (
-          <MapLocationIcon />
-        ) : (
-          <CandidateListIcon />
-        )}
+      {/* 식당 후보 목록 <-> 지도 화면 */}
+      {/* 식당 후보 목록 <-- 전체 식당 목록 */}
+      <CandidateListButton onClick={handleSwitchCandidateList}>
+        {isRestaurantCandidateList() ? <MapLocationIcon /> : <CandidateListIcon />}
       </CandidateListButton>
 
-      {/* (토글) 지도 화면 <-> 전체 식당 목록 */}
-      <MapOrListButton
-        onClick={() => {
-          updatefullScreenModalState(
-            fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden
-              ? FULL_SCREEN_MODAL_TYPES.restaurantList
-              : FULL_SCREEN_MODAL_TYPES.hidden
-          );
-        }}
-      >
-        {fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden ? <ListIcon /> : <MapIcon />}
-        <ButtonInnerTextBox>
-          {fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden ? '목록보기' : '지도보기'}
-        </ButtonInnerTextBox>
+      {/* 전체 식당 목록 <-> 지도 화면 */}
+      <MapOrListButton onClick={handleSwitchRestaurantList}>
+        {isMap() ? <ListIcon /> : <MapIcon />}
+        <ButtonInnerTextBox>{isMap() ? '목록보기' : '지도보기'}</ButtonInnerTextBox>
       </MapOrListButton>
 
       <RestaurantListLayer />
