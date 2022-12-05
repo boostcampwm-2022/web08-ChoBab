@@ -200,7 +200,7 @@ function MainPage() {
       )}
 
       {/* 식당 리스트 & 식당 상세정보 Full-Screen 모달 컴포넌트 */}
-      <RestaurantListLayer />
+      <RestaurantListLayer restaurantData={restaurantData} candidateData={candidateData} />
       <RestaurantDetailLayer />
     </MainPageLayout>
   );
