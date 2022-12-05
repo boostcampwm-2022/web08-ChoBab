@@ -151,6 +151,23 @@ export class EventsGateway
     console.log('connected');
   }
 
+  // 식당 투표
+  @SubscribeMessage('voteRestaurant')
+  async voteRestaurant(@ConnectedSocket() client: Socket, @MessageBody() restaurantId: string) {
+    console.log('voteRestaurant');
+    return;
+  }
+
+  // 식당 투표 취소
+  @SubscribeMessage('cancelVoteRestaurant')
+  async cancelVoteRestaurant(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() restaurantId: string
+  ) {
+    console.log('cancelVoteRestaurant');
+    return;
+  }
+
   async handleDisconnect(client: Socket) {
     const { sessionID, roomCode } = client;
 
