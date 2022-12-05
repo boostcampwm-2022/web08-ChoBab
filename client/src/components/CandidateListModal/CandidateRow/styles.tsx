@@ -82,7 +82,8 @@ export const LikeButton = styled.div`
   width: 15%;
   height: 15%;
   background-color: white;
-  font-size: 10px;
+  font-size: 14px;
   border: 0.1px solid ${palette.BORDER};
   box-shadow: 0 0 2px 2px ${palette.BORDER};
+  gap: 7px;
 `;

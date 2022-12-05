@@ -1,4 +1,5 @@
 import { ReactComponent as StarIcon } from '@assets/images/star-icon.svg';
+import { ReactComponent as UnfilledLikeIcon } from '@assets/images/like-unfilled-icon.svg';
 import * as palette from '@styles/Variables';
 import { useMeetLocationStore } from '@store/index';
 import { getDistance } from 'geolib';
@@ -47,10 +48,14 @@ export function CandidateRow({ candidateRestaurant }: PropsType) {
           <StarIcon fill={palette.PRIMARY} /> {rating}
         </RatingBox>
         <DistanceBox>
-          모임 위치에서 {distance > 1000 ? `${Math.round(distance / 100) / 10} km` : `${distance} m`}
+          모임 위치에서{' '}
+          {distance > 1000 ? `${Math.round(distance / 100) / 10} km` : `${distance} m`}
         </DistanceBox>
       </InfoBox>
-      <LikeButton>좋아요</LikeButton>
+      <LikeButton>
+        {like}
+        <UnfilledLikeIcon height="14px" />
+      </LikeButton>
     </CandidateRowBox>
   );
 }
