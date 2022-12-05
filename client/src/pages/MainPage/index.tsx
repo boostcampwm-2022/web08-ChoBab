@@ -3,13 +3,18 @@ import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { usePageStateStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
+import { ReactComponent as MapIcon } from '@assets/images/map-icon.svg';
+import { ReactComponent as MapLocationIcon } from '@assets/images/map-location.svg';
+
 import ActiveUserInfo from '@components/ActiveUserInfo';
 import LinkShareButton from '@components/LinkShareButton';
 import MainMap from '@components/MainMap';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
+import { PAGES_TYPES } from '@constants/page';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 
 import {
@@ -74,6 +79,8 @@ function MainPage() {
     lat: NAVER_LAT,
     lng: NAVER_LNG,
   });
+
+  const { pageState, updatePageState } = usePageStateStore((state) => state);
 
   const connectRoom = () => {
     const clientSocket = socketRef.current;
@@ -173,12 +180,36 @@ function MainPage() {
         </Header>
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
-      <CandidateListButton>
-        <CandidateListIcon />
+
+      {/* (토글) 지도 화면 <-> 식당 후보 목록 */}
+      <CandidateListButton
+        onClick={() => {
+          updatePageState(
+            pageState === PAGES_TYPES.hidden
+              ? PAGES_TYPES.restaurantCandidateList
+              : PAGES_TYPES.hidden
+          );
+        }}
+      >
+        {pageState === PAGES_TYPES.restaurantCandidateList ? (
+          <MapLocationIcon />
+        ) : (
+          <CandidateListIcon />
+        )}
       </CandidateListButton>
-      <MapOrListButton>
-        <ListIcon />
-        <ButtonInnerTextBox>목록보기</ButtonInnerTextBox>
+
+      {/* (토글) 지도 화면 <-> 전체 식당 목록 */}
+      <MapOrListButton
+        onClick={() => {
+          updatePageState(
+            pageState === PAGES_TYPES.hidden ? PAGES_TYPES.restaurantList : PAGES_TYPES.hidden
+          );
+        }}
+      >
+        {pageState === PAGES_TYPES.hidden ? <ListIcon /> : <MapIcon />}
+        <ButtonInnerTextBox>
+          {pageState === PAGES_TYPES.hidden ? '목록보기' : '지도보기'}
+        </ButtonInnerTextBox>
       </MapOrListButton>
     </MainPageLayout>
   );
