@@ -3,6 +3,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as SearchImage } from '@assets/images/search.svg';
 import { NAVER_ADDRESS } from '@constants/map';
+import {
+  TOAST_DURATION_TIME,
+  FAIL_UPDATE_ADDR_MESSAGE,
+  NO_RESULTS_MESSAGE,
+  FAIL_SEARCH_MESSAGE,
+} from '@constants/toast';
 import { useMeetLocationStore } from '@store/index';
 import { useToast } from '@hooks/useToast';
 
@@ -34,7 +40,11 @@ function MeetLocationSettingFooter() {
       // eslint-disable-next-line consistent-return
       (status, response) => {
         if (status !== naver.maps.Service.Status.OK) {
-          fireToast({ content: '주소 변환에 실패했습니다.', duration: 2500, bottom: 280 });
+          fireToast({
+            content: FAIL_UPDATE_ADDR_MESSAGE,
+            duration: TOAST_DURATION_TIME,
+            bottom: 280,
+          });
           return;
         }
 
@@ -62,7 +72,11 @@ function MeetLocationSettingFooter() {
       // eslint-disable-next-line func-names, consistent-return
       function (status, response) {
         if (status !== naver.maps.Service.Status.OK) {
-          fireToast({ content: '검색에 실패했습니다.', duration: 2500, bottom: 280 });
+          fireToast({
+            content: FAIL_SEARCH_MESSAGE,
+            duration: TOAST_DURATION_TIME,
+            bottom: 280,
+          });
           return;
         }
 
@@ -70,7 +84,7 @@ function MeetLocationSettingFooter() {
         const items = result.addresses; // 검색 결과의 배열
 
         if (items.length === 0) {
-          fireToast({ content: '검색결과가 없습니다.', duration: 2500, bottom: 280 });
+          fireToast({ content: NO_RESULTS_MESSAGE, duration: TOAST_DURATION_TIME, bottom: 280 });
           return;
         }
 
