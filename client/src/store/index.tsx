@@ -25,7 +25,7 @@ export const useRestaurantListStateStore = create<RestaurantListStateStore>((set
 
 interface RestaurantDetailStateStore {
   restaurantDetailState: RestaurantType | null;
-  updateRestaurantDetailState: (restaurantDetailType: RestaurantType) => void;
+  updateRestaurantDetailState: (restaurantDetailType: RestaurantType | null) => void;
 }
 
 export const useRestaurantDetailStateStore = create<RestaurantDetailStateStore>((set) => ({
