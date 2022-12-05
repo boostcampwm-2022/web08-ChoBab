@@ -24,12 +24,30 @@ export class RoomService {
 
     try {
       const roomCode = uuid();
-      const restaurantList = await this.restaurantService.getRestaurantList(lat, lng, radius);
-      await this.roomDynamicModel.create({ roomCode, restaurantList });
+      const restaurantMap = await this.restaurantService.getRestaurantList(lat, lng, radius);
+      const restaurantDetailList = await Promise.all(
+        Object.keys(restaurantMap).map((restaurantId) => {
+          const restaurant = restaurantMap[restaurantId];
+          return this.restaurantService.getRestaurantDetail(
+            restaurantId,
+            restaurant.address,
+            restaurant.name,
+            restaurant.lat,
+            restaurant.lng
+          );
+        })
+      );
+      const mergedRestaurantDataList = restaurantDetailList.map((restaurantDetailData) => {
+        const { id } = restaurantDetailData;
+        const restaurantData = restaurantMap[id];
+        return { ...restaurantData, ...restaurantDetailData };
+      });
+      await this.roomDynamicModel.create({ roomCode, restaurantList: mergedRestaurantDataList });
       await this.roomModel.create({ roomCode, lat, lng });
 
       return roomCode;
     } catch (error) {
+      console.log(error);
       throw new CustomException(ROOM_EXCEPTION.FAIL_CREATE_ROOM);
     }
   }
