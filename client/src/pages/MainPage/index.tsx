@@ -32,43 +32,6 @@ import {
   MapOrListButton,
 } from './styles';
 
-export interface UserType {
-  userId: string;
-  userLat: number;
-  userLng: number;
-  userName: string;
-}
-
-interface RestaurantType {
-  id: string;
-  name: string;
-  category: string;
-  phone: string;
-  lat: number;
-  lng: number;
-  address: string;
-}
-
-interface ResTemplateType<T> {
-  message: string;
-  data: T;
-}
-
-interface RoomValidType {
-  isRoomValid: boolean;
-}
-
-interface RoomDataType {
-  roomCode: string;
-  lat: number;
-  lng: number;
-  userList: UserType[];
-  restaurantList: RestaurantType[];
-  candidateList: RestaurantType[];
-  userId: string;
-  userName: string;
-}
-
 function MainPage() {
   const userLocation = useCurrentLocation();
   const { roomCode } = useParams<{ roomCode: string }>();
@@ -78,8 +41,8 @@ function MainPage() {
   const [myId, setMyId] = useState<string>('');
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
-
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
+  const [candidateData, setCandidateData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
     lat: NAVER_LAT,
     lng: NAVER_LNG,
@@ -148,6 +111,7 @@ function MainPage() {
       setMyId(userId);
       setMyName(userName);
       setRoomConnect(true);
+      setCandidateData(candidateList);
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
     });
@@ -235,6 +199,7 @@ function MainPage() {
         </MapOrListButton>
       )}
 
+      {/* 식당 리스트 & 식당 상세정보 Full-Screen 모달 컴포넌트 */}
       <RestaurantListLayer />
       <RestaurantDetailLayer />
     </MainPageLayout>
