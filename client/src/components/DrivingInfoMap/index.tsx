@@ -65,17 +65,18 @@ function DrivingInfoMap({ userPos, restaurantPos }: PropsType) {
       zoom: 11,
     });
 
-    // 출발지, 도착지 마커 생성
+    const { lat: startLat, lng: startLng } = userPos;
+    const { lat: goalLat, lng: goalLng } = restaurantPos;
+
+    // 출발지, 도착지 마커 생성 및 지도에 표시
     const startMarker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(userPos.lat, userPos.lng),
+      map,
+      position: new naver.maps.LatLng(startLat, startLng),
     });
     const goalMarker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(restaurantPos.lat, restaurantPos.lng),
+      map,
+      position: new naver.maps.LatLng(goalLat, goalLng),
     });
-
-    // 출발지, 도착지 마커 지도에 표시
-    startMarker.setMap(map);
-    goalMarker.setMap(map);
 
     // 길찾기 정보를 받아오는 함수 호출
     const drivingInfo = await getDrivingInfo(userPos, restaurantPos);
