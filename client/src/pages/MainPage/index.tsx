@@ -17,6 +17,9 @@ import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { PAGES_TYPES } from '@constants/page';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 
+import RestaurantListLayer from '@components/RestaurantListLayer';
+import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
+
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -211,6 +214,9 @@ function MainPage() {
           {pageState === PAGES_TYPES.hidden ? '목록보기' : '지도보기'}
         </ButtonInnerTextBox>
       </MapOrListButton>
+
+      <RestaurantListLayer />
+      <RestaurantDetailLayer />
     </MainPageLayout>
   );
 }
