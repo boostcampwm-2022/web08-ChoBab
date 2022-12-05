@@ -21,7 +21,7 @@ export interface PreprocessedRestaurantType {
 // 기본 음식점 데이터와 상세 정보를 취합한 데이터 타입
 export interface MergedRestaurantType extends PreprocessedRestaurantType {
   rating?: number;
-  photoUrlList?: string[];
+  photoKeyList?: string[];
   openNow?: boolean;
   priceLevel?: number;
 }

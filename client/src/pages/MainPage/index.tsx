@@ -38,7 +38,7 @@ interface RestaurantType {
   lng: number;
   address: string;
   rating?: number;
-  photoUrlList?: string[];
+  photoKeyList?: string[];
   openNow?: boolean;
   priceLevel?: number;
 }
@@ -90,6 +90,7 @@ function MainPage() {
         console.log(data.message);
         return;
       }
+      console.log(data.data)
       const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
 
       const tmp = new Map();

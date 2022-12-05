@@ -161,9 +161,9 @@ export class RestaurantService {
         opening_hours: openingHours,
       } = result;
       const openNow = openingHours?.open_now;
-      const photoUrlList = photos.map((photo) => photo?.photo_reference);
+      const photoKeyList = photos.map((photo) => photo?.photo_reference);
 
-      return { id, rating, openNow, priceLevel, photoUrlList };
+      return { id, rating, openNow, priceLevel, photoKeyList };
     } catch (error) {
       // 단일 요청에 대한 에러 처리가 아닌, 모든 음식점에 대해 일괄적으로 상세정보를 불러오고
       // 만약 상세정보가 없을 시에도 에러를 반환하는 것이 아닌 값을 반환해주어야 함
