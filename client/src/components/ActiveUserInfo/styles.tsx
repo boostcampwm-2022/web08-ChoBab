@@ -25,11 +25,11 @@ export const ActiveUserInfoBox = styled.div`
 
   &::-webkit-scrollbar {
     width: 8px;
-    background-color: #dfdfdf;
+    background-color: ${palette.SCROLL_BAR_COLOR};
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #a3a3a3;
+    background-color: ${palette.SCROLL_THUMB_COLOR};
     border-radius: 4px;
   }
 `;
