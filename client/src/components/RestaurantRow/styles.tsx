@@ -26,7 +26,7 @@ export const ImageBox = styled.div`
   box-sizing: content-box;
 `;
 
-export const ThumbnailImage = styled.div`
+export const ThumbnailImage = styled.img`
   height: 100%;
   width: 100%;
   border-radius: 10px;

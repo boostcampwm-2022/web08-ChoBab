@@ -7,6 +7,7 @@ export const LayerBox = styled.div`
   width: 100%;
   height: calc(100% - ${palette.HEADER_HEIGHT_RATIO});
   z-index: ${palette.RESTAURANT_LAYER_Z_INDEX};
+  background-color: yellow;
 
   overflow-y: overlay;
   &::-webkit-scrollbar {
