@@ -23,7 +23,7 @@ function RestaurantFilterd({ restaurantData }: PropsType) {
             >
               <RestaurantRow
                 restaurant={restaurant}
-                restaurantListType={RESTAURANT_LIST_TYPES.category}
+                restaurantListType={RESTAURANT_LIST_TYPES.filtered}
               />
             </RestaurantFilteredItem>
           );

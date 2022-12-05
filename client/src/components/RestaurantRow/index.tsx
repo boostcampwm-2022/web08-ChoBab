@@ -57,7 +57,7 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
 
       {/* LikeButton 의 동작은 별도의 컴포넌트로 만들어 변경해주세요. */}
       <LikeButton>
-        {restaurantListType === RESTAURANT_LIST_TYPES.category ? '투표하기' : '좋아요'}
+        {restaurantListType === RESTAURANT_LIST_TYPES.filtered ? '투표하기' : '좋아요'}
       </LikeButton>
     </RestaurantRowBox>
   );

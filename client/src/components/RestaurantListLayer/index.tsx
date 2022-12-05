@@ -11,7 +11,7 @@ interface PropsType {
 function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
   const { restaurantListState } = useRestaurantListStateStore((state) => state);
 
-  if (restaurantListState === RESTAURANT_LIST_TYPES.category) {
+  if (restaurantListState === RESTAURANT_LIST_TYPES.filtered) {
     return (
       <LayerBox>
         <RestaurantFiltered restaurantData={restaurantData} />

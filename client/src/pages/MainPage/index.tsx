@@ -57,7 +57,7 @@ function MainPage() {
   };
 
   const isRestaurantCategoryList = () => {
-    return restaurantListState === RESTAURANT_LIST_TYPES.category;
+    return restaurantListState === RESTAURANT_LIST_TYPES.filtered;
   };
 
   const isRestaurantCandidateList = () => {
@@ -75,7 +75,7 @@ function MainPage() {
 
   const handleSwitchRestaurantList = () => {
     if (isMap()) {
-      updateRestaurantListState(RESTAURANT_LIST_TYPES.category);
+      updateRestaurantListState(RESTAURANT_LIST_TYPES.filtered);
       return;
     }
 
