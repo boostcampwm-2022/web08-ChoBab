@@ -22,7 +22,6 @@ export interface PreprocessedRestaurantType {
 export interface MergedRestaurantType extends PreprocessedRestaurantType {
   rating?: number;
   photoKeyList?: string[];
-  openNow?: boolean;
   priceLevel?: number;
 }
 
@@ -38,9 +37,6 @@ export interface RestaurantApiResultType {
 export interface RestaurantDetailType {
   rating?: number;
   photos?: { photo_reference?: string }[];
-  opening_hours?: {
-    open_now?: boolean;
-  };
   price_level?: number;
 }
 

@@ -158,12 +158,10 @@ export class RestaurantService {
         rating,
         photos, // 이 후 이미지 API 를 위해 일단 놔둠
         price_level: priceLevel,
-        opening_hours: openingHours,
       } = result;
-      const openNow = openingHours?.open_now;
       const photoKeyList = photos.map((photo) => photo?.photo_reference);
 
-      return { id, rating, openNow, priceLevel, photoKeyList };
+      return { id, rating, priceLevel, photoKeyList };
     } catch (error) {
       // 단일 요청에 대한 에러 처리가 아닌, 모든 음식점에 대해 일괄적으로 상세정보를 불러오고
       // 만약 상세정보가 없을 시에도 에러를 반환하는 것이 아닌 값을 반환해주어야 함

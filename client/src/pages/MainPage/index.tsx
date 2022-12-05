@@ -39,7 +39,6 @@ interface RestaurantType {
   address: string;
   rating?: number;
   photoKeyList?: string[];
-  openNow?: boolean;
   priceLevel?: number;
 }
 
