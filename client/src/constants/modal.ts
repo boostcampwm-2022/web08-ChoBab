@@ -1,7 +1,12 @@
-// eslint-disable-next-line no-shadow
-export const enum FULL_SCREEN_MODAL_TYPES {
+/* eslint-disable no-shadow */
+
+export const enum RESTAURANT_LIST_TYPES {
   hidden = 'hidden',
-  restaurantList = 'restaurantList',
-  restaurantCandidateList = 'restaurantCandidateList',
-  restaurantDetail = 'restaurantDetail',
+  category = 'category', // 카테고리별 식당 리스트
+  candidate = 'candidate', // 후보 식당 리스트
+}
+
+export const enum RESTAURANT_DETAIL_TYPES {
+  hidden = 'hidden',
+  show = 'show',
 }

@@ -3,7 +3,7 @@ import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { useFullScreenModalStateStore } from '@store/index';
+import { useRestaurantListStateStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
@@ -13,8 +13,10 @@ import { ReactComponent as MapLocationIcon } from '@assets/images/map-location.s
 import ActiveUserInfo from '@components/ActiveUserInfo';
 import LinkShareButton from '@components/LinkShareButton';
 import MainMap from '@components/MainMap';
+
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
-import { FULL_SCREEN_MODAL_TYPES } from '@constants/modal';
+import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+
 import useCurrentLocation from '@hooks/useCurrentLocation';
 
 import RestaurantListLayer from '@components/RestaurantListLayer';
@@ -83,38 +85,38 @@ function MainPage() {
     lng: NAVER_LNG,
   });
 
-  const { fullScreenModalState, updatefullScreenModalState } = useFullScreenModalStateStore(
+  const { restaurantListState, updateRestaurantListState } = useRestaurantListStateStore(
     (state) => state
   );
 
   const isMap = () => {
-    return fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden;
+    return restaurantListState === RESTAURANT_LIST_TYPES.hidden;
   };
 
-  const isRestaurantList = () => {
-    return fullScreenModalState === FULL_SCREEN_MODAL_TYPES.restaurantList;
+  const isRestaurantCategoryList = () => {
+    return restaurantListState === RESTAURANT_LIST_TYPES.category;
   };
 
   const isRestaurantCandidateList = () => {
-    return fullScreenModalState === FULL_SCREEN_MODAL_TYPES.restaurantCandidateList;
+    return restaurantListState === RESTAURANT_LIST_TYPES.candidate;
   };
 
   const handleSwitchCandidateList = () => {
-    if (isMap() || isRestaurantList()) {
-      updatefullScreenModalState(FULL_SCREEN_MODAL_TYPES.restaurantCandidateList);
+    if (isMap() || isRestaurantCategoryList()) {
+      updateRestaurantListState(RESTAURANT_LIST_TYPES.candidate);
       return;
     }
 
-    updatefullScreenModalState(FULL_SCREEN_MODAL_TYPES.hidden);
+    updateRestaurantListState(RESTAURANT_LIST_TYPES.hidden);
   };
 
   const handleSwitchRestaurantList = () => {
     if (isMap()) {
-      updatefullScreenModalState(FULL_SCREEN_MODAL_TYPES.restaurantList);
+      updateRestaurantListState(RESTAURANT_LIST_TYPES.category);
       return;
     }
 
-    updatefullScreenModalState(FULL_SCREEN_MODAL_TYPES.hidden);
+    updateRestaurantListState(RESTAURANT_LIST_TYPES.hidden);
   };
 
   const connectRoom = () => {
@@ -226,10 +228,12 @@ function MainPage() {
       </CandidateListButton>
 
       {/* 전체 식당 목록 <-> 지도 화면 */}
-      <MapOrListButton onClick={handleSwitchRestaurantList}>
-        {isMap() ? <ListIcon /> : <MapIcon />}
-        <ButtonInnerTextBox>{isMap() ? '목록보기' : '지도보기'}</ButtonInnerTextBox>
-      </MapOrListButton>
+      {!isRestaurantCandidateList() && (
+        <MapOrListButton onClick={handleSwitchRestaurantList}>
+          {isMap() ? <ListIcon /> : <MapIcon />}
+          <ButtonInnerTextBox>{isMap() ? '목록보기' : '지도보기'}</ButtonInnerTextBox>
+        </MapOrListButton>
+      )}
 
       <RestaurantListLayer />
       <RestaurantDetailLayer />

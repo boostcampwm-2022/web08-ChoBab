@@ -1,6 +1,6 @@
 import create from 'zustand';
+import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
-import { FULL_SCREEN_MODAL_TYPES } from '@constants/modal';
 
 interface MeetLocationStoreType {
   meetLocation: { lat: number; lng: number };
@@ -12,13 +12,24 @@ export const useMeetLocationStore = create<MeetLocationStoreType>((set) => ({
   updateMeetLocation: (lat, lng) => set(() => ({ meetLocation: { lat, lng } })),
 }));
 
-interface FullScreenModalStateStore {
-  fullScreenModalState: FULL_SCREEN_MODAL_TYPES;
-  updatefullScreenModalState: (fullScreenModalType: FULL_SCREEN_MODAL_TYPES) => void;
+interface RestaurantListStateStore {
+  restaurantListState: RESTAURANT_LIST_TYPES;
+  updateRestaurantListState: (fullScreenModalType: RESTAURANT_LIST_TYPES) => void;
 }
 
-export const useFullScreenModalStateStore = create<FullScreenModalStateStore>((set) => ({
-  fullScreenModalState: FULL_SCREEN_MODAL_TYPES.hidden,
-  updatefullScreenModalState: (fullScreenModalType: FULL_SCREEN_MODAL_TYPES) =>
-    set(() => ({ fullScreenModalState: fullScreenModalType })),
+export const useRestaurantListStateStore = create<RestaurantListStateStore>((set) => ({
+  restaurantListState: RESTAURANT_LIST_TYPES.hidden,
+  updateRestaurantListState: (restaurantListType: RESTAURANT_LIST_TYPES) =>
+    set(() => ({ restaurantListState: restaurantListType })),
+}));
+
+interface RestaurantDetailStateStore {
+  restaurantDetailState: RESTAURANT_DETAIL_TYPES;
+  updateRestaurantDetailState: (fullScreenModalType: RESTAURANT_DETAIL_TYPES) => void;
+}
+
+export const useRestaurantDetailStateStore = create<RestaurantDetailStateStore>((set) => ({
+  restaurantDetailState: RESTAURANT_DETAIL_TYPES.hidden,
+  updateRestaurantDetailState: (restaurantDetailType: RESTAURANT_DETAIL_TYPES) =>
+    set(() => ({ restaurantDetailState: restaurantDetailType })),
 }));

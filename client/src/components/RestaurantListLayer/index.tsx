@@ -1,21 +1,24 @@
-import { FULL_SCREEN_MODAL_TYPES } from '@constants/modal';
-import { useFullScreenModalStateStore } from '@store/index';
+import { useRestaurantListStateStore } from '@store/index';
+import RestaurantList from '@components/RestaurantList';
+import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { LayerBox } from './styles';
 
 function RestaurantListLayer() {
-  const { fullScreenModalState } = useFullScreenModalStateStore((state) => state);
+  const { restaurantListState } = useRestaurantListStateStore((state) => state);
 
-  let pages: JSX.Element = <div />;
-
-  if (fullScreenModalState === FULL_SCREEN_MODAL_TYPES.restaurantList) {
-    pages = <LayerBox>restaurant list page(여기 내부에 구현)</LayerBox>;
+  if (restaurantListState === RESTAURANT_LIST_TYPES.category) {
+    return (
+      <LayerBox>
+        <RestaurantList />
+      </LayerBox>
+    );
   }
 
-  if (fullScreenModalState === FULL_SCREEN_MODAL_TYPES.restaurantCandidateList) {
-    pages = <LayerBox>restaurant candidate list page(여기 내부에 구현)</LayerBox>;
+  if (restaurantListState === RESTAURANT_LIST_TYPES.candidate) {
+    return <LayerBox>restaurant candidate list page(여기 내부에 구현)</LayerBox>;
   }
 
-  return pages;
+  return <div />;
 }
 
 export default RestaurantListLayer;
