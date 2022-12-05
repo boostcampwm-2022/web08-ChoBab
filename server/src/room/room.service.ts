@@ -28,13 +28,8 @@ export class RoomService {
       const restaurantDetailList = await Promise.all(
         Object.keys(restaurantMap).map((restaurantId) => {
           const restaurant = restaurantMap[restaurantId];
-          return this.restaurantService.getRestaurantDetail(
-            restaurantId,
-            restaurant.address,
-            restaurant.name,
-            restaurant.lat,
-            restaurant.lng
-          );
+          const { name, address, lat, lng } = restaurant;
+          return this.restaurantService.getRestaurantDetail(restaurantId, address, name, lat, lng);
         })
       );
       const mergedRestaurantDataList = restaurantDetailList.map((restaurantDetailData) => {
