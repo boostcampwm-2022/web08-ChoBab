@@ -3,7 +3,7 @@ import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { usePageStateStore } from '@store/index';
+import { useFullScreenModalStateStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
@@ -14,7 +14,7 @@ import ActiveUserInfo from '@components/ActiveUserInfo';
 import LinkShareButton from '@components/LinkShareButton';
 import MainMap from '@components/MainMap';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
-import { PAGES_TYPES } from '@constants/page';
+import { FULL_SCREEN_MODAL_TYPES } from '@constants/modal';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 
 import RestaurantListLayer from '@components/RestaurantListLayer';
@@ -83,7 +83,9 @@ function MainPage() {
     lng: NAVER_LNG,
   });
 
-  const { pageState, updatePageState } = usePageStateStore((state) => state);
+  const { fullScreenModalState, updatefullScreenModalState } = useFullScreenModalStateStore(
+    (state) => state
+  );
 
   const connectRoom = () => {
     const clientSocket = socketRef.current;
@@ -187,14 +189,14 @@ function MainPage() {
       {/* (토글) 지도 화면 <-> 식당 후보 목록 */}
       <CandidateListButton
         onClick={() => {
-          updatePageState(
-            pageState === PAGES_TYPES.hidden
-              ? PAGES_TYPES.restaurantCandidateList
-              : PAGES_TYPES.hidden
+          updatefullScreenModalState(
+            fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden
+              ? FULL_SCREEN_MODAL_TYPES.restaurantCandidateList
+              : FULL_SCREEN_MODAL_TYPES.hidden
           );
         }}
       >
-        {pageState === PAGES_TYPES.restaurantCandidateList ? (
+        {fullScreenModalState === FULL_SCREEN_MODAL_TYPES.restaurantCandidateList ? (
           <MapLocationIcon />
         ) : (
           <CandidateListIcon />
@@ -204,14 +206,16 @@ function MainPage() {
       {/* (토글) 지도 화면 <-> 전체 식당 목록 */}
       <MapOrListButton
         onClick={() => {
-          updatePageState(
-            pageState === PAGES_TYPES.hidden ? PAGES_TYPES.restaurantList : PAGES_TYPES.hidden
+          updatefullScreenModalState(
+            fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden
+              ? FULL_SCREEN_MODAL_TYPES.restaurantList
+              : FULL_SCREEN_MODAL_TYPES.hidden
           );
         }}
       >
-        {pageState === PAGES_TYPES.hidden ? <ListIcon /> : <MapIcon />}
+        {fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden ? <ListIcon /> : <MapIcon />}
         <ButtonInnerTextBox>
-          {pageState === PAGES_TYPES.hidden ? '목록보기' : '지도보기'}
+          {fullScreenModalState === FULL_SCREEN_MODAL_TYPES.hidden ? '목록보기' : '지도보기'}
         </ButtonInnerTextBox>
       </MapOrListButton>
 

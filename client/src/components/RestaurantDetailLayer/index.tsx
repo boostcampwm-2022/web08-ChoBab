@@ -1,13 +1,13 @@
-import { PAGES_TYPES } from '@constants/page';
-import { usePageStateStore } from '@store/index';
+import { FULL_SCREEN_MODAL_TYPES } from '@constants/modal';
+import { useFullScreenModalStateStore } from '@store/index';
 import { LayerBox } from './styles';
 
 function RestaurantDetailLayer() {
-  const { pageState } = usePageStateStore((state) => state);
+  const { fullScreenModalState } = useFullScreenModalStateStore((state) => state);
 
   let pages: JSX.Element = <div />;
 
-  if (pageState === PAGES_TYPES.restaurantDetail) {
+  if (fullScreenModalState === FULL_SCREEN_MODAL_TYPES.restaurantDetail) {
     pages = <LayerBox>restaurant detail page</LayerBox>;
   }
 

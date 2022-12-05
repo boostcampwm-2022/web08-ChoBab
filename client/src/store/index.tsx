@@ -1,6 +1,6 @@
 import create from 'zustand';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
-import { PAGES_TYPES } from '@constants/page';
+import { FULL_SCREEN_MODAL_TYPES } from '@constants/modal';
 
 interface MeetLocationStoreType {
   meetLocation: { lat: number; lng: number };
@@ -12,12 +12,13 @@ export const useMeetLocationStore = create<MeetLocationStoreType>((set) => ({
   updateMeetLocation: (lat, lng) => set(() => ({ meetLocation: { lat, lng } })),
 }));
 
-interface PageStateStoreType {
-  pageState: PAGES_TYPES;
-  updatePageState: (pageType: PAGES_TYPES) => void;
+interface FullScreenModalStateStore {
+  fullScreenModalState: FULL_SCREEN_MODAL_TYPES;
+  updatefullScreenModalState: (fullScreenModalType: FULL_SCREEN_MODAL_TYPES) => void;
 }
 
-export const usePageStateStore = create<PageStateStoreType>((set) => ({
-  pageState: PAGES_TYPES.hidden,
-  updatePageState: (pageType: PAGES_TYPES) => set(() => ({ pageState: pageType })),
+export const useFullScreenModalStateStore = create<FullScreenModalStateStore>((set) => ({
+  fullScreenModalState: FULL_SCREEN_MODAL_TYPES.hidden,
+  updatefullScreenModalState: (fullScreenModalType: FULL_SCREEN_MODAL_TYPES) =>
+    set(() => ({ fullScreenModalState: fullScreenModalType })),
 }));
