@@ -2,6 +2,7 @@ import { ReactComponent as StarIcon } from '@assets/images/star-icon.svg';
 import * as palette from '@styles/Variables';
 import { useMeetLocationStore } from '@store/index';
 import { getDistance } from 'geolib';
+import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 
 import {
   RestaurantRowBox,
@@ -17,9 +18,10 @@ import {
 
 interface PropsType {
   restaurant: RestaurantType;
+  restaurantListType: RESTAURANT_LIST_TYPES;
 }
 
-function RestaurantRow({ restaurant }: PropsType) {
+function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
   const { name, category, lat, lng, rating, photoKeyList } = restaurant;
 
   const {
@@ -52,7 +54,11 @@ function RestaurantRow({ restaurant }: PropsType) {
           {distance > 1000 ? `${Math.round(distance / 100) / 10} km` : `${distance} m`}
         </DistanceBox>
       </InfoBox>
-      <LikeButton>좋아요</LikeButton>
+
+      {/* LikeButton 의 동작은 별도의 컴포넌트로 만들어 변경해주세요. */}
+      <LikeButton>
+        {restaurantListType === RESTAURANT_LIST_TYPES.category ? '투표하기' : '좋아요'}
+      </LikeButton>
     </RestaurantRowBox>
   );
 }

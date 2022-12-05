@@ -1,5 +1,6 @@
 import { useRestaurantDetailStateStore } from '@store/index';
 import RestaurantRow from '@components/RestaurantRow';
+import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { RestaurantFilteredBox, RestaurantFilteredList, RestaurantFilteredItem } from './styles';
 
 interface PropsType {
@@ -20,7 +21,10 @@ function RestaurantFilterd({ restaurantData }: PropsType) {
               }}
               key={restaurant.id}
             >
-              <RestaurantRow restaurant={restaurant} />
+              <RestaurantRow
+                restaurant={restaurant}
+                restaurantListType={RESTAURANT_LIST_TYPES.category}
+              />
             </RestaurantFilteredItem>
           );
         })}
