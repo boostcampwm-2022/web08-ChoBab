@@ -48,12 +48,15 @@ export const NameBox = styled.div`
   width: 100%;
   font-weight: 700;
   height: 15%;
-  font-size: 18px;
+  font-size: 1rem;
 `;
 
 export const CategoryBox = styled.div`
   width: 100%;
   height: 15%;
+  font-size: 0.875rem;
+  font-weight: bold;
+  color: #6b6b6b;
 `;
 
 export const RatingBox = styled.div`
@@ -68,6 +71,7 @@ export const DistanceBox = styled.div`
   width: 100%;
   height: 15%;
   color: ${palette.PRIMARY};
+  font-size: 0.75rem;
 `;
 
 export const LikeButton = styled.div`
