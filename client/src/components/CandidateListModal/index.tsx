@@ -32,8 +32,8 @@ export function CandidateListModal({ roomLat, roomLng }: PropsType) {
         id: 'asdv123',
         name: 'BHC',
         category: '치킨',
-        lat: 38,
-        lng: 127,
+        lat: 37.2480099,
+        lng: 127.0765416,
         like: 3,
         rating: 4.5,
         thumbnailImage:
