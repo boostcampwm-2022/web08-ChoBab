@@ -37,6 +37,9 @@ interface RestaurantType {
   lat: number;
   lng: number;
   address: string;
+  rating?: number;
+  photoKeyList?: string[];
+  priceLevel?: number;
 }
 
 interface ResTemplateType<T> {
@@ -86,7 +89,6 @@ function MainPage() {
         console.log(data.message);
         return;
       }
-
       const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
 
       const tmp = new Map();
