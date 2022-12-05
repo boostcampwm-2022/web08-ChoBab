@@ -1,11 +1,10 @@
 import { useRestaurantDetailStateStore } from '@store/index';
-import { RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { LayerBox } from './styles';
 
 function RestaurantDetailLayer() {
   const { restaurantDetailState } = useRestaurantDetailStateStore((state) => state);
 
-  if (restaurantDetailState === RESTAURANT_DETAIL_TYPES.show) {
+  if (restaurantDetailState) {
     return <LayerBox>restaurant detail page</LayerBox>;
   }
 
