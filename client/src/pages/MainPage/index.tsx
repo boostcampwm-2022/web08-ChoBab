@@ -55,7 +55,7 @@ function MainPage() {
     return restaurantListLayerStatus === RESTAURANT_LIST_TYPES.hidden;
   };
 
-  const isRestaurantCategoryList = () => {
+  const isRestaurantFilteredList = () => {
     return restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered;
   };
 
@@ -64,7 +64,7 @@ function MainPage() {
   };
 
   const handleSwitchCandidateList = () => {
-    if (isMap() || isRestaurantCategoryList()) {
+    if (isMap() || isRestaurantFilteredList()) {
       updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.candidate);
       return;
     }
@@ -73,7 +73,7 @@ function MainPage() {
   };
 
   const handleSwitchRestaurantList = () => {
-    if (isMap()) {
+    if (isMap() || isRestaurantCandidateList()) {
       updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.filtered);
       return;
     }
@@ -190,12 +190,13 @@ function MainPage() {
       </CandidateListButton>
 
       {/* 전체 식당 목록 <-> 지도 화면 */}
-      {!isRestaurantCandidateList() && (
-        <MapOrListButton onClick={handleSwitchRestaurantList}>
-          {isMap() ? <ListIcon /> : <MapIcon />}
-          <ButtonInnerTextBox>{isMap() ? '목록보기' : '지도보기'}</ButtonInnerTextBox>
-        </MapOrListButton>
-      )}
+      {/* 전체 식당 목록 <-- 식당 후보 목록 */}
+      <MapOrListButton onClick={handleSwitchRestaurantList}>
+        {isRestaurantFilteredList() ? <MapIcon /> : <ListIcon />}
+        <ButtonInnerTextBox>
+          {isRestaurantFilteredList() ? '지도보기' : '목록보기'}
+        </ButtonInnerTextBox>
+      </MapOrListButton>
 
       {/* 식당 리스트 & 식당 상세정보 Full-Screen 모달 컴포넌트 */}
       <RestaurantListLayer restaurantData={restaurantData} candidateData={candidateData} />
