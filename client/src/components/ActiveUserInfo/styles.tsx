@@ -20,16 +20,16 @@ export const ActiveUserInfoBox = styled.div`
   padding: 10px;
   width: 220px;
   max-height: 200px;
-  overflow-y: scroll;
   box-shadow: 0px 4px 4px rgba(104, 94, 94, 0.25), inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 
+  overflow-y: overlay;
   &::-webkit-scrollbar {
     width: 8px;
-    background-color: #dfdfdf;
+    background-color: ${palette.SCROLL_BAR_COLOR};
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #a3a3a3;
+    background-color: ${palette.SCROLL_THUMB_COLOR};
     border-radius: 4px;
   }
 `;

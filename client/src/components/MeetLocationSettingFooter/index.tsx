@@ -3,7 +3,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as SearchImage } from '@assets/images/search.svg';
 import { NAVER_ADDRESS } from '@constants/map';
+import {
+  TOAST_DURATION_TIME,
+  FAIL_UPDATE_ADDR_MESSAGE,
+  NO_RESULTS_MESSAGE,
+  FAIL_SEARCH_MESSAGE,
+} from '@constants/toast';
 import { useMeetLocationStore } from '@store/index';
+import { useToast } from '@hooks/useToast';
 
 import { FooterBox, SearchBarBox, StartButton } from './styles';
 
@@ -19,6 +26,7 @@ function MeetLocationSettingFooter() {
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { fireToast } = useToast();
 
   // 좌표 -> 주소 변환 & setAddress
   const updateAddress = (lat: number, lng: number) => {
@@ -32,7 +40,12 @@ function MeetLocationSettingFooter() {
       // eslint-disable-next-line consistent-return
       (status, response) => {
         if (status !== naver.maps.Service.Status.OK) {
-          alert('주소 변환 실패');
+          fireToast({
+            content: FAIL_UPDATE_ADDR_MESSAGE,
+            duration: TOAST_DURATION_TIME,
+            bottom: 280,
+          });
+          return;
         }
 
         setAddress(response.v2.address.roadAddress || response.v2.address.jibunAddress);
@@ -59,15 +72,20 @@ function MeetLocationSettingFooter() {
       // eslint-disable-next-line func-names, consistent-return
       function (status, response) {
         if (status !== naver.maps.Service.Status.OK) {
-          return alert('검색 실패');
+          fireToast({
+            content: FAIL_SEARCH_MESSAGE,
+            duration: TOAST_DURATION_TIME,
+            bottom: 280,
+          });
+          return;
         }
 
         const result = response.v2; // 검색 결과의 컨테이너
         const items = result.addresses; // 검색 결과의 배열
 
         if (items.length === 0) {
-          // TODO: 추후 토스트 알림으로 변경
-          return alert('검색결과가 없습니다.');
+          fireToast({ content: NO_RESULTS_MESSAGE, duration: TOAST_DURATION_TIME, bottom: 280 });
+          return;
         }
 
         // 첫번째 검색 결과로 처리

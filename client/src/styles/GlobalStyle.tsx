@@ -24,6 +24,7 @@ export const MainLayout = styled.div`
 
   @media (max-width: ${palette.BREAKPOINT_TABLET}) {
     zoom: 0;
+    border: 0;
   }
 `;
 

@@ -5,7 +5,6 @@ import { RoomModule } from '@room/room.module';
 import * as Joi from 'joi';
 import { SocketModule } from '@socket/socket.module';
 import { MapModule } from '@map/map.module';
-import { RestaurantModule } from '@restaurant/restaurant.module';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { RestaurantModule } from '@restaurant/restaurant.module';
       }),
       inject: [ConfigService],
     }),
-    RestaurantModule,
     RoomModule,
     SocketModule,
     MapModule,

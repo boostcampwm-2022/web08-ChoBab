@@ -64,6 +64,7 @@ export const CandidateListButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 
 export const MapOrListButton = styled.button`
@@ -83,6 +84,7 @@ export const MapOrListButton = styled.button`
   border-radius: 20px;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
   gap: 5px;
+  cursor: pointer;
   &img {
     height: 20px;
   }
