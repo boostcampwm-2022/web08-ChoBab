@@ -34,7 +34,7 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
           <Image key={imageUrl} style={{ backgroundImage: `url(${imageUrl})` }} />
         ))}
       </ImageBox>
-      <p>{`${visibleImageIdx + 1}/${imageCount}`}</p>
+      <p>{!imageCount ? `${visibleImageIdx + 1}/${imageCount}` : `0/0`}</p>
     </ImageCarousel>
   );
 }
