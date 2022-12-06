@@ -20,11 +20,7 @@ import { makeUserRandomNickname } from '@utils/nickname';
 import { SOCKET_RES } from '@socket/socket.response';
 import { CandidateType } from '@restaurant/restaurant';
 import { VoteRestaurantDto } from '@socket/dto/vote-restaurant.dto';
-
-interface VoteResultType {
-  restaurantId: string;
-  count: number;
-}
+import { VoteResultType } from '@socket/socket';
 
 @WebSocketGateway({ namespace: 'room' })
 export class EventsGateway
@@ -87,6 +83,8 @@ export class EventsGateway
         await this.roomDynamicModel.findOneAndUpdate({ roomCode }, { userList: newUserList });
       }
 
+      const currentVoteResult = this.getCurrentVoteResult(candidateList);
+
       client.emit(
         'connectResult',
         SOCKET_RES.CONNECT_SUCCESS(
@@ -94,7 +92,7 @@ export class EventsGateway
           lat,
           lng,
           restaurantList,
-          [], // TODO : 식당에 대한 좋아요 수 정보만 보내기
+          currentVoteResult,
           newUserList,
           user.userId,
           user.userName
@@ -165,11 +163,10 @@ export class EventsGateway
 
     client.emit('voteRestaurantResult', SOCKET_RES.VOTE_RESTAURANT_SUCCESS(restaurantId));
 
-    // 모임방의 모든 사용자들에게 투표 결과 전송
-    this.server
-      .in(roomCode)
-      .emit('voteResultUpdate', { candidateList: this.getCurrentVoteResult(candidateList) });
-    return;
+    const voteResult = this.getCurrentVoteResult(candidateList);
+
+    // 모임방의 모든 사용자들에게 투표 현황 전송
+    this.server.in(roomCode).emit('voteResultUpdate', { candidateList: voteResult });
   }
 
   // 식당 투표 취소
@@ -206,7 +203,7 @@ export class EventsGateway
     console.log('disconnected');
   }
 
-  // 투표 결과 반환
+  // 투표 현황 데이터 가공 및 정렬 함수
   private getCurrentVoteResult = (candidateList: CandidateType[]) => {
     const voteResult: VoteResultType[] = [];
     candidateList.forEach((candidate) => {
@@ -216,7 +213,7 @@ export class EventsGateway
       });
     });
 
-    // 투표 결과를 내림차순으로 정렬
+    // 투표 현황 내림차순 정렬
     candidateList.sort((a: CandidateType, b: CandidateType) => {
       return b.usersSessionId.length - a.usersSessionId.length;
     });

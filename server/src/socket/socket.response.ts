@@ -1,4 +1,5 @@
 import { PreprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
+import { VoteResultType } from '@socket/socket';
 
 interface UserType {
   userId: string;
@@ -23,7 +24,7 @@ export const SOCKET_RES = {
     lat: number,
     lng: number,
     restaurantList: RestaurantType[],
-    candidateList: [], // TODO : sessionID 정보 제외해서 보내기
+    candidateList: VoteResultType[],
     userList: UserType[],
     userId: string,
     userName: string
