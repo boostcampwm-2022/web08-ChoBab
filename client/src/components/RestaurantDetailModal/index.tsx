@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as BackwardIcon } from '@assets/images/backward-arrow-icon.svg';
-import { RestaurantDetailModalFooter } from '@components/RestaurantDetailModal/RestaurantDetailModalFooter';
+import { RestaurantDetailModalFooter } from '@components/RestaurantDetailModal/RestaurantDetailModalTitleer';
 import { RestaurantDetailModalBody } from '@components/RestaurantDetailModal/RestaurantDetailModalBody';
 import { LoadingComponent } from '@components/LoadingComponent';
 import { RestaurantDetailCarousel } from '@components/RestaurantDetailModal/RestaurantDetailModalCarousel';
