@@ -27,4 +27,8 @@ export const CategoryBox = styled.div`
   font-size: 16px;
 `;
 
-export const RatingBox = styled.div``;
+export const RatingBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+`;

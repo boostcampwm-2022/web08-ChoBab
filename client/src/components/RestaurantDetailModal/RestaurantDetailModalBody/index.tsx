@@ -21,7 +21,7 @@ interface PropsType {
   phone: string;
 }
 
-export function RestaurantDetailModalFooter({ id, address, lat, lng, phone }: PropsType) {
+export function RestaurantDetailModalBody({ id, address, lat, lng, phone }: PropsType) {
   const [isSelectLeft, setSelectLeft] = useState<boolean>(true);
   const operationInfoButtonRef = useRef<HTMLDivElement>(null);
   const getDirectionButtonRef = useRef<HTMLDivElement>(null);
