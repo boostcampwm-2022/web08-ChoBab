@@ -42,7 +42,7 @@ export class RoomDynamic {
   restaurantList: [RestaurantType];
 
   @Prop({ required: true, default: [] })
-  candidateList: CandidateType[];
+  candidateList: [CandidateType];
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
