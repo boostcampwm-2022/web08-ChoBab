@@ -1,3 +1,5 @@
+import { ReactComponent as StarIcon } from '@assets/images/star-icon.svg';
+import * as palette from '@styles/Variables';
 import { CategoryBox, ModalTitleBox, ModalTitleLayout, NameBox, RatingBox } from './styles';
 
 interface PropsType {
@@ -6,7 +8,7 @@ interface PropsType {
   rating: number;
 }
 
-export function RestaurantDetailModalBody({ name, category, rating = 0 }: PropsType) {
+export function RestaurantDetailModalTitle({ name, category, rating = 0 }: PropsType) {
   return (
     <ModalTitleLayout>
       <ModalTitleBox>
@@ -14,7 +16,10 @@ export function RestaurantDetailModalBody({ name, category, rating = 0 }: PropsT
           <p>{name}</p>
         </NameBox>
         <CategoryBox>{category}</CategoryBox>
-        <RatingBox>{!rating ? '평점 정보 없음' : `평점: ${rating}`}</RatingBox>
+        <RatingBox>
+          <StarIcon width="15px" fill={!rating ? 'gray' : `${palette.PRIMARY}`} />
+          {!rating ? '-' : `${rating}`}
+        </RatingBox>
       </ModalTitleBox>
     </ModalTitleLayout>
   );
