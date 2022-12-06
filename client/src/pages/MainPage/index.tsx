@@ -18,9 +18,6 @@ import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 
 import useCurrentLocation from '@hooks/useCurrentLocation';
-
-import { ReactComponent as MapLocationDotIcon } from '@assets/images/map-location-dot.svg';
-import { CandidateListModal } from '@components/CandidateListModal';
 import RestaurantListLayer from '@components/RestaurantListLayer';
 import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
 
