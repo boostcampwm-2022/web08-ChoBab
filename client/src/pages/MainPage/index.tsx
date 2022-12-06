@@ -7,8 +7,6 @@ import { useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
-import { RestaurantDetailModal } from '@components/RestaurantDetailModal';
-import { AnimatePresence } from 'framer-motion';
 import { ReactComponent as MapIcon } from '@assets/images/map-icon.svg';
 import { ReactComponent as MapLocationIcon } from '@assets/images/map-location.svg';
 
