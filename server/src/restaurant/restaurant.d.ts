@@ -44,3 +44,8 @@ export interface RestaurantDetailResponseType {
   candidates: RestaurantDetailType[];
   status: string;
 }
+
+export interface CandidateType {
+  restaurantId: string;
+  usersSessionId: [];
+}

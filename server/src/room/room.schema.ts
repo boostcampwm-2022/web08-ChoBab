@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { MergedRestaurantType as RestaurantType } from '@restaurant/restaurant';
+import { CandidateType, MergedRestaurantType as RestaurantType } from '@restaurant/restaurant';
 
 export type RoomDocument = Room & Document;
 export type RoomDynamicDocument = RoomDynamic & Document;
@@ -42,7 +42,7 @@ export class RoomDynamic {
   restaurantList: [RestaurantType];
 
   @Prop({ required: true, default: [] })
-  candidateList: [RestaurantType];
+  candidateList: CandidateType[];
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
