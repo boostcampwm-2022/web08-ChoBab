@@ -38,4 +38,6 @@ export const SOCKET_RES = {
       userId,
       userName,
     }),
+  VOTE_RESTAURANT_SUCCESS: (restaurantId: string) => dataTemplate('투표 성공', { restaurantId }),
+  VOTE_RESTAURANT_FAIL: dataTemplate('투표 실패'),
 };

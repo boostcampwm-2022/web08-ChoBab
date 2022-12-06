@@ -18,11 +18,12 @@ import { NextFunction, Request, Response } from 'express';
 import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
 import { makeUserRandomNickname } from '@utils/nickname';
 import { SOCKET_RES } from '@socket/socket.response';
+import { CandidateType } from '@restaurant/restaurant';
+import { VoteRestaurantDto } from '@socket/dto/vote-restaurant.dto';
 
-interface UserType {
-  userId: string;
-  userLat: number;
-  userLng: number;
+interface VoteResultType {
+  restaurantId: string;
+  count: number;
 }
 
 @WebSocketGateway({ namespace: 'room' })
@@ -116,9 +117,58 @@ export class EventsGateway
 
   // 식당 투표
   @SubscribeMessage('voteRestaurant')
-  async voteRestaurant(@ConnectedSocket() client: Socket, @MessageBody() restaurantId: string) {
+  async voteRestaurant(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() voteRestaurantDto: VoteRestaurantDto
+  ) {
     console.log('voteRestaurant');
+    const { restaurantId } = voteRestaurantDto;
+    const roomCode = client.roomCode;
+    const { candidateList } = await this.roomDynamicModel.findOne({
+      roomCode,
+    });
 
+    // 후보 식당 리스트에 이미 식당 ID가 등록되어 있는지 확인
+    const candidateIdx = candidateList.findIndex(
+      (candidate) => candidate.restaurantId === restaurantId
+    );
+
+    if (candidateIdx === -1) {
+      // 후보 식당 리스트에 식당 ID가 등록되어 있지 않은 경우
+      const newCandidate: CandidateType = {
+        restaurantId: restaurantId,
+        usersSessionId: [client.sessionID],
+      };
+      const newCandidateList = [...candidateList, newCandidate];
+      await this.roomDynamicModel.findOneAndUpdate(
+        { roomCode },
+        { candidateList: newCandidateList }
+      );
+    } else {
+      // 후보 식당 리스트에 식당 ID가 등록되어 있는 경우
+
+      // 해당 식당에 투표한 사용자 리스트에 현재 사용자가 있는지 확인
+      if (
+        candidateList[candidateIdx].usersSessionId.some(
+          (userSessionId) => userSessionId === client.sessionID
+        )
+      ) {
+        // 이미 투표한 사용자인 경우
+        client.emit('voteRestaurantResult', SOCKET_RES.VOTE_RESTAURANT_FAIL);
+        return;
+      }
+
+      // 투표한 사용자 리스트에 현재 사용자가 없는 경우
+      candidateList[candidateIdx].usersSessionId.push(client.sessionID);
+      await this.roomDynamicModel.findOneAndUpdate({ roomCode }, { candidateList: candidateList });
+    }
+
+    client.emit('voteRestaurantResult', SOCKET_RES.VOTE_RESTAURANT_SUCCESS(restaurantId));
+
+    // 모임방의 모든 사용자들에게 투표 결과 전송
+    this.server
+      .in(roomCode)
+      .emit('voteResultUpdate', { candidateList: this.getCurrentVoteResult(candidateList) });
     return;
   }
 
@@ -155,4 +205,21 @@ export class EventsGateway
 
     console.log('disconnected');
   }
+
+  // 투표 결과 반환
+  private getCurrentVoteResult = (candidateList: CandidateType[]) => {
+    const voteResult: VoteResultType[] = [];
+    candidateList.forEach((candidate) => {
+      voteResult.push({
+        restaurantId: candidate.restaurantId,
+        count: candidate.usersSessionId.length,
+      });
+    });
+
+    // 투표 결과를 내림차순으로 정렬
+    candidateList.sort((a: CandidateType, b: CandidateType) => {
+      return b.usersSessionId.length - a.usersSessionId.length;
+    });
+    return voteResult;
+  };
 }
