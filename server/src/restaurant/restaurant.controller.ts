@@ -1,16 +1,24 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { GetRestaurantDto } from './dto/get-restaurant.dto';
+import { RESTAURANT_RES } from '@common/response/restaurant';
+import { Controller, Get, Query } from '@nestjs/common';
+import { GetRestaurantDetailQueryDto } from './dto/get-restaurant-detail-query.dto';
 import { RestaurantService } from './restaurant.service';
 
 @Controller('restaurant')
 export class RestaurantController {
-  constructor(private restaurantService: RestaurantService) {}
-  @Post()
-  async getRestaurantList(@Body() getRestaurantDto: GetRestaurantDto) {
-    const { lat, lng, radius, roomCode } = getRestaurantDto;
+  constructor(private readonly restaurantService: RestaurantService) {}
 
-    const restaurantList = await this.restaurantService.getRestaurantList(lat, lng, radius);
-    /**TODO: roomCode 사용해서 redis 저장 로직 추가하기 */
-    return restaurantList;
+  // 당장 이를 사용하지 않기로
+  @Get()
+  async getRestaurantDetail(@Query() getRestaurantDetailDto: GetRestaurantDetailQueryDto) {
+    const { name, address, lat, lng, restaurantId: id } = getRestaurantDetailDto;
+    const { rating, priceLevel } = await this.restaurantService.getRestaurantDetail(
+      id,
+      address,
+      name,
+      lat,
+      lng
+    );
+
+    return RESTAURANT_RES.SUCCESS_SEARCH_RESTAURANT_DETAIL(rating, priceLevel);
   }
 }

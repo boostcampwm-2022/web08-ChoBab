@@ -23,14 +23,11 @@ jobs:
           password: ${{ secrets.RELEASE_PASSWORD }}
           script: |
             cd chobab_release
+            git clean -fd
             git checkout release
             git pull origin release
-            cd client
-            rm -f .env
-            echo "VITE_APP_NAVER_MAP_CLIENTID=${{ secrets.VITE_APP_NAVER_MAP_CLIENTID }}" >> .env
-            npm ci
-            cd ../server
-            npm ci
+            sh script/client-deploy.sh
+            sh script/server-deploy.sh
 
   # push 의 타겟 브랜치가 main 일 때 작동하는 job
   deploy_prod:
@@ -46,11 +43,8 @@ jobs:
           password: ${{ secrets.PROD_PASSWORD }}
           script: |
             cd chobab
+            git clean -fd
             git checkout prod
             git pull origin prod
-            cd client
-            rm -f .env
-            echo "VITE_APP_NAVER_MAP_CLIENTID=${{ secrets.VITE_APP_NAVER_MAP_CLIENTID }}" >> .env
-            npm ci
-            cd ../server
-            npm ci
+            sh script/client-deploy.sh
+            sh script/server-deploy.sh

@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 
-interface locationType {
-  lat: number;
-  lng: number;
+interface LocationType {
+  lat: number | null;
+  lng: number | null;
 }
 
 const useCurrentLocation = () => {
-  const [location, setLocation] = useState<locationType>({ lat: NAVER_LAT, lng: NAVER_LNG });
+  const [location, setLocation] = useState<LocationType>({ lat: null, lng: null });
 
   const handleSuccess = (position: GeolocationPosition) => {
     setLocation({ lat: position.coords.latitude, lng: position.coords.longitude });

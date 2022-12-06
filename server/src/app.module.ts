@@ -2,13 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RoomModule } from '@room/room.module';
-import { RestaurantModule } from '@restaurant/restaurant.module';
 import * as Joi from 'joi';
-import { EventsGateway } from '@socket/socket.gateway';
+import { SocketModule } from '@socket/socket.module';
+import { MapModule } from '@map/map.module';
 
 @Module({
   imports: [
-    RestaurantModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -17,6 +16,9 @@ import { EventsGateway } from '@socket/socket.gateway';
         MONGODB_PASSWORD: Joi.string().required(),
         MONGODB_DB_NAME: Joi.string().required(),
         KAKAO_API_KEY: Joi.string().required(),
+        GOOGLE_API_KEY: Joi.string().required(),
+        NAVER_MAP_API_CLIENT_ID: Joi.string().required(),
+        NAVER_MAP_API_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
@@ -30,8 +32,10 @@ import { EventsGateway } from '@socket/socket.gateway';
       inject: [ConfigService],
     }),
     RoomModule,
+    SocketModule,
+    MapModule,
   ],
   controllers: [],
-  providers: [EventsGateway],
+  providers: [],
 })
 export class AppModule {}
