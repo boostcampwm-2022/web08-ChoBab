@@ -1,7 +1,6 @@
 import Modal from '@components/Modal';
 import React, { MutableRefObject, useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { UserType } from '@pages/MainPage';
 import { ReactComponent as User } from '@assets/images/user.svg';
 import {
   ListToggleButton,
