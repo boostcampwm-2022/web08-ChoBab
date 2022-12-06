@@ -7,7 +7,7 @@ interface PropsType {
   restaurantData: RestaurantType[];
 }
 
-function RestaurantFilterd({ restaurantData }: PropsType) {
+function RestaurantFiltered({ restaurantData }: PropsType) {
   const { updateRestaurantDetailLayerStatus } = useRestaurantDetailLayerStatusStore(
     (state) => state
   );
@@ -38,4 +38,4 @@ function RestaurantFilterd({ restaurantData }: PropsType) {
   );
 }
 
-export default RestaurantFilterd;
+export default RestaurantFiltered;
