@@ -28,7 +28,7 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
     meetLocation: { lat: roomLat, lng: roomLng },
   } = useMeetLocationStore();
 
-  const distance = getDistance({ lat, lng }, { lat: roomLat, lng: roomLng });
+  const straightDistance = getDistance({ lat, lng }, { lat: roomLat, lng: roomLng });
 
   // 커밋에 기록이 남는게 찝찝해서 하드코딩하여 테스트했던 api key 일단 삭제.
   const googleApiKey = '';
@@ -51,7 +51,7 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
         </RatingBox>
         <DistanceBox>
           모임 위치에서{' '}
-          {distance > 1000 ? `${Math.round(distance / 100) / 10} km` : `${distance} m`}
+          {straightDistance > 1000 ? `${Math.round(straightDistance / 100) / 10} km` : `${straightDistance} m`}
         </DistanceBox>
       </InfoBox>
 
