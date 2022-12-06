@@ -214,9 +214,7 @@ export class EventsGateway
     });
 
     // 투표 현황 내림차순 정렬
-    candidateList.sort((a: CandidateType, b: CandidateType) => {
-      return b.usersSessionId.length - a.usersSessionId.length;
-    });
+    voteResult.sort((a: VoteResultType, b: VoteResultType) => b.count - a.count);
     return voteResult;
   };
 }
