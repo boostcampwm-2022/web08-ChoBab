@@ -4,6 +4,7 @@ import { useMeetLocationStore } from '@store/index';
 import { getDistance } from 'geolib';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 
+import { meterToKilometer } from '@utils/distance';
 import {
   RestaurantRowBox,
   DistanceBox,
@@ -51,7 +52,9 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
         </RatingBox>
         <DistanceBox>
           모임 위치에서{' '}
-          {straightDistance > 1000 ? `${Math.round(straightDistance / 100) / 10} km` : `${straightDistance} m`}
+          {straightDistance > 1000
+            ? `${meterToKilometer(straightDistance)} km`
+            : `${straightDistance} m`}
         </DistanceBox>
       </InfoBox>
 
