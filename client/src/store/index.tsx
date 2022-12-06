@@ -38,6 +38,18 @@ export const useRestaurantDetailLayerStatusStore = create<RestaurantDetailLayerS
   })
 );
 
+// 선택된 식당 정보를 저장하는 전역 저장소
+interface SelectedRestaurantDataStore {
+  selectedRestaurantData: RestaurantType | null;
+  updateSelectedRestaurantData: (restaurantType: RestaurantType | null) => void;
+}
+
+export const useSelectedRestaurantDataStore = create<SelectedRestaurantDataStore>((set) => ({
+  selectedRestaurantData: null,
+  updateSelectedRestaurantData: (restaurantType: RestaurantType | null) =>
+    set(() => ({ selectedRestaurantData: restaurantType })),
+}));
+
 interface ToastStoreType {
   isOpen: boolean;
   content: string;
