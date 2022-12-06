@@ -146,12 +146,10 @@ export class EventsGateway
       // 후보 식당 리스트에 식당 ID가 등록되어 있는 경우
 
       // 해당 식당에 투표한 사용자 리스트에 현재 사용자가 있는지 확인
-      if (
-        candidateList[candidateIdx].usersSessionId.some(
-          (userSessionId) => userSessionId === client.sessionID
-        )
-      ) {
-        // 이미 투표한 사용자인 경우
+      const isUserVoted = candidateList[candidateIdx].usersSessionId.some(
+        (userSessionId) => userSessionId === client.sessionID
+      );
+      if (isUserVoted) {
         client.emit('voteRestaurantResult', SOCKET_RES.VOTE_RESTAURANT_FAIL);
         return;
       }
