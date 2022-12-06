@@ -4,7 +4,7 @@ import { useMeetLocationStore } from '@store/index';
 import { getDistance } from 'geolib';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 
-import { meterToKilometer } from '@utils/distance';
+import { distanceToDisplay } from '@utils/distance';
 import {
   RestaurantRowBox,
   DistanceBox,
@@ -50,12 +50,7 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
           <StarIcon width="15px" fill={rating ? palette.PRIMARY : 'gray'} />
           {rating || '-'}
         </RatingBox>
-        <DistanceBox>
-          모임 위치에서{' '}
-          {straightDistance > 1000
-            ? `${meterToKilometer(straightDistance)} km`
-            : `${straightDistance} m`}
-        </DistanceBox>
+        <DistanceBox>모임 위치에서 {distanceToDisplay(straightDistance)}</DistanceBox>
       </InfoBox>
 
       {/* LikeButton 의 동작은 별도의 컴포넌트로 만들어 변경해주세요. */}

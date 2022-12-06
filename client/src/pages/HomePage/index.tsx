@@ -1,5 +1,5 @@
 import { ReactComponent as LogoImage } from '@assets/images/logo.svg';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
   HomePageLayout,

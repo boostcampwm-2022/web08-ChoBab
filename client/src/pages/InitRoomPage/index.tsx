@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { InitRoomPageLayout } from '@pages/InitRoomPage/styles';
 import MeetLocationSettingMap from '@components/MeetLocationSettingMap';
 import MeetLocationSettingFooter from '@components/MeetLocationSettingFooter';

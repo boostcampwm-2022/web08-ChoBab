@@ -1,32 +1,60 @@
 import styled from 'styled-components';
-import * as palette from '@styles/Variables';
 
-export const ModalBodyLayout = styled.div`
+export const ModalBody = styled.div`
   width: 100%;
-  height: 20%;
-  padding: 10px 10px;
-  box-shadow: 0px 4px 10px rgba(51, 51, 51, 0.1), 0px 0px 4px rgba(51, 51, 51, 0.05);
-  box-sizing: border-box;
+  height: 35%;
+  padding: 30px;
 `;
 
-
-export const ModalBodyBox = styled.div`
+export const ModalBodyNav = styled.div`
   width: 100%;
-  height: 100%;
+  height: 20%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-content: center;
+  border-bottom: 0.1px solid gray;
+`;
+
+export const ModalBodyContent = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  padding: 20px 10px;
   gap: 10px;
 `;
 
-export const NameBox = styled.div`
-  font-size: 20px;
-  font-weight: 700;
+export const AddressBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  svg {
+    height: 22px;
+  }
 `;
 
-export const CategoryBox = styled.div`
-  font-size: 16px;
+export const IconBox = styled.div`
+  width: 26px;
+  height: 26px;
 `;
 
-export const RatingBox = styled.div``;
+export const PhoneBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  svg {
+    height: 22px;
+  }
+`;
+
+export const MapLayout = styled.div`
+  width: 100%;
+  padding: 5px;
+`;
+
+export const MapBox = styled.div`
+  width: 100%;
+  height: 200px;
+  border: 0.1px solid gray;
+  border-radius: 5px;
+`;
