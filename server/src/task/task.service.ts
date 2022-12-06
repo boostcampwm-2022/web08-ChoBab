@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
 import { Room, RoomDocument, RoomDynamic, RoomDynamicDocument } from '@room/room.schema';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { ONE_DAY_MILLISECOND } from '@constants/time';
 
 @Injectable()
@@ -25,8 +25,13 @@ export class TaskService {
     // 현재로 부터 1일 전 시간
     const criteria = new Date(now.getTime() - ONE_DAY_MILLISECOND);
 
+    // 기준 시각 이전에 생성된 방을 찾을 때 필요한 조건
+    const condition: FilterQuery<Room> = {
+      $and: [{ createdAt: { $lt: criteria } }, { deletedAt: { $exists: false } }],
+    };
+
     // 기준 시각 이전에 생성된 모임방(roomCode)에 해당하는 roomDynamic 삭제
-    await this.roomModel.find({ createdAt: { $lt: criteria } }).then(async (rooms) => {
+    await this.roomModel.find(condition).then(async (rooms) => {
       await Promise.all(
         rooms.map(async (room) => {
           await this.roomDynamicModel.deleteOne({ roomCode: room.roomCode });
@@ -35,6 +40,6 @@ export class TaskService {
     });
 
     // 기준 시각 이전에 생성된 room soft delete
-    await this.roomModel.updateMany({ createdAt: { $lt: criteria } }, { deletedAt: now });
+    await this.roomModel.updateMany(condition, { deletedAt: now });
   }
 }
