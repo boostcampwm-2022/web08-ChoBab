@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 
 interface MeetLocationStoreType {
@@ -12,27 +12,31 @@ export const useMeetLocationStore = create<MeetLocationStoreType>((set) => ({
   updateMeetLocation: (lat, lng) => set(() => ({ meetLocation: { lat, lng } })),
 }));
 
-interface RestaurantListStateStore {
-  restaurantListState: RESTAURANT_LIST_TYPES;
-  updateRestaurantListState: (restaurantListType: RESTAURANT_LIST_TYPES) => void;
+// 식당 목록 레이어(RestaurantListLayer)의 화면 상태를 관리하는 전역 저장소
+interface RestaurantListLayerStatusStore {
+  restaurantListLayerStatus: RESTAURANT_LIST_TYPES;
+  updateRestaurantListLayerStatus: (restaurantListType: RESTAURANT_LIST_TYPES) => void;
 }
 
-export const useRestaurantListStateStore = create<RestaurantListStateStore>((set) => ({
-  restaurantListState: RESTAURANT_LIST_TYPES.hidden,
-  updateRestaurantListState: (restaurantListType: RESTAURANT_LIST_TYPES) =>
-    set(() => ({ restaurantListState: restaurantListType })),
+export const useRestaurantListLayerStatusStore = create<RestaurantListLayerStatusStore>((set) => ({
+  restaurantListLayerStatus: RESTAURANT_LIST_TYPES.hidden,
+  updateRestaurantListLayerStatus: (restaurantListType: RESTAURANT_LIST_TYPES) =>
+    set(() => ({ restaurantListLayerStatus: restaurantListType })),
 }));
 
-interface RestaurantDetailStateStore {
-  restaurantDetailState: RestaurantType | null;
-  updateRestaurantDetailState: (restaurantDetailType: RestaurantType | null) => void;
+// 식당 상세정보 레이어(RestaurantDetailLayer)의 화면 상태를 관리하는 전역 저장소
+interface RestaurantDetailLayerStatusStore {
+  restaurantDetailLayerStatus: RESTAURANT_DETAIL_TYPES;
+  updateRestaurantDetailLayerStatus: (restaurantDetailType: RESTAURANT_DETAIL_TYPES) => void;
 }
 
-export const useRestaurantDetailStateStore = create<RestaurantDetailStateStore>((set) => ({
-  restaurantDetailState: null,
-  updateRestaurantDetailState: (restaurantDetailType: RestaurantType | null) =>
-    set(() => ({ restaurantDetailState: restaurantDetailType })),
-}));
+export const useRestaurantDetailLayerStatusStore = create<RestaurantDetailLayerStatusStore>(
+  (set) => ({
+    restaurantDetailLayerStatus: RESTAURANT_DETAIL_TYPES.hidden,
+    updateRestaurantDetailLayerStatus: (restaurantDetailType: RESTAURANT_DETAIL_TYPES) =>
+      set(() => ({ restaurantDetailLayerStatus: restaurantDetailType })),
+  })
+);
 
 interface ToastStoreType {
   isOpen: boolean;

@@ -1,4 +1,4 @@
-import { useRestaurantListStateStore } from '@store/index';
+import { useRestaurantListLayerStatusStore } from '@store/index';
 import RestaurantFiltered from '@components/RestaurantFiltered';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { LayerBox } from './styles';
@@ -9,9 +9,9 @@ interface PropsType {
 }
 
 function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
-  const { restaurantListState } = useRestaurantListStateStore((state) => state);
+  const { restaurantListLayerStatus } = useRestaurantListLayerStatusStore((state) => state);
 
-  if (restaurantListState === RESTAURANT_LIST_TYPES.filtered) {
+  if (restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered) {
     return (
       <LayerBox>
         <RestaurantFiltered restaurantData={restaurantData} />
@@ -19,7 +19,7 @@ function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
     );
   }
 
-  if (restaurantListState === RESTAURANT_LIST_TYPES.candidate) {
+  if (restaurantListLayerStatus === RESTAURANT_LIST_TYPES.candidate) {
     return <LayerBox>restaurant candidate list page(여기 내부에 구현)</LayerBox>;
   }
 

@@ -3,7 +3,7 @@ import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { useRestaurantListStateStore } from '@store/index';
+import { useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
@@ -48,38 +48,37 @@ function MainPage() {
     lng: NAVER_LNG,
   });
 
-  const { restaurantListState, updateRestaurantListState } = useRestaurantListStateStore(
-    (state) => state
-  );
+  const { restaurantListLayerStatus, updateRestaurantListLayerStatus } =
+    useRestaurantListLayerStatusStore((state) => state);
 
   const isMap = () => {
-    return restaurantListState === RESTAURANT_LIST_TYPES.hidden;
+    return restaurantListLayerStatus === RESTAURANT_LIST_TYPES.hidden;
   };
 
   const isRestaurantCategoryList = () => {
-    return restaurantListState === RESTAURANT_LIST_TYPES.filtered;
+    return restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered;
   };
 
   const isRestaurantCandidateList = () => {
-    return restaurantListState === RESTAURANT_LIST_TYPES.candidate;
+    return restaurantListLayerStatus === RESTAURANT_LIST_TYPES.candidate;
   };
 
   const handleSwitchCandidateList = () => {
     if (isMap() || isRestaurantCategoryList()) {
-      updateRestaurantListState(RESTAURANT_LIST_TYPES.candidate);
+      updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.candidate);
       return;
     }
 
-    updateRestaurantListState(RESTAURANT_LIST_TYPES.hidden);
+    updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
   };
 
   const handleSwitchRestaurantList = () => {
     if (isMap()) {
-      updateRestaurantListState(RESTAURANT_LIST_TYPES.filtered);
+      updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.filtered);
       return;
     }
 
-    updateRestaurantListState(RESTAURANT_LIST_TYPES.hidden);
+    updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
   };
 
   const connectRoom = () => {

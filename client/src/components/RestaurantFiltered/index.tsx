@@ -1,6 +1,6 @@
-import { useRestaurantDetailStateStore } from '@store/index';
+import { useRestaurantDetailLayerStatusStore } from '@store/index';
 import RestaurantRow from '@components/RestaurantRow';
-import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { RestaurantFilteredBox, RestaurantFilteredList, RestaurantFilteredItem } from './styles';
 
 interface PropsType {
@@ -8,7 +8,9 @@ interface PropsType {
 }
 
 function RestaurantFilterd({ restaurantData }: PropsType) {
-  const { updateRestaurantDetailState } = useRestaurantDetailStateStore((state) => state);
+  const { updateRestaurantDetailLayerStatus } = useRestaurantDetailLayerStatusStore(
+    (state) => state
+  );
 
   return (
     <RestaurantFilteredBox>
@@ -17,7 +19,7 @@ function RestaurantFilterd({ restaurantData }: PropsType) {
           return (
             <RestaurantFilteredItem
               onClick={() => {
-                updateRestaurantDetailState(restaurant);
+                updateRestaurantDetailLayerStatus(RESTAURANT_DETAIL_TYPES.show);
               }}
               key={restaurant.id}
             >

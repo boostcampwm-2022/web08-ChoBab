@@ -1,19 +1,19 @@
-import { useRestaurantDetailStateStore } from '@store/index';
+import { useRestaurantDetailLayerStatusStore } from '@store/index';
+import { RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { LayerBox } from './styles';
 
 function RestaurantDetailLayer() {
-  const { restaurantDetailState, updateRestaurantDetailState } = useRestaurantDetailStateStore(
-    (state) => state
-  );
+  const { restaurantDetailLayerStatus, updateRestaurantDetailLayerStatus } =
+    useRestaurantDetailLayerStatusStore((state) => state);
 
-  if (restaurantDetailState) {
+  if (restaurantDetailLayerStatus === RESTAURANT_DETAIL_TYPES.show) {
     return (
       <LayerBox>
         restaurant detail page
         <button
           type="button"
           onClick={() => {
-            updateRestaurantDetailState(null);
+            updateRestaurantDetailLayerStatus(RESTAURANT_DETAIL_TYPES.hidden);
           }}
         >
           닫기
