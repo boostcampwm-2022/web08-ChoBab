@@ -41,4 +41,6 @@ export const SOCKET_RES = {
     }),
   VOTE_RESTAURANT_SUCCESS: (restaurantId: string) => dataTemplate('투표 성공', { restaurantId }),
   VOTE_RESTAURANT_FAIL: dataTemplate('투표 실패'),
+  UPDATE_VOTE_RESULT: (candidateList: VoteResultType[]) =>
+    dataTemplate('투표 결과 업데이트', { candidateList }),
 };

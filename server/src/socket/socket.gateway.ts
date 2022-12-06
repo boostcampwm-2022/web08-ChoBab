@@ -164,7 +164,7 @@ export class EventsGateway
     const voteResult = this.getCurrentVoteResult(candidateList);
 
     // 모임방의 모든 사용자들에게 투표 현황 전송
-    this.server.in(roomCode).emit('voteResultUpdate', { candidateList: voteResult });
+    this.server.in(roomCode).emit('voteResultUpdate', SOCKET_RES.UPDATE_VOTE_RESULT(voteResult));
   }
 
   // 식당 투표 취소
