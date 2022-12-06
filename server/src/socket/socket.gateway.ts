@@ -1,23 +1,23 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { OnModuleInit } from '@nestjs/common';
 import {
+  ConnectedSocket,
   MessageBody,
-  WebSocketGateway,
-  WebSocketServer,
-  SubscribeMessage,
-  OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  ConnectedSocket,
+  OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Room, RoomDocument, RoomDynamic, RoomDynamicDocument } from '@room/room.schema';
 import { Model } from 'mongoose';
 import { Server, Socket } from 'socket.io';
 import { sessionMiddleware } from '@utils/session';
-import { Request, Response, NextFunction } from 'express';
-import { PreprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
+import { NextFunction, Request, Response } from 'express';
 import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
 import { makeUserRandomNickname } from '@utils/nickname';
+import { SOCKET_RES } from '@socket/socket.response';
 
 interface UserType {
   userId: string;
@@ -36,41 +36,6 @@ export class EventsGateway
     @InjectModel(RoomDynamic.name) private roomDynamicModel: Model<RoomDynamicDocument>,
     @InjectModel(Room.name) private roomModel: Model<RoomDocument>
   ) {}
-
-  private socketRes() {
-    const dataTemplate = (message: string, data?: unknown) => {
-      if (!data) {
-        return { message };
-      }
-      return {
-        message,
-        data,
-      };
-    };
-    return {
-      CONNECT_FAIL: dataTemplate('접속 실패'),
-      CONNECT_SUCCESS: (
-        roomCode: string,
-        lat: number,
-        lng: number,
-        restaurantList: RestaurantType[],
-        candidateList: RestaurantType[],
-        userList: UserType[],
-        userId: string,
-        userName: string
-      ) =>
-        dataTemplate('접속 성공', {
-          roomCode,
-          lat,
-          lng,
-          restaurantList,
-          candidateList,
-          userList,
-          userId,
-          userName,
-        }),
-    };
-  }
 
   onModuleInit() {
     this.server.use((socket, next) => {
@@ -96,8 +61,6 @@ export class EventsGateway
     client.roomCode = roomCode;
 
     client.join(roomCode);
-
-    const { CONNECT_SUCCESS, CONNECT_FAIL } = this.socketRes();
 
     try {
       const { lat, lng } = await this.roomModel.findOne({ roomCode });
@@ -125,12 +88,12 @@ export class EventsGateway
 
       client.emit(
         'connectResult',
-        CONNECT_SUCCESS(
+        SOCKET_RES.CONNECT_SUCCESS(
           roomCode,
           lat,
           lng,
           restaurantList,
-          candidateList,
+          [], // TODO : 식당에 대한 좋아요 수 정보만 보내기
           newUserList,
           user.userId,
           user.userName
@@ -139,7 +102,7 @@ export class EventsGateway
 
       client.to(roomCode).emit('join', user); // 자신을 제외하네?
     } catch (error) {
-      client.emit('connectResult', CONNECT_FAIL);
+      client.emit('connectResult', SOCKET_RES.CONNECT_FAIL);
     }
   }
 
@@ -155,6 +118,7 @@ export class EventsGateway
   @SubscribeMessage('voteRestaurant')
   async voteRestaurant(@ConnectedSocket() client: Socket, @MessageBody() restaurantId: string) {
     console.log('voteRestaurant');
+
     return;
   }
 
