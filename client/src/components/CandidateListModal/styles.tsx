@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 
 export const CandidateListModalLayout = styled.div`
   /* position: absolute; */
   width: 100%;
   height: 100%;
+  padding: 10% 5%;
   background-color: white;
   /* z-index: 990; */
   overflow: hidden;
@@ -17,5 +17,4 @@ export const CandidateListModalBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 20px;
 `;

@@ -6,12 +6,4 @@ export const LayerBox = styled.div`
   width: 100%;
   height: 100%;
   z-index: ${palette.RESTAURANT_DETAIL_LAYER_Z_INDEX};
-
-  /* overflow-y: scroll;
-  &::-webkit-scrollbar {
-    background-color: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    color: ${palette.SCROLL_THUMB_COLOR};
-  } */
 `;
