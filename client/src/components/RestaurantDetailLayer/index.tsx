@@ -1,7 +1,7 @@
 import { useRestaurantDetailLayerStatusStore } from '@store/index';
 import { RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { AnimatePresence } from 'framer-motion';
-import { RestaurantDetailModal } from '@components/RestaurantDetailModal';
+import { RestaurantDetailModal } from '@components/RestaurantDetail';
 import { LayerBox } from './styles';
 
 function RestaurantDetailLayer() {

@@ -1,8 +1,8 @@
 import { useRestaurantListLayerStatusStore } from '@store/index';
-import RestaurantFiltered from '@components/RestaurantFiltered';
+import RestaurantFiltered from '@components/RestaurantFilteredList';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { AnimatePresence } from 'framer-motion';
-import { CandidateListModal } from '@components/CandidateListModal';
+import { CandidateListModal } from '@components/RestaurantCandidateList';
 import { LayerBox } from './styles';
 
 interface PropsType {
