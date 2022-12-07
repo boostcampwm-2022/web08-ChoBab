@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { MapBox } from '@components/MainMap/styles';
 import axios from 'axios';
-import { DrivingInfoMapLayout } from './styles';
+import { useUserLocationStore } from '@store/index';
+import { MapBox } from './styles';
 
 interface PositionType {
   lat: number;
@@ -9,7 +9,6 @@ interface PositionType {
 }
 
 interface PropsType {
-  userPos: PositionType;
   restaurantPos: PositionType;
 }
 
@@ -29,7 +28,10 @@ interface DrivingInfoType {
   path: number[][];
 }
 
-function DrivingInfoMap({ userPos, restaurantPos }: PropsType) {
+function DrivingInfoMap({ restaurantPos }: PropsType) {
+  const { userLocation } = useUserLocationStore();
+  const userPos: PositionType = userLocation;
+
   const mapRef = useRef<HTMLDivElement>(null);
 
   // 길찾기 API 호출
@@ -62,7 +64,7 @@ function DrivingInfoMap({ userPos, restaurantPos }: PropsType) {
 
     const map = new naver.maps.Map(mapRef.current, {
       center: new naver.maps.LatLng(userPos.lat, userPos.lng),
-      zoom: 11,
+      zoom: 12,
     });
 
     const { lat: startLat, lng: startLng } = userPos;
@@ -106,11 +108,7 @@ function DrivingInfoMap({ userPos, restaurantPos }: PropsType) {
     mapSetting().then();
   }, []);
 
-  return (
-    <DrivingInfoMapLayout>
-      <MapBox ref={mapRef} />
-    </DrivingInfoMapLayout>
-  );
+  return <MapBox ref={mapRef} />;
 }
 
 export default DrivingInfoMap;
