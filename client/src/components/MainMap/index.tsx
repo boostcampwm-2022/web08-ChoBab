@@ -62,43 +62,59 @@ const getIconUrlByCategory = (category: string) => {
   }
 };
 
+type userIdType = string;
+
 function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   const [mapRef, mapDivRef] = useNaverMaps();
 
-  const joinListMarkerRef = useRef<naver.maps.Marker[]>([]);
-  const joinListInfoWindowRef = useRef<naver.maps.InfoWindow[]>([]);
+  const joinListMarkerRef = useRef<Map<userIdType, naver.maps.Marker>>(new Map());
+  const joinListInfoWindowRef = useRef<Map<userIdType, naver.maps.InfoWindow>>(new Map());
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 
   const closeAllMarkerInfoWindow = () => {
-    [...infoWindowsRef.current, ...joinListInfoWindowRef.current].forEach((infoWindow) => {
+    infoWindowsRef.current.forEach((infoWindow) => {
       infoWindow.close();
     });
   };
 
   useEffect(() => {
-    if (!mapRef.current) {
+    const map = mapRef.current;
+
+    if (!map) {
       return;
     }
 
-    joinListMarkerRef.current.forEach((marker) => {
-      marker.setMap(null);
-    });
-
-    joinListInfoWindowRef.current.forEach((infoWindow) => {
-      infoWindow.setMap(null);
-    });
-
-    joinList.forEach((user) => {
-      const map = mapRef.current;
-
-      if (!map) {
+    // 퇴장한 사용자 마커 갱신
+    joinListMarkerRef.current.forEach((marker, userId, thisMap) => {
+      if (joinList.has(userId)) {
         return;
       }
 
-      const { userId, userLat, userLng, userName } = user;
+      marker.setMap(null);
+
+      thisMap.delete(userId);
+    });
+
+    joinListInfoWindowRef.current.forEach((infoWindow, userId, thisMap) => {
+      if (joinList.has(userId)) {
+        return;
+      }
+
+      infoWindow.setMap(null);
+
+      thisMap.delete(userId);
+    });
+
+    // 입장한 사용자 마커 갱신
+    joinList.forEach((user, userId) => {
+      const { userLat, userLng, userName } = user;
+
+      if (joinListMarkerRef.current.has(userId)) {
+        return;
+      }
 
       const marker = new naver.maps.Marker({
         map,
@@ -106,26 +122,24 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         title: userName,
         icon: {
           content: `
-            <div>
-              <div class="${classes.userMarker}" style="background:${stc(userId)}">
-                <img src="${UserImage}">
-              </div>
+            <div class="${classes.userMarker}" style="background:${stc(userId)}">
+              <img src="${UserImage}">
             </div>
           `,
         },
       });
 
-      joinListMarkerRef.current.push(marker);
+      joinListMarkerRef.current.set(userId, marker);
 
       const infoWindow = new naver.maps.InfoWindow({
         content: userName,
       });
 
+      joinListInfoWindowRef.current.set(userId, infoWindow);
+
       naver.maps.Event.addListener(marker, 'click', () => {
         infoWindow.open(map, marker);
       });
-
-      joinListInfoWindowRef.current.push(infoWindow);
     });
   }, [joinList]);
 
