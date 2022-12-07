@@ -92,7 +92,7 @@ export class RedisService {
   joinList = {
     createEmptyJoinListForRoom: async (roomCode: string) => {
       const joinListKey = this.redisKey.joinList(roomCode);
-      await this.cacheManager.set(joinListKey, []);
+      await this.cacheManager.set(joinListKey, {});
     },
 
     getJoinList: async (roomCode: string) => {
@@ -110,8 +110,10 @@ export class RedisService {
       if (findJoinHash[userId]) {
         return;
       }
+      const addUserData = {};
+      addUserData[userId] = user;
       await this.cacheManager.set(userLikeListKey, []);
-      await this.cacheManager.set(joinListKey, { ...findJoinHash, ...{ userId: user } });
+      await this.cacheManager.set(joinListKey, { ...findJoinHash, ...addUserData });
     },
 
     delUserToJoinList: async (roomCode: string, userId: string) => {
