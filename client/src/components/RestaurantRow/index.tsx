@@ -4,6 +4,7 @@ import { useMeetLocationStore } from '@store/index';
 import { getDistance } from 'geolib';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 
+import { distanceToDisplay } from '@utils/distance';
 import {
   RestaurantRowBox,
   DistanceBox,
@@ -28,7 +29,7 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
     meetLocation: { lat: roomLat, lng: roomLng },
   } = useMeetLocationStore();
 
-  const distance = getDistance({ lat, lng }, { lat: roomLat, lng: roomLng });
+  const straightDistance = getDistance({ lat, lng }, { lat: roomLat, lng: roomLng });
 
   // 커밋에 기록이 남는게 찝찝해서 하드코딩하여 테스트했던 api key 일단 삭제.
   const googleApiKey = '';
@@ -49,10 +50,7 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
           <StarIcon width="15px" fill={rating ? palette.PRIMARY : 'gray'} />
           {rating || '-'}
         </RatingBox>
-        <DistanceBox>
-          모임 위치에서{' '}
-          {distance > 1000 ? `${Math.round(distance / 100) / 10} km` : `${distance} m`}
-        </DistanceBox>
+        <DistanceBox>모임 위치에서 {distanceToDisplay(straightDistance)}</DistanceBox>
       </InfoBox>
 
       {/* LikeButton 의 동작은 별도의 컴포넌트로 만들어 변경해주세요. */}
