@@ -95,16 +95,10 @@ function MainPage() {
       }
       const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
 
-      // my join info
-      const tmp = new Map<string, UserType>([
-        [userId, { userId, userLat: lat, userLng: lng, userName }],
-      ]);
+      const tmp = new Map<string, UserType>();
 
-      // other user join Info
       userList.forEach((userInfo) => {
-        if (userInfo.userId !== userId) {
-          tmp.set(userInfo.userId, userInfo);
-        }
+        tmp.set(userInfo.userId, userInfo);
       });
 
       setJoinList(tmp);
