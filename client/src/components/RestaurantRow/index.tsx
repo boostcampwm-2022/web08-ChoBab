@@ -3,6 +3,7 @@ import * as palette from '@styles/Variables';
 import { useMeetLocationStore } from '@store/index';
 import { getDistance } from 'geolib';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+import RestaurantVoteButton from '@components/RestaurantVoteButton';
 
 import { distanceToDisplay } from '@utils/distance';
 import {
@@ -10,7 +11,6 @@ import {
   DistanceBox,
   ImageBox,
   InfoBox,
-  LikeButton,
   NameBox,
   RatingBox,
   ThumbnailImage,
@@ -23,7 +23,7 @@ interface PropsType {
 }
 
 function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
-  const { name, category, lat, lng, rating, photoKeyList } = restaurant;
+  const { id, name, category, lat, lng, rating, photoKeyList } = restaurant;
 
   const {
     meetLocation: { lat: roomLat, lng: roomLng },
@@ -52,11 +52,8 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
         </RatingBox>
         <DistanceBox>모임 위치에서 {distanceToDisplay(straightDistance)}</DistanceBox>
       </InfoBox>
-
-      {/* LikeButton 의 동작은 별도의 컴포넌트로 만들어 변경해주세요. */}
-      <LikeButton>
-        {restaurantListType === RESTAURANT_LIST_TYPES.filtered ? '투표하기' : '좋아요'}
-      </LikeButton>
+      {/* TODO: 이벤트 버블링 막기, 버튼 클릭시 상세 모달 열리면 안됨 */}
+      <RestaurantVoteButton id={id} restaurantListType={restaurantListType} />
     </RestaurantRowBox>
   );
 }
