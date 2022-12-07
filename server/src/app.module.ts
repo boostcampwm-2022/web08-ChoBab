@@ -5,6 +5,7 @@ import { RoomModule } from '@room/room.module';
 import * as Joi from 'joi';
 import { SocketModule } from '@socket/socket.module';
 import { MapModule } from '@map/map.module';
+import { RedisModule } from '@cache/redis.module';
 
 @Module({
   imports: [
@@ -19,6 +20,8 @@ import { MapModule } from '@map/map.module';
         GOOGLE_API_KEY: Joi.string().required(),
         NAVER_MAP_API_CLIENT_ID: Joi.string().required(),
         NAVER_MAP_API_CLIENT_SECRET: Joi.string().required(),
+        REDIS_HOST: Joi.string().default('localhost'),
+        REDIS_PORT: Joi.number().default(6379),
       }),
     }),
     MongooseModule.forRootAsync({
@@ -31,6 +34,7 @@ import { MapModule } from '@map/map.module';
       }),
       inject: [ConfigService],
     }),
+    RedisModule,
     RoomModule,
     SocketModule,
     MapModule,
