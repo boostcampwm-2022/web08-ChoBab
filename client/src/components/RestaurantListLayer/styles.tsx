@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import * as palette from '@styles/Variables';
+import { motion } from 'framer-motion';
 
 interface LayerStylePropsType {
   headerHeight: number;
 }
 
-export const LayerBox = styled.div<LayerStylePropsType>`
+export const LayerBox = styled(motion.div)<LayerStylePropsType>`
   position: absolute;
   bottom: 0;
   width: 100%;

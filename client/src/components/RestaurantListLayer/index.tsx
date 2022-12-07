@@ -1,7 +1,9 @@
 import { useRestaurantListLayerStatusStore } from '@store/index';
-import RestaurantFiltered from '@components/RestaurantFiltered';
+import RestaurantFiltered from '@components/RestaurantFilteredList';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import * as palette from '@styles/Variables';
+import { AnimatePresence } from 'framer-motion';
+import { CandidateListModal } from '@components/RestaurantCandidateList';
 import { LayerBox } from './styles';
 
 interface PropsType {
@@ -12,23 +14,31 @@ interface PropsType {
 function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
   const { restaurantListLayerStatus } = useRestaurantListLayerStatusStore((state) => state);
 
-  if (restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered) {
-    return (
-      <LayerBox headerHeight={palette.HEADER_HEIGHT_RATIO + palette.CATEGORY_HEIGHT_RATIO}>
-        <RestaurantFiltered restaurantData={restaurantData} />
-      </LayerBox>
-    );
-  }
-
-  if (restaurantListLayerStatus === RESTAURANT_LIST_TYPES.candidate) {
-    return (
-      <LayerBox headerHeight={palette.HEADER_HEIGHT_RATIO}>
-        restaurant candidate list page(여기 내부에 구현)
-      </LayerBox>
-    );
-  }
-
-  return <div />;
+  return (
+    <AnimatePresence>
+      {restaurantListLayerStatus !== RESTAURANT_LIST_TYPES.hidden && (
+        <LayerBox
+          headerHeight={
+            restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered
+              ? palette.HEADER_HEIGHT_RATIO + palette.CATEGORY_HEIGHT_RATIO
+              : palette.HEADER_HEIGHT_RATIO
+          }
+          initial={{ opacity: 0, y: '100%' }}
+          animate={{ opacity: 1, y: '0%' }}
+          exit={{ opacity: 0, y: '100%' }}
+          transition={{
+            duration: 0.5,
+          }}
+        >
+          {restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered ? (
+            <RestaurantFiltered restaurantData={restaurantData} />
+          ) : (
+            <CandidateListModal candidateData={candidateData} />
+          )}
+        </LayerBox>
+      )}
+    </AnimatePresence>
+  );
 }
 
 export default RestaurantListLayer;
