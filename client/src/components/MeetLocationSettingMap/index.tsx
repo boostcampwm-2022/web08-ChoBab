@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import useCurrentLocation from '@hooks/useCurrentLocation';
 import { ReactComponent as MarkerImage } from '@assets/images/marker.svg';
 import { useMeetLocationStore } from '@store/index';
 import { useNaverMaps } from '@hooks/useNaverMaps';
