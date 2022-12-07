@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
-import { Room, RoomDocument, RoomDynamic, RoomDynamicDocument } from './room.schema';
+import { Room, RoomDocument } from './room.schema';
 import { Model } from 'mongoose';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { isInKorea } from '@utils/location';
 import { RestaurantService } from '@restaurant/restaurant.service';
 import { LOCATION_EXCEPTION } from '@response/location';
 import { ROOM_EXCEPTION } from '@response/room';
+import { RedisService } from '@cache/redis.service';
 
 @Injectable()
 export class RoomService {
   constructor(
     @InjectModel(Room.name) private roomModel: Model<RoomDocument>,
-    @InjectModel(RoomDynamic.name) private roomDynamicModel: Model<RoomDynamicDocument>,
-    private restaurantService: RestaurantService
+    private restaurantService: RestaurantService,
+    private readonly redisService: RedisService
   ) {}
 
   async createRoom(lat: number, lng: number, radius: number): Promise<string> {
@@ -37,9 +38,16 @@ export class RoomService {
         const restaurantData = restaurantMap[id];
         return { ...restaurantData, ...restaurantDetailData };
       });
-      await this.roomDynamicModel.create({ roomCode, restaurantList: mergedRestaurantDataList });
       await this.roomModel.create({ roomCode, lat, lng });
-
+      await this.redisService.restaurantList.setRestaurantListForRoom(
+        roomCode,
+        mergedRestaurantDataList
+      );
+      await this.redisService.candidateList.createEmptyCandidateListForRoom(
+        roomCode,
+        mergedRestaurantDataList
+      );
+      await this.redisService.joinList.createEmptyJoinListForRoom(roomCode);
       return roomCode;
     } catch (error) {
       console.log(error);
@@ -51,10 +59,9 @@ export class RoomService {
     try {
       const room = await this.roomModel.findOne({ roomCode });
       if (!room || room.deletedAt) {
-        await this.roomDynamicModel.findOneAndDelete({ roomCode });
         return false;
       }
-      const roomDynamic = await this.roomDynamicModel.findOne({ roomCode });
+      const roomDynamic = await this.redisService.restaurantList.getRestaurantListForRoom(roomCode);
       if (!roomDynamic) {
         await this.roomModel.findOneAndUpdate({ roomCode }, { deletedAt: Date.now() });
         return false;

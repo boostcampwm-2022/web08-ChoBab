@@ -10,7 +10,7 @@ import {
   OnGatewayDisconnect,
   ConnectedSocket,
 } from '@nestjs/websockets';
-import { Room, RoomDocument, RoomDynamic, RoomDynamicDocument } from '@room/room.schema';
+import { Room, RoomDocument } from '@room/room.schema';
 import { Model } from 'mongoose';
 import { Server, Socket } from 'socket.io';
 import { sessionMiddleware } from '@utils/session';
@@ -18,6 +18,7 @@ import { Request, Response, NextFunction } from 'express';
 import { PreprocessedRestaurantType as RestaurantType } from '@restaurant/restaurant';
 import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
 import { makeUserRandomNickname } from '@utils/nickname';
+import { RedisService } from '@cache/redis.service';
 
 interface UserType {
   userId: string;
@@ -33,8 +34,8 @@ export class EventsGateway
   server: Server; // 'room' namespace server instance
 
   constructor(
-    @InjectModel(RoomDynamic.name) private roomDynamicModel: Model<RoomDynamicDocument>,
-    @InjectModel(Room.name) private roomModel: Model<RoomDocument>
+    @InjectModel(Room.name) private roomModel: Model<RoomDocument>,
+    private readonly redisService: RedisService
   ) {}
 
   private socketRes() {
@@ -54,8 +55,8 @@ export class EventsGateway
         lat: number,
         lng: number,
         restaurantList: RestaurantType[],
-        candidateList: RestaurantType[],
-        userList: UserType[],
+        candidateList: { [index: string]: number },
+        userList: { [index: string]: UserType },
         userId: string,
         userName: string
       ) =>
@@ -101,27 +102,14 @@ export class EventsGateway
 
     try {
       const { lat, lng } = await this.roomModel.findOne({ roomCode });
-      const { restaurantList, userList, candidateList } = await this.roomDynamicModel.findOne({
-        roomCode,
-      });
-
+      const restaurantList = await this.redisService.restaurantList.getRestaurantListForRoom(
+        roomCode
+      );
       const { sessionID: userId } = client.request;
-
-      const userIds = userList.map((userData) => userData.userId);
-
-      const userIndex = userIds.indexOf(userId);
-
-      let user;
-      let newUserList;
-
-      if (userIndex !== -1) {
-        user = userList[userIndex];
-        newUserList = userList;
-      } else {
-        user = { userId, userLat, userLng, userName: makeUserRandomNickname() };
-        newUserList = [...userList, user];
-        await this.roomDynamicModel.findOneAndUpdate({ roomCode }, { userList: newUserList });
-      }
+      const user = { userId, userLat, userLng, userName: makeUserRandomNickname() };
+      await this.redisService.joinList.addUserToJoinList(roomCode, user);
+      const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
+      const newUserList = await this.redisService.joinList.getJoinList(roomCode);
 
       client.emit(
         'connectResult',
@@ -164,10 +152,7 @@ export class EventsGateway
 
     // 방안에 같은 세션 접속자가 없을 때 퇴장 처리 (DB, Client 에서 모두 제거)
     if (!roomSessionIDs.includes(sessionID)) {
-      await this.roomDynamicModel.updateOne(
-        { roomCode: roomCode },
-        { $pull: { userList: { userId: sessionID } } }
-      );
+      await this.redisService.joinList.delUserToJoinList(roomCode, sessionID);
 
       client.to(roomCode).emit('leave', sessionID);
     }

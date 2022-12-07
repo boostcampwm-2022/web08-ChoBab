@@ -5,7 +5,6 @@ import { RoomModule } from '@room/room.module';
 import * as Joi from 'joi';
 import { SocketModule } from '@socket/socket.module';
 import { MapModule } from '@map/map.module';
-import { RedisModule } from '@cache/redis.module';
 
 @Module({
   imports: [
@@ -34,7 +33,6 @@ import { RedisModule } from '@cache/redis.module';
       }),
       inject: [ConfigService],
     }),
-    RedisModule,
     RoomModule,
     SocketModule,
     MapModule,
