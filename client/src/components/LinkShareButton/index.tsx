@@ -1,17 +1,18 @@
-import React from 'react';
 import { ReactComponent as ShareImage } from '@assets/images/share.svg';
+import { TOAST_DURATION_TIME, SUCCCESS_COPY_MESSAGE, FAIL_COPY_MESSAGE } from '@constants/toast';
+import { useToast } from '@hooks/useToast';
 import { ButtonBox } from './styles';
 
-// TODO: alert는 추후 토스트 형태로 일괄 변경 예정
 function LinkShareButton() {
+  const { fireToast } = useToast();
   const location = window.location.href; // 현재 URL
 
   const copyClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      alert('클립보드 복사 성공');
+      fireToast({ content: SUCCCESS_COPY_MESSAGE, duration: TOAST_DURATION_TIME, bottom: 80 });
     } catch (error) {
-      alert('클립보드 복사 실패');
+      fireToast({ content: FAIL_COPY_MESSAGE, duration: TOAST_DURATION_TIME, bottom: 80 });
     }
   };
 

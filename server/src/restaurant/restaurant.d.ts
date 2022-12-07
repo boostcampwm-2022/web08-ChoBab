@@ -18,6 +18,13 @@ export interface PreprocessedRestaurantType {
   address: string;
 }
 
+// 기본 음식점 데이터와 상세 정보를 취합한 데이터 타입
+export interface MergedRestaurantType extends PreprocessedRestaurantType {
+  rating?: number;
+  photoKeyList?: string[];
+  priceLevel?: number;
+}
+
 export interface RestaurantApiResultType {
   meta: {
     is_end: boolean;
@@ -29,14 +36,11 @@ export interface RestaurantApiResultType {
 
 export interface RestaurantDetailType {
   rating?: number;
-  photos?: { photo_reference: string }[];
-  opening_hours?: {
-    open_now?: boolean;
-  };
+  photos?: { photo_reference?: string }[];
   price_level?: number;
 }
 
 export interface RestaurantDetailResponseType {
-  candidates: RestaurantDetail[];
+  candidates: RestaurantDetailType[];
   status: string;
 }

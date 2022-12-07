@@ -3,14 +3,23 @@ import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
+import { ReactComponent as MapIcon } from '@assets/images/map-icon.svg';
+import { ReactComponent as MapLocationIcon } from '@assets/images/map-location.svg';
+
 import ActiveUserInfo from '@components/ActiveUserInfo';
 import LinkShareButton from '@components/LinkShareButton';
 import MainMap from '@components/MainMap';
+
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
+import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+
 import useCurrentLocation from '@hooks/useCurrentLocation';
+import RestaurantListLayer from '@components/RestaurantListLayer';
+import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
 
 import {
   ButtonInnerTextBox,
@@ -22,43 +31,6 @@ import {
   MapOrListButton,
 } from './styles';
 
-export interface UserType {
-  userId: string;
-  userLat: number;
-  userLng: number;
-  userName: string;
-}
-
-interface RestaurantType {
-  id: string;
-  name: string;
-  category: string;
-  phone: string;
-  lat: number;
-  lng: number;
-  address: string;
-}
-
-interface ResTemplateType<T> {
-  message: string;
-  data: T;
-}
-
-interface RoomValidType {
-  isRoomValid: boolean;
-}
-
-interface RoomDataType {
-  roomCode: string;
-  lat: number;
-  lng: number;
-  userList: UserType[];
-  restaurantList: RestaurantType[];
-  candidateList: RestaurantType[];
-  userId: string;
-  userName: string;
-}
-
 function MainPage() {
   const userLocation = useCurrentLocation();
   const { roomCode } = useParams<{ roomCode: string }>();
@@ -68,25 +40,59 @@ function MainPage() {
   const [myId, setMyId] = useState<string>('');
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
-
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
+  const [candidateData, setCandidateData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
     lat: NAVER_LAT,
     lng: NAVER_LNG,
   });
 
+  const { restaurantListLayerStatus, updateRestaurantListLayerStatus } =
+    useRestaurantListLayerStatusStore((state) => state);
+
+  const isMap = () => {
+    return restaurantListLayerStatus === RESTAURANT_LIST_TYPES.hidden;
+  };
+
+  const isRestaurantFilteredList = () => {
+    return restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered;
+  };
+
+  const isRestaurantCandidateList = () => {
+    return restaurantListLayerStatus === RESTAURANT_LIST_TYPES.candidate;
+  };
+
+  const handleSwitchCandidateList = () => {
+    if (isMap() || isRestaurantFilteredList()) {
+      updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.candidate);
+      return;
+    }
+
+    updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
+  };
+
+  const handleSwitchRestaurantList = () => {
+    if (isMap() || isRestaurantCandidateList()) {
+      updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.filtered);
+      return;
+    }
+
+    updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
+  };
+
   const connectRoom = () => {
     const clientSocket = socketRef.current;
     const { lat: userLat, lng: userLng } = userLocation;
+
     if (!(clientSocket instanceof Socket)) {
       throw new Error();
     }
+
     clientSocket.on('connectResult', (data: ResTemplateType<RoomDataType>) => {
       if (!data.data) {
         console.log(data.message);
         return;
       }
-
       const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
 
       const tmp = new Map();
@@ -102,9 +108,11 @@ function MainPage() {
       setMyId(userId);
       setMyName(userName);
       setRoomConnect(true);
+      setCandidateData(candidateList);
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
     });
+
     clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
   };
 
@@ -173,13 +181,25 @@ function MainPage() {
         </Header>
         <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
-      <CandidateListButton>
-        <CandidateListIcon />
+
+      {/* 식당 후보 목록 <-> 지도 화면 */}
+      {/* 식당 후보 목록 <-- 전체 식당 목록 */}
+      <CandidateListButton onClick={handleSwitchCandidateList}>
+        {isRestaurantCandidateList() ? <MapLocationIcon /> : <CandidateListIcon />}
       </CandidateListButton>
-      <MapOrListButton>
-        <ListIcon />
-        <ButtonInnerTextBox>목록보기</ButtonInnerTextBox>
+
+      {/* 전체 식당 목록 <-> 지도 화면 */}
+      {/* 전체 식당 목록 <-- 식당 후보 목록 */}
+      <MapOrListButton onClick={handleSwitchRestaurantList}>
+        {isRestaurantFilteredList() ? <MapIcon /> : <ListIcon />}
+        <ButtonInnerTextBox>
+          {isRestaurantFilteredList() ? '지도보기' : '목록보기'}
+        </ButtonInnerTextBox>
       </MapOrListButton>
+
+      {/* 식당 리스트 & 식당 상세정보 Full-Screen 모달 컴포넌트 */}
+      <RestaurantListLayer restaurantData={restaurantData} candidateData={candidateData} />
+      <RestaurantDetailLayer />
     </MainPageLayout>
   );
 }
