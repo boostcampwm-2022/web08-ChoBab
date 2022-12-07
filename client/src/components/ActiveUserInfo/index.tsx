@@ -85,7 +85,7 @@ function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: Prop
       </ListToggleButton>
       <Modal isOpen={isListOpen} setIsOpen={setListOpen}>
         <ActiveUserInfoBox>
-          <p>접속자 총 {[...joinList].length}명</p>
+          <p>접속자 총 {joinList.size}명</p>
           <ActiveUserInfoList>
             {[...joinList].map(([userId, userInfo]) => {
               return (
