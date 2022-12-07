@@ -103,10 +103,13 @@ export class RestaurantService {
         x: lng,
         road_address_name: address,
       } = restaurant;
+
+      const categorySplitArr = category.split('>');
+
       const preprocessedRestaurant: PreprocessedRestaurantType = {
         id: id,
         name: name,
-        category: category.split('>')[1].trim() || '',
+        category: categorySplitArr.length > 1 ? categorySplitArr[1].trim() : '',
         phone: phone || '',
         lat: Number.parseFloat(lat),
         lng: Number.parseFloat(lng),
