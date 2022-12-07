@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import * as palette from '@styles/Variables';
 import { ReactComponent as MarkerIcon } from '@assets/images/marker.svg';
 import { ReactComponent as PhoneIcon } from '@assets/images/phone-icon.svg';
-import DrivingInfoMap from '@components/RestaurantDetail/RestaurantDetailDrivingInfoMap';
+import RestaurantDetailDrivingInfo from '@components/RestaurantDetail/RestaurantDetailDrivingInfo';
 import {
   AddressBox,
   IconBox,
@@ -102,7 +102,7 @@ export function RestaurantDetailModalBody({ id, address, lat, lng, phone }: Prop
         </ModalBodyContent>
       ) : (
         <ModalBodyContent>
-          <DrivingInfoMap restaurantPos={restaurantPos} />
+          <RestaurantDetailDrivingInfo restaurantPos={restaurantPos} />
         </ModalBodyContent>
       )}
     </ModalBody>

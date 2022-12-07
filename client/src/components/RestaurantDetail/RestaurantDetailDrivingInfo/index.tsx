@@ -28,7 +28,7 @@ interface DrivingInfoType {
   path: number[][];
 }
 
-function DrivingInfoMap({ restaurantPos }: PropsType) {
+function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
   const { userLocation } = useUserLocationStore();
   const userPos: PositionType = userLocation;
 
@@ -111,4 +111,4 @@ function DrivingInfoMap({ restaurantPos }: PropsType) {
   return <MapBox ref={mapRef} />;
 }
 
-export default DrivingInfoMap;
+export default RestaurantDetailDrivingInfo;
