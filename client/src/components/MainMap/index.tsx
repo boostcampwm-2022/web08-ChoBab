@@ -39,7 +39,7 @@ interface RoomLocationType {
 interface PropsType {
   restaurantData: RestaurantType[];
   roomLocation: RoomLocationType;
-  joinList: UserType[];
+  joinList: Map<string, UserType>;
 }
 
 const getIconUrlByCategory = (category: string) => {
