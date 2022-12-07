@@ -1,31 +1,22 @@
-import { useRestaurantDetailLayerStatusStore, useSelectedRestaurantDataStore } from '@store/index';
+import { useRestaurantDetailLayerStatusStore } from '@store/index';
 import { RESTAURANT_DETAIL_TYPES } from '@constants/modal';
+import { AnimatePresence } from 'framer-motion';
+import { RestaurantDetailModal } from '@components/RestaurantDetail';
 import { LayerBox } from './styles';
 
 function RestaurantDetailLayer() {
   const { restaurantDetailLayerStatus, updateRestaurantDetailLayerStatus } =
     useRestaurantDetailLayerStatusStore((state) => state);
-
-  const { selectedRestaurantData } = useSelectedRestaurantDataStore((state) => state);
-
-  if (restaurantDetailLayerStatus === RESTAURANT_DETAIL_TYPES.show) {
-    return (
-      <LayerBox>
-        <p>restaurant detail page</p>
-        <p>선택된 식당 이름 :{selectedRestaurantData?.name}</p>
-        <button
-          type="button"
-          onClick={() => {
-            updateRestaurantDetailLayerStatus(RESTAURANT_DETAIL_TYPES.hidden);
-          }}
-        >
-          닫기
-        </button>
-      </LayerBox>
-    );
-  }
-
-  return <div />;
+  return (
+    <AnimatePresence>
+      {restaurantDetailLayerStatus === RESTAURANT_DETAIL_TYPES.show && (
+        <LayerBox>
+          <RestaurantDetailModal
+            updateRestaurantDetailLayerStatus={updateRestaurantDetailLayerStatus}
+          />
+        </LayerBox>
+      )}
+    </AnimatePresence>
+  );
 }
-
 export default RestaurantDetailLayer;

@@ -53,7 +53,7 @@ export const CategoryToggle = styled.div`
 export const CandidateListButton = styled.button`
   background-color: ${palette.PRIMARY};
   position: absolute;
-  z-index: 3;
+  z-index: 999;
   margin-bottom: 10px;
   bottom: 0px;
   width: 55px;
