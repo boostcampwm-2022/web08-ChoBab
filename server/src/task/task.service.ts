@@ -31,13 +31,12 @@ export class TaskService {
     };
 
     // 기준 시각 이전에 생성된 모임방(roomCode)에 해당하는 roomDynamic 삭제
-    await this.roomModel.find(condition).then(async (rooms) => {
-      await Promise.all(
-        rooms.map(async (room) => {
-          await this.roomDynamicModel.deleteOne({ roomCode: room.roomCode });
-        })
-      );
-    });
+    const rooms = await this.roomModel.find(condition);
+    await Promise.all(
+      rooms.map(async (room) => {
+        await this.roomDynamicModel.deleteOne({ roomCode: room.roomCode });
+      })
+    );
 
     // 기준 시각 이전에 생성된 room soft delete
     await this.roomModel.updateMany(condition, { deletedAt: now });
