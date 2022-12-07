@@ -1,8 +1,8 @@
 import { REDIS_TTL } from '@constants/time';
 import { CacheModule, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-store';
-import { RedisController } from './redis.controller';
+import { RedisService } from './redis.service';
 
 @Module({
   imports: [
@@ -23,6 +23,8 @@ import { RedisController } from './redis.controller';
       inject: [ConfigService],
     }),
   ],
-  controllers: [RedisController],
+  controllers: [],
+  providers: [RedisService],
+  exports: [RedisService],
 })
 export class RedisModule {}
