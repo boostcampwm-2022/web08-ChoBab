@@ -185,7 +185,7 @@ function MainPage() {
           <LinkShareButton />
         </Header>
       </HeaderBox>
-      <CategoryToggle>토글</CategoryToggle>
+      <CategoryToggle />
 
       {/* 식당 후보 목록 <-> 지도 화면 */}
       {/* 식당 후보 목록 <-- 전체 식당 목록 */}

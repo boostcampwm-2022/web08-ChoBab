@@ -8,12 +8,16 @@ export const SCROLL_BAR_COLOR = '#dfdfdf';
 
 // size
 export const BREAKPOINT_TABLET = '767px';
-export const HEADER_HEIGHT_RATIO = '15%';
+export const HEADER_HEIGHT_RATIO = 10;
+export const CATEGORY_HEIGHT_RATIO = 6;
 
 // z-index
-export const HEADER_Z_INDEX = 3;
-export const CONTROLER_Z_INDEX = 3;
+export const HEADER_Z_INDEX = 8;
 
-export const RESTAURANT_LAYER_Z_INDEX = 2;
+export const CATEGORY_Z_INDEX = 2;
 
-export const RESTAURANT_DETAIL_LAYER_Z_INDEX = 4;
+export const CONTROLER_Z_INDEX = 8;
+
+export const RESTAURANT_LIST_LAYER_Z_INDEX = 6;
+
+export const RESTAURANT_DETAIL_LAYER_Z_INDEX = 10;

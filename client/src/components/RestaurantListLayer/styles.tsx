@@ -1,12 +1,17 @@
 import styled from 'styled-components';
 import * as palette from '@styles/Variables';
 
-export const LayerBox = styled.div`
+interface LayerStylePropsType {
+  headerHeight: number;
+}
+
+export const LayerBox = styled.div<LayerStylePropsType>`
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: calc(100% - ${palette.HEADER_HEIGHT_RATIO});
-  z-index: ${palette.RESTAURANT_LAYER_Z_INDEX};
+  height: calc(100% - ${({ headerHeight }) => `${headerHeight}%`});
+  z-index: ${palette.RESTAURANT_LIST_LAYER_Z_INDEX};
+  background-color: white;
 
   overflow-y: overlay;
   &::-webkit-scrollbar {
