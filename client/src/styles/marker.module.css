@@ -16,3 +16,13 @@
   align-items: center;
   justify-content: center;
 }
+
+.userMarker {
+  border-radius: 30px;
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  z-index: 100;
+  overflow: hidden;
+  box-shadow: 0px 0px 4px rgb(0 0 0 / 50%);
+}

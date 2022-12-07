@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+// src 를 가져오고 있으니 PascalCase 에서 camelCase 로 변경하고 뒤에 Src 붙였으면 함.
 import RiceImage from '@assets/images/rice.svg';
 import SushiImage from '@assets/images/sushi.svg';
 import DumplingImage from '@assets/images/dumpling.svg';
@@ -8,6 +9,9 @@ import ChickenImage from '@assets/images/chicken.svg';
 import HamburgerImage from '@assets/images/hamburger.svg';
 import HotdogImage from '@assets/images/hotdog.svg';
 import { ReactComponent as LoadingSpinner } from '@assets/images/loading-spinner.svg';
+import UserImage from '@assets/images/user.svg';
+
+import stc from 'string-to-color';
 
 import { useNaverMaps } from '@hooks/useNaverMaps';
 
@@ -35,6 +39,7 @@ interface RoomLocationType {
 interface PropsType {
   restaurantData: RestaurantType[];
   roomLocation: RoomLocationType;
+  joinList: UserType[];
 }
 
 const getIconUrlByCategory = (category: string) => {
@@ -57,18 +62,72 @@ const getIconUrlByCategory = (category: string) => {
   }
 };
 
-function MainMap({ restaurantData, roomLocation }: PropsType) {
+function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   const [mapRef, mapDivRef] = useNaverMaps();
+
+  const joinListMarkerRef = useRef<naver.maps.Marker[]>([]);
+  const joinListInfoWindowRef = useRef<naver.maps.InfoWindow[]>([]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 
   const closeAllMarkerInfoWindow = () => {
-    infoWindowsRef.current.forEach((infoWindow) => {
+    [...infoWindowsRef.current, ...joinListInfoWindowRef.current].forEach((infoWindow) => {
       infoWindow.close();
     });
   };
+
+  useEffect(() => {
+    if (!mapRef.current) {
+      return;
+    }
+
+    joinListMarkerRef.current.forEach((marker) => {
+      marker.setMap(null);
+    });
+
+    joinListInfoWindowRef.current.forEach((infoWindow) => {
+      infoWindow.setMap(null);
+    });
+
+    joinList.forEach((user) => {
+      const map = mapRef.current;
+
+      if (!map) {
+        return;
+      }
+
+      const { userId, userLat, userLng, userName } = user;
+
+      const marker = new naver.maps.Marker({
+        map,
+        position: new naver.maps.LatLng(userLat, userLng),
+        title: userName,
+        icon: {
+          content: `
+            <div>
+              <div class="${classes.userMarker}" style="background:${stc(userId)}">
+                <img src="${UserImage}">
+              </div>
+            </div>
+          `,
+        },
+      });
+
+      joinListMarkerRef.current.push(marker);
+
+      const infoWindow = new naver.maps.InfoWindow({
+        content: userName,
+      });
+
+      naver.maps.Event.addListener(marker, 'click', () => {
+        infoWindow.open(map, marker);
+      });
+
+      joinListInfoWindowRef.current.push(infoWindow);
+    });
+  }, [joinList]);
 
   const initMarkers = (map: naver.maps.Map) => {
     if (!map) {

@@ -2,6 +2,7 @@ import Modal from '@components/Modal';
 import React, { MutableRefObject, useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { ReactComponent as User } from '@assets/images/user.svg';
+import stc from 'string-to-color';
 import {
   ListToggleButton,
   ActiveUserInfoList,
@@ -84,17 +85,16 @@ function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: Prop
       </ListToggleButton>
       <Modal isOpen={isListOpen} setIsOpen={setListOpen}>
         <ActiveUserInfoBox>
-          <p>접속자 총 {[...joinList].length + 1}명</p>
+          <p>접속자 총 {[...joinList].length}명</p>
           <ActiveUserInfoList>
-            <ActiveUserInfoItem>
-              <ActiveUserIconBox />
-              {myName} (나)
-            </ActiveUserInfoItem>
-            {[...joinList].map(([mapKey, mapValue]) => {
+            {[...joinList].map(([userId, userInfo]) => {
               return (
-                <ActiveUserInfoItem key={mapKey}>
-                  <ActiveUserIconBox />
-                  <p>{mapValue.userName}</p>
+                <ActiveUserInfoItem key={userId}>
+                  <ActiveUserIconBox style={{ backgroundColor: `${stc(userInfo.userId)}` }} />
+                  <p>
+                    {userInfo.userName}
+                    {myId === userId && ' (나)'}
+                  </p>
                 </ActiveUserInfoItem>
               );
             })}
