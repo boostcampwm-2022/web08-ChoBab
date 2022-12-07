@@ -97,18 +97,26 @@ function MainPage() {
 
       const tmp = new Map();
 
-      userList.forEach((userInfo) => {
-        if (userInfo.userId !== userId) {
+      Object.keys(userList).forEach((userIdInRoom) => {
+        const userInfo = userList[userIdInRoom];
+        if (userIdInRoom !== userId) {
           tmp.set(userInfo.userId, userInfo);
         }
       });
+
+      const nonZeroLikeRestaurantIds = Object.keys(candidateList).filter(
+        (resId) => candidateList[resId] > 0
+      );
+      const tmpCandidateList = restaurantList.filter((restaurant) =>
+        nonZeroLikeRestaurantIds.find((resId) => resId === restaurant.id)
+      );
 
       setJoinList(tmp);
 
       setMyId(userId);
       setMyName(userName);
       setRoomConnect(true);
-      setCandidateData(candidateList);
+      setCandidateData(tmpCandidateList);
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
     });

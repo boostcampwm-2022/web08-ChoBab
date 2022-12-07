@@ -31,9 +31,9 @@ declare interface RoomDataType {
   roomCode: string;
   lat: number;
   lng: number;
-  userList: UserType[];
+  userList: { [index: string]: UserType };
   restaurantList: RestaurantType[];
-  candidateList: RestaurantType[];
+  candidateList: { [index: string]: number };
   userId: string;
   userName: string;
 }
