@@ -10,7 +10,12 @@ function RestaurantDetailLayer() {
   return (
     <AnimatePresence>
       {restaurantDetailLayerStatus === RESTAURANT_DETAIL_TYPES.show && (
-        <LayerBox>
+        <LayerBox
+          initial={{ opacity: 0, x: 999 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 999 }}
+          transition={{ duration: 1 }}
+        >
           <RestaurantDetailModal
             updateRestaurantDetailLayerStatus={updateRestaurantDetailLayerStatus}
           />
