@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 import { ReactComponent as BackwardIcon } from '@assets/images/backward-arrow-icon.svg';
-import { RestaurantDetailModalTitle } from '@components/RestaurantDetailModal/RestaurantDetailModalTitle';
-import { RestaurantDetailCarousel } from '@components/RestaurantDetailModal/RestaurantDetailModalCarousel';
+import { RestaurantDetailModalTitle } from '@components/RestaurantDetail/RestaurantDetailModalTitle';
+import { RestaurantDetailCarousel } from '@components/RestaurantDetail/RestaurantDetailModalCarousel';
 import { RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { useSelectedRestaurantDataStore } from '@store/index';
 import { ModalBox, ModalLayout, BackwardButton, AddCandidatesButton } from './styles';
 import { RestaurantDetailModalBody } from './RestaurantDetailModalBody';
-
 
 interface PropsType {
   updateRestaurantDetailLayerStatus: (restaurantDetailType: RESTAURANT_DETAIL_TYPES) => void;
