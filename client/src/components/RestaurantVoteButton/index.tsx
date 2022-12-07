@@ -21,7 +21,10 @@ function RestaurantVoteButton({ id: restaurantId, restaurantListType: listType }
   const { votedRestaurantList, addVotedRestaurant, removeVotedRestaurant } =
     useVotedRestaurantListStore((state) => state);
 
-  const handleClick: React.MouseEventHandler = () => {
+  const handleClick: React.MouseEventHandler = (e) => {
+    // 이벤트 버블링 방지: 버튼 클릭 시 상세 정보 모달이 열리지 않기 위해 필요
+    e.stopPropagation();
+
     if (!(socket instanceof Socket)) {
       throw new Error();
     }

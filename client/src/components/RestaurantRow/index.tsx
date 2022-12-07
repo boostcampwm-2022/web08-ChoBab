@@ -52,7 +52,6 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
         </RatingBox>
         <DistanceBox>모임 위치에서 {distanceToDisplay(straightDistance)}</DistanceBox>
       </InfoBox>
-      {/* TODO: 이벤트 버블링 막기, 버튼 클릭시 상세 모달 열리면 안됨 */}
       <RestaurantVoteButton id={id} restaurantListType={restaurantListType} />
     </RestaurantRowBox>
   );
