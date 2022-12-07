@@ -1,4 +1,4 @@
-export interface originRestaurantType {
+export interface OriginRestaurantType {
   id: string;
   road_address_name: string;
   category_name: string;
@@ -8,7 +8,7 @@ export interface originRestaurantType {
   y: string;
 }
 
-export interface preprocessedRestaurantType {
+export interface PreprocessedRestaurantType {
   id: string;
   name: string;
   category: string;
@@ -16,4 +16,31 @@ export interface preprocessedRestaurantType {
   lat: number;
   lng: number;
   address: string;
+}
+
+// 기본 음식점 데이터와 상세 정보를 취합한 데이터 타입
+export interface MergedRestaurantType extends PreprocessedRestaurantType {
+  rating?: number;
+  photoKeyList?: string[];
+  priceLevel?: number;
+}
+
+export interface RestaurantApiResultType {
+  meta: {
+    is_end: boolean;
+    pageable_count: number;
+    total_count: number;
+  };
+  documents: OriginRestaurantType[];
+}
+
+export interface RestaurantDetailType {
+  rating?: number;
+  photos?: { photo_reference?: string }[];
+  price_level?: number;
+}
+
+export interface RestaurantDetailResponseType {
+  candidates: RestaurantDetailType[];
+  status: string;
 }
