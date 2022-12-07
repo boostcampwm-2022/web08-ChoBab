@@ -74,20 +74,13 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 
-  const closeAllMarkerInfoWindow = () => {
+  const closeAllRestaurantMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
       infoWindow.close();
     });
   };
 
-  useEffect(() => {
-    const map = mapRef.current;
-
-    if (!map) {
-      return;
-    }
-
-    // 퇴장한 사용자 마커 갱신
+  const updateExitUserMarker = () => {
     joinListMarkerRef.current.forEach((marker, userId, thisMap) => {
       if (joinList.has(userId)) {
         return;
@@ -97,7 +90,9 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
       thisMap.delete(userId);
     });
+  };
 
+  const updateExitUserInfoWindow = () => {
     joinListInfoWindowRef.current.forEach((infoWindow, userId, thisMap) => {
       if (joinList.has(userId)) {
         return;
@@ -107,8 +102,15 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
       thisMap.delete(userId);
     });
+  };
 
-    // 입장한 사용자 마커 갱신
+  const updateJoinUserMarkerAndInfoWindow = () => {
+    const map = mapRef.current;
+
+    if (!map) {
+      return;
+    }
+
     joinList.forEach((user, userId) => {
       const { userLat, userLng, userName } = user;
 
@@ -141,7 +143,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         infoWindow.open(map, marker);
       });
     });
-  }, [joinList]);
+  };
 
   const initMarkers = (map: naver.maps.Map) => {
     if (!map) {
@@ -247,7 +249,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         return;
       }
 
-      closeAllMarkerInfoWindow();
+      closeAllRestaurantMarkerInfoWindow();
     });
     return onDragendListener;
   };
@@ -258,7 +260,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         return;
       }
 
-      closeAllMarkerInfoWindow();
+      closeAllRestaurantMarkerInfoWindow();
     });
 
     return onClickListener;
@@ -291,6 +293,12 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
     return onZoomChangedListener;
   };
+
+  useEffect(() => {
+    updateExitUserMarker();
+    updateExitUserInfoWindow();
+    updateJoinUserMarkerAndInfoWindow();
+  }, [joinList]);
 
   useEffect(() => {
     if (!mapRef.current) {
