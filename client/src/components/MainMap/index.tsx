@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
-// src 를 가져오고 있으니 PascalCase 에서 camelCase 로 변경하고 뒤에 Src 붙였으면 함.
-import RiceImage from '@assets/images/rice.svg';
-import SushiImage from '@assets/images/sushi.svg';
-import DumplingImage from '@assets/images/dumpling.svg';
-import SpaghettiImage from '@assets/images/spaghetti.svg';
-import ChickenImage from '@assets/images/chicken.svg';
-import HamburgerImage from '@assets/images/hamburger.svg';
-import HotdogImage from '@assets/images/hotdog.svg';
+import riceImageSrc from '@assets/images/rice.svg';
+import sushiImageSrc from '@assets/images/sushi.svg';
+import dumplingImageSrc from '@assets/images/dumpling.svg';
+import spaghettiImageSrc from '@assets/images/spaghetti.svg';
+import chickenImageSrc from '@assets/images/chicken.svg';
+import hamburgerImageSrc from '@assets/images/hamburger.svg';
+import hotdogImageSrc from '@assets/images/hotdog.svg';
+import userImageSrc from '@assets/images/user.svg';
 import { ReactComponent as LoadingSpinner } from '@assets/images/loading-spinner.svg';
-import UserImage from '@assets/images/user.svg';
 
 import stc from 'string-to-color';
 
@@ -45,20 +44,20 @@ interface PropsType {
 const getIconUrlByCategory = (category: string) => {
   switch (category) {
     case '일식':
-      return SushiImage;
+      return sushiImageSrc;
     case '중식':
-      return DumplingImage;
+      return dumplingImageSrc;
     case '양식':
-      return SpaghettiImage;
+      return spaghettiImageSrc;
     case '치킨':
-      return ChickenImage;
+      return chickenImageSrc;
     case '패스트푸드':
-      return HamburgerImage;
+      return hamburgerImageSrc;
     case '분식':
-      return HotdogImage;
+      return hotdogImageSrc;
     case '한식':
     default:
-      return RiceImage;
+      return riceImageSrc;
   }
 };
 
@@ -125,7 +124,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         icon: {
           content: `
             <div class="${classes.userMarker}" style="background:${stc(userId)}">
-              <img src="${UserImage}">
+              <img src="${userImageSrc}">
             </div>
           `,
         },
