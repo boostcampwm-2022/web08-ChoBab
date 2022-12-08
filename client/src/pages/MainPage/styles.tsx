@@ -26,11 +26,11 @@ export const HeaderBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 15%;
+  height: ${palette.HEADER_HEIGHT_RATIO}%;
   background-color: ${palette.BORDER};
   position: absolute;
   top: 0px;
-  z-index: 3;
+  z-index: ${palette.HEADER_Z_INDEX};
   display: flex;
 `;
 
@@ -39,21 +39,24 @@ export const Header = styled.header`
   justify-content: space-between;
   background-color: ${palette.PRIMARY};
   width: 100%;
-  height: 60%;
+  height: 100%;
 `;
 
 export const CategoryToggle = styled.div`
-  background-color: white;
+  position: absolute;
+  top: ${palette.HEADER_HEIGHT_RATIO}%;
   width: 100%;
-  height: 40%;
+  height: ${palette.CATEGORY_HEIGHT_RATIO}%;
+  background-color: white;
   padding: 1% 3%;
   border: 1px solid ${palette.PRIMARY};
+  z-index: ${palette.CATEGORY_Z_INDEX};
 `;
 
 export const CandidateListButton = styled.button`
   background-color: ${palette.PRIMARY};
   position: absolute;
-  z-index: 999;
+  z-index: ${palette.CONTROLER_Z_INDEX};
   margin-bottom: 10px;
   bottom: 0px;
   width: 55px;
@@ -70,7 +73,7 @@ export const CandidateListButton = styled.button`
 export const MapOrListButton = styled.button`
   background-color: white;
   position: absolute;
-  z-index: 3;
+  z-index: ${palette.CONTROLER_Z_INDEX};
   display: flex;
   justify-content: center;
   align-items: center;

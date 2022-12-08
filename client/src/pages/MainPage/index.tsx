@@ -95,13 +95,11 @@ function MainPage() {
       }
       const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
 
-      const tmp = new Map();
+      const tmp = new Map<string, UserType>();
 
       Object.keys(userList).forEach((userIdInRoom) => {
         const userInfo = userList[userIdInRoom];
-        if (userIdInRoom !== userId) {
-          tmp.set(userInfo.userId, userInfo);
-        }
+        tmp.set(userInfo.userId, userInfo);
       });
 
       const nonZeroLikeRestaurantIds = Object.keys(candidateList).filter(
@@ -175,7 +173,7 @@ function MainPage() {
     <div>loading...</div>
   ) : (
     <MainPageLayout>
-      <MainMap restaurantData={restaurantData} roomLocation={roomLocation} />
+      <MainMap restaurantData={restaurantData} roomLocation={roomLocation} joinList={joinList} />
       <HeaderBox>
         <Header>
           <ActiveUserInfo
@@ -187,8 +185,8 @@ function MainPage() {
           />
           <LinkShareButton />
         </Header>
-        <CategoryToggle>토글</CategoryToggle>
       </HeaderBox>
+      <CategoryToggle />
 
       {/* 식당 후보 목록 <-> 지도 화면 */}
       {/* 식당 후보 목록 <-- 전체 식당 목록 */}

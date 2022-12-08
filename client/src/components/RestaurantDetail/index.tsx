@@ -25,12 +25,7 @@ export function RestaurantDetailModal({ updateRestaurantDetailLayerStatus }: Pro
   }, []);
 
   return (
-    <ModalLayout
-      initial={{ opacity: 0, x: 999 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 999 }}
-      transition={{ duration: 1 }}
-    >
+    <ModalLayout>
       <BackwardButton
         onClick={() => {
           updateRestaurantDetailLayerStatus(RESTAURANT_DETAIL_TYPES.hidden);

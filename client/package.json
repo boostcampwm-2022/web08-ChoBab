@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.3",
     "socket.io-client": "^4.5.3",
+    "string-to-color": "^2.2.2",
     "styled-components": "^5.3.6",
     "vite": "^3.2.3",
     "vite-plugin-html-env": "^1.2.7",
