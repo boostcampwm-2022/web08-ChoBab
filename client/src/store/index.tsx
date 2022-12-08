@@ -7,16 +7,16 @@ interface UserLocationStoreType {
   updateUserLocation: (lat: number, lng: number) => void;
 }
 
-interface MeetLocationStoreType {
-  meetLocation: { lat: number; lng: number };
-  updateMeetLocation: (lat: number, lng: number) => void;
-}
-
 export const useUserLocationStore = create<UserLocationStoreType>((set) => ({
   userLocation: { lat: NAVER_LAT, lng: NAVER_LNG },
   updateUserLocation: (lat: number, lng: number) =>
     set((state) => ({ ...state, userLocation: { lat, lng } })),
 }));
+
+interface MeetLocationStoreType {
+  meetLocation: { lat: number; lng: number };
+  updateMeetLocation: (lat: number, lng: number) => void;
+}
 
 export const useMeetLocationStore = create<MeetLocationStoreType>((set) => ({
   meetLocation: { lat: NAVER_LAT, lng: NAVER_LNG },
