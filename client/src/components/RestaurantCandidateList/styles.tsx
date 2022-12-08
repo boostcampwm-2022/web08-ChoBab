@@ -5,13 +5,8 @@ export const CandidateListModalLayout = styled.div`
   height: 100%;
   padding: 10% 5%;
   background-color: white;
-  overflow: hidden;
 `;
 
-export const CandidateListModalBox = styled.div`
+export const CandidateListModalBox = styled.ul`
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 `;

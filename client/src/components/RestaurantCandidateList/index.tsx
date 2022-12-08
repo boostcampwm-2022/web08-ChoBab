@@ -78,12 +78,19 @@ export function CandidateListModal({ restaurantData }: PropsType) {
     <CandidateListModalLayout>
       <CandidateListModalBox>
         {candidateData.map((candidate) => (
-          <RestaurantRow
-            key={candidate.id}
-            restaurant={candidate}
-            restaurantListType={RESTAURANT_LIST_TYPES.candidate}
-            likeCnt={candidate.count}
-          />
+          <li
+            style={{
+              listStyle: 'none',
+              paddingBottom: '5%',
+            }}
+          >
+            <RestaurantRow
+              key={candidate.id}
+              restaurant={candidate}
+              restaurantListType={RESTAURANT_LIST_TYPES.candidate}
+              likeCnt={candidate.count}
+            />
+          </li>
         ))}
       </CandidateListModalBox>
     </CandidateListModalLayout>

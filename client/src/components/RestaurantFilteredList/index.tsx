@@ -1,4 +1,8 @@
-import { useRestaurantDetailLayerStatusStore, useSelectedRestaurantDataStore , useSelectedCategoryStore } from '@store/index';
+import {
+  useRestaurantDetailLayerStatusStore,
+  useSelectedRestaurantDataStore,
+  useSelectedCategoryStore,
+} from '@store/index';
 import RestaurantRow from '@components/RestaurantRow';
 import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { CATEGORY_TYPE } from '@constants/category';
@@ -24,11 +28,11 @@ function RestaurantFiltered({ restaurantData }: PropsType) {
   const { updateSelectedRestaurantData } = useSelectedRestaurantDataStore((state) => state);
 
   const restaurantFilteredList = restaurantData
-    .slice(0, 20)
     .filter(
       (restaurant) =>
         selectedCategoryData.has(restaurant.category as CATEGORY_TYPE) || !selectedCategoryData.size
-    );
+    )
+    .slice(0, 20);
 
   return (
     <RestaurantFilteredBox>
