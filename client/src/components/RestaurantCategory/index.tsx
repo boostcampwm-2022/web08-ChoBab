@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Modal from '@components/Modal';
 import { CATEGORY_TYPE } from '@constants/category';
 import { useSelectedCategoryStore } from '@store/index';
-import * as palette from '@styles/Variables';
 import { ReactComponent as ArrowDown } from '@assets/images/arrow-down.svg';
 import {
   RestaurantCategoryGuideParagraph,
@@ -10,6 +9,8 @@ import {
   RestaurantCategoryControlBarBox,
   RestaurantCategoryBox,
   RestaurantCategoryLayout,
+  RestaurantCategoryList,
+  RestaurantCategoryItem,
 } from './styles';
 
 function RestaurantCategory() {
@@ -77,31 +78,27 @@ function RestaurantCategory() {
 
       <Modal isOpen={isCategoryOpen} setIsOpen={setCategoryOpen}>
         <RestaurantCategoryBox>
-          <button
-            type="button"
-            onClick={handleToggleCategory(null)}
-            style={{ backgroundColor: !selectedCategoryData.size ? palette.PRIMARY : 'white' }}
-          >
-            전체
-          </button>
-          {Object.values(CATEGORY_TYPE).map((categoryName, index) => {
-            return (
-              <button
-                // categoryName 은 변하지 않는 데이터
-                // eslint-disable-next-line react/no-array-index-key
-                key={`${categoryName}${index}`}
-                type="button"
-                onClick={handleToggleCategory(categoryName)}
-                style={{
-                  backgroundColor: selectedCategoryData.has(categoryName)
-                    ? palette.PRIMARY
-                    : 'white',
-                }}
-              >
-                {categoryName}
-              </button>
-            );
-          })}
+          <RestaurantCategoryList>
+            <RestaurantCategoryItem
+              isSelect={!selectedCategoryData.size}
+              onClick={handleToggleCategory(null)}
+            >
+              전체
+            </RestaurantCategoryItem>
+            {Object.values(CATEGORY_TYPE).map((categoryName, index) => {
+              return (
+                <RestaurantCategoryItem
+                  isSelect={selectedCategoryData.has(categoryName)}
+                  // categoryName 은 변하지 않는 데이터
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`${categoryName}${index}`}
+                  onClick={handleToggleCategory(categoryName)}
+                >
+                  {categoryName}
+                </RestaurantCategoryItem>
+              );
+            })}
+          </RestaurantCategoryList>
         </RestaurantCategoryBox>
       </Modal>
     </RestaurantCategoryLayout>

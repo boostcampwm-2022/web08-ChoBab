@@ -41,13 +41,37 @@ export const RestaurantCategoryToggleButton = styled.div<CategoryToggleButtonSta
 `;
 
 export const RestaurantCategoryBox = styled.div`
-  height: 50px; // 임시값
-
   position: absolute;
 
   top: 1px; // category shell border 1px
   left: 0;
   right: 0;
 
-  background: yellow;
+  padding: 3%;
+
+  background: white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+`;
+
+export const RestaurantCategoryList = styled.ul`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+
+interface SelectedCategoryType {
+  isSelect: boolean;
+}
+
+export const RestaurantCategoryItem = styled.li<SelectedCategoryType>`
+  list-style: none;
+  width: 20%;
+  border: 1px solid ${palette.BORDER};
+  border-radius: 5px;
+  margin: 2%;
+  text-align: center;
+  padding: 2% 1%;
+  background-color: ${({ isSelect }) => (isSelect ? palette.PRIMARY : 'transparent')};
+  color: ${({ isSelect }) => (isSelect ? 'white' : 'black')};
 `;
