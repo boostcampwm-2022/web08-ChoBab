@@ -171,10 +171,53 @@ export class EventsGateway
   @SubscribeMessage('cancelVoteRestaurant')
   async cancelVoteRestaurant(
     @ConnectedSocket() client: Socket,
-    @MessageBody() restaurantId: string
+    @MessageBody() voteRestaurantDto: VoteRestaurantDto
   ) {
     console.log('cancelVoteRestaurant');
-    return;
+    const { restaurantId } = voteRestaurantDto;
+    const roomCode = client.roomCode;
+    const { candidateList } = await this.roomDynamicModel.findOne({
+      roomCode,
+    });
+
+    // 후보 식당 리스트에 식당 ID가 등록되어 있는지 확인
+    const candidateIdx = candidateList.findIndex(
+      (candidate) => candidate.restaurantId === restaurantId
+    );
+
+    // 후보 식당 리스트에 식당 ID가 등록되어 있지 않은 경우
+    if (candidateIdx === -1) {
+      client.emit('cancelVoteRestaurantResult', SOCKET_RES.CANCEL_VOTE_RESTAURANT_FAIL);
+      return;
+    }
+
+    // 해당 식당에 투표한 사용자 리스트에 현재 사용자가 있는지 확인
+    const isUserVoted = candidateList[candidateIdx].usersSessionId.some(
+      (userSessionId) => userSessionId === client.sessionID
+    );
+
+    if (!isUserVoted) {
+      // 투표한 사용자 리스트에 현재 사용자가 없는 경우
+      client.emit('cancelVoteRestaurantResult', SOCKET_RES.CANCEL_VOTE_RESTAURANT_FAIL);
+      return;
+    }
+
+    // 투표한 사용자 리스트에 현재 사용자가 있는 경우
+    candidateList[candidateIdx].usersSessionId = candidateList[candidateIdx].usersSessionId.filter(
+      (userSessionId) => userSessionId !== client.sessionID
+    );
+    await this.roomDynamicModel.findOneAndUpdate({ roomCode }, { candidateList: candidateList });
+
+    // 투표 취소를 요청한 사용자에게 처리 결과(성공적으로 처리됨) 전송
+    client.emit(
+      'cancelVoteRestaurantResult',
+      SOCKET_RES.CANCEL_VOTE_RESTAURANT_SUCCESS(restaurantId)
+    );
+
+    const voteResult = this.getCurrentVoteResult(candidateList);
+
+    // 모임방의 모든 사용자들에게 투표 현황 전송
+    this.server.in(roomCode).emit('voteResultUpdate', SOCKET_RES.UPDATE_VOTE_RESULT(voteResult));
   }
 
   async handleDisconnect(client: Socket) {
