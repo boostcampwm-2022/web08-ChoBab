@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { useSocketStore } from '@store/socket';
 import { useVotedRestaurantListStore } from '@store/vote';
@@ -22,6 +22,12 @@ function RestaurantVoteButton({ id: restaurantId, restaurantListType: listType }
   const { votedRestaurantList, addVotedRestaurant, removeVotedRestaurant } =
     useVotedRestaurantListStore((state) => state);
 
+  useEffect(() => {
+    if (votedRestaurantList.has(restaurantId)) {
+      setIsVoted(true);
+    }
+  }, []);
+
   const handleClick: React.MouseEventHandler = (e) => {
     // 이벤트 버블링 방지: 버튼 클릭 시 상세 정보 모달이 열리지 않기 위해 필요
     e.stopPropagation();
@@ -34,13 +40,6 @@ function RestaurantVoteButton({ id: restaurantId, restaurantListType: listType }
 
     // console.log(restaurantId);
     // console.log(votedRestaurantList);
-
-    // if 이 식당이. (전역 상태) 투표 리스트에 있으면?
-    // 투표 취소 처리
-    // removeVotedRestaurant
-    // 소켓의 투표 취소 이벤트 호출
-    // 정상 응답 받으면, 전역 상태의 투표 리스트를 업데이트하고.(이 식당 삭제)
-    // 전역 상태 바뀌면, isVoted 업데이트, 걔에 따라 버튼 상태 변경...?
 
     // 이미 투표한 식당인 경우, 투표 취소
     // isVoted 판단 -> 추후 서버에서 받아온 투표 List에 포함되어있는지에 따라 세팅하도록 수정 필요
