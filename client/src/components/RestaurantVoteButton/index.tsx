@@ -1,4 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
+
+import { ReactComponent as LikeImage } from '@assets/images/filled-like.svg';
+import { ReactComponent as UnLikeImage } from '@assets/images/unfilled-like.svg';
+
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { useSocketStore } from '@store/socket';
 import { useVotedRestaurantListStore } from '@store/vote';
@@ -46,16 +50,15 @@ function RestaurantVoteButton({
     }
 
     // 이미 투표한 식당인 경우, 투표 취소
-    // isVoted 판단 -> 추후 서버에서 받아온 투표 List에 포함되어있는지에 따라 세팅하도록 수정 필요
-    if (isVoted) {
+    // 투표 여부 판단 -> 현재는 전역 store지만, 추후 서버에서 받아온 나의 투표 List에 포함되어있는지에 따라 세팅하도록 수정 필요
+    if (votedRestaurantList.has(restaurantId)) {
       socket.emit('cancelVoteRestaurant', { restaurantId });
-      socket.on('voteRestaurantResult', (result: VoteResultType) => {
-        // TODO: 윤희님이 투표 취소 로직 개발 후, 수정 예정
+      socket.on('cancelVoteRestaurantResult', (result: VoteResultType) => {
         if (result.message === '투표 취소 성공') {
           removeVotedRestaurant(restaurantId);
         } else {
-          // 투표 취소 실패
-          // TODO: 어떤 처리를 해야할 지 고민
+          console.log('투표 취소 실패');
+          setIsVoted(true);
         }
       });
       return;
@@ -68,15 +71,10 @@ function RestaurantVoteButton({
       if (result.message === '투표 성공') {
         addVotedRestaurant(restaurantId);
       } else {
-        // 투표 실패
-        // TODO: 어떤 처리를 해야할 지 고민
+        console.log('투표 실패');
+        setIsVoted(false);
       }
     });
-
-    // socket.on('voteResultUpdate', (result: ResultType) => {
-    //   console.log('투표 결과');
-    //   console.log(result);
-    // });
   };
 
   const handleClick: React.MouseEventHandler = (e) => {
@@ -99,12 +97,23 @@ function RestaurantVoteButton({
 
   return (
     <VoteLayout whileTap={{ scale: 0.85 }}>
+      {/* 음식점 리스트일 때 */}
       {listType === RESTAURANT_LIST_TYPES.filtered && (
         <VoteButton isVoted={isVoted} onClick={handleClick}>
           {isVoted ? '❌ 투표' : '✔️ 투표'}
         </VoteButton>
       )}
-      {listType === RESTAURANT_LIST_TYPES.candidate && <LikeButton>{likeCnt}</LikeButton>}
+      {/* 후보 리스트일 때 */}
+      {listType === RESTAURANT_LIST_TYPES.candidate && (
+        <LikeButton isVoted={isVoted} onClick={handleClick}>
+          <span>{likeCnt}</span>
+          {isVoted ? (
+            <LikeImage width="20" height="20" fill="#EF5F21" />
+          ) : (
+            <UnLikeImage width="20" height="20" />
+          )}
+        </LikeButton>
+      )}
     </VoteLayout>
   );
 }
