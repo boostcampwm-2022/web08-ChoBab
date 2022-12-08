@@ -3,7 +3,10 @@ import Modal from '@components/Modal';
 import { CATEGORY_TYPE } from '@constants/category';
 import { useSelectedCategoryStore } from '@store/index';
 import * as palette from '@styles/Variables';
+import { ReactComponent as ArrowDown } from '@assets/images/arrow-down.svg';
 import {
+  RestaurantCategoryGuideParagraph,
+  RestaurantCategoryToggleButton,
   RestaurantCategoryControlBarBox,
   RestaurantCategoryBox,
   RestaurantCategoryLayout,
@@ -46,7 +49,7 @@ function RestaurantCategory() {
   return (
     <RestaurantCategoryLayout>
       <RestaurantCategoryControlBarBox>
-        <p>
+        <RestaurantCategoryGuideParagraph>
           {!selectedCategoryData.size
             ? '먹고싶은 음식을 선택해주세요!'
             : [...selectedCategoryData].reduce((acc, categoryName, index, arr) => {
@@ -58,8 +61,9 @@ function RestaurantCategory() {
                 }
                 return ret;
               }, '')}
-        </p>
-        <button
+        </RestaurantCategoryGuideParagraph>
+        <RestaurantCategoryToggleButton
+          isOpen={isCategoryOpen}
           type="button"
           onClick={(event) => {
             setCategoryOpen(!isCategoryOpen);
@@ -67,8 +71,8 @@ function RestaurantCategory() {
             event.stopPropagation();
           }}
         >
-          열림/닫힘
-        </button>
+          <ArrowDown />
+        </RestaurantCategoryToggleButton>
       </RestaurantCategoryControlBarBox>
 
       <Modal isOpen={isCategoryOpen} setIsOpen={setCategoryOpen}>
