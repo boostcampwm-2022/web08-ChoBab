@@ -12,7 +12,7 @@ import {
 import { useMeetLocationStore } from '@store/index';
 import { useToast } from '@hooks/useToast';
 
-import { FooterBox, SearchBarBox, StartButton } from './styles';
+import { FooterBox, GuideTextBox, SearchBarBox, StartButton } from './styles';
 
 interface RoomCreateResponseType {
   message: string;
@@ -114,17 +114,21 @@ function MeetLocationSettingFooter() {
 
   return (
     <FooterBox>
-      <span>
-        <p>모임 위치를 정해주세요!</p>
-        <p>(추후 수정 가능합니다.)</p>
-      </span>
+      <GuideTextBox>
+        <p>
+          <strong>모임 위치를 정해주세요!</strong>
+        </p>
+      </GuideTextBox>
+
       <SearchBarBox>
         <input ref={inputRef} type="text" placeholder="주소 검색" />
         <button type="button" onClick={handleClick}>
           <SearchImage />
         </button>
       </SearchBarBox>
+
       <div>{address}</div>
+
       <StartButton
         title="시작하기"
         onClick={(e) => {
