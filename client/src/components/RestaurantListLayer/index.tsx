@@ -8,10 +8,9 @@ import { LayerBox } from './styles';
 
 interface PropsType {
   restaurantData: RestaurantType[];
-  candidateData: RestaurantType[];
 }
 
-function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
+function RestaurantListLayer({ restaurantData }: PropsType) {
   const { restaurantListLayerStatus } = useRestaurantListLayerStatusStore((state) => state);
 
   return (
@@ -33,7 +32,7 @@ function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
           {restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered ? (
             <RestaurantFiltered restaurantData={restaurantData} />
           ) : (
-            <CandidateListModal candidateData={candidateData} />
+            <CandidateListModal restaurantData={restaurantData} />
           )}
         </LayerBox>
       )}

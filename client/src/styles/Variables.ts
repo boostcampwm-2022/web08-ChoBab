@@ -5,6 +5,7 @@ export const PRIMARY = '#EF5F21';
 export const BORDER = '#E5E5E5';
 export const SCROLL_THUMB_COLOR = '#a3a3a3';
 export const SCROLL_BAR_COLOR = '#dfdfdf';
+export const BUTTON_COLOR_GREEN = '#3EAD16';
 
 // size
 export const BREAKPOINT_TABLET = '767px';
