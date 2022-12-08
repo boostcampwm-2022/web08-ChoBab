@@ -7,6 +7,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   * {
+    font-family: 'BM Hanna';
     margin: 0;
     padding: 0;
     box-sizing: border-box;
