@@ -1,6 +1,7 @@
 import create from 'zustand';
 import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
+import { CATEGORY_TYPE } from '@constants/category';
 
 interface UserLocationStoreType {
   userLocation: { lat: number; lng: number };
@@ -59,6 +60,23 @@ export const useSelectedRestaurantDataStore = create<SelectedRestaurantDataStore
   selectedRestaurantData: null,
   updateSelectedRestaurantData: (restaurantType: RestaurantType | null) =>
     set(() => ({ selectedRestaurantData: restaurantType })),
+}));
+
+/**
+ * 카테고리 선택정보를 저장하는 전역 저장소
+ * selectedCategoryData 값이
+ * 1) 비어있으면 : 전체선택을 의미
+ * 2) 비어있지 않으면 : 저장된 CATEGORY_TYPE이 현재 선택된 카테고리 타입
+ */
+interface SelectedCategoryDataStore {
+  selectedCategoryData: Set<CATEGORY_TYPE>;
+  updateSelectedCategoryData: (categoryData: Set<CATEGORY_TYPE>) => void;
+}
+
+export const useSelectedCategoryStore = create<SelectedCategoryDataStore>((set) => ({
+  selectedCategoryData: new Set(),
+  updateSelectedCategoryData: (categoryData: Set<CATEGORY_TYPE>) =>
+    set(() => ({ selectedCategoryData: categoryData })),
 }));
 
 interface ToastStoreType {

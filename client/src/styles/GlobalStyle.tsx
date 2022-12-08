@@ -15,15 +15,17 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export const MainLayout = styled.div`
-  width: 100%;
-  max-width: 420px;
   height: 100%;
+  aspect-ratio: 9 / 16;
+  zoom: 1.25;
   margin: 0 auto;
   border: 3px solid ${palette.BORDER};
   overflow: hidden;
 
   @media (max-width: ${palette.BREAKPOINT_TABLET}) {
     border: 0;
+    zoom: 0;
+    aspect-ratio: auto;
   }
 `;
 
