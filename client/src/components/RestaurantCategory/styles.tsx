@@ -66,12 +66,21 @@ interface SelectedCategoryType {
 
 export const RestaurantCategoryItem = styled.li<SelectedCategoryType>`
   list-style: none;
+
   width: 20%;
+
   border: 1px solid ${palette.BORDER};
   border-radius: 5px;
-  margin: 2%;
+
   text-align: center;
+
+  margin: 2%;
   padding: 2% 1%;
+
   background-color: ${({ isSelect }) => (isSelect ? palette.PRIMARY : 'transparent')};
   color: ${({ isSelect }) => (isSelect ? 'white' : 'black')};
+
+  white-space: nowrap;
+  overflow: hidden;
+  //text-overflow: ellipsis;
 `;
