@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 
 interface LayerStylePropsType {
   headerHeight: number;
+  zIndex: number;
 }
 
 export const LayerBox = styled(motion.div)<LayerStylePropsType>`
@@ -11,7 +12,7 @@ export const LayerBox = styled(motion.div)<LayerStylePropsType>`
   bottom: 0;
   width: 100%;
   height: calc(100% - ${({ headerHeight }) => `${headerHeight}%`});
-  z-index: ${palette.RESTAURANT_LIST_LAYER_Z_INDEX};
+  z-index: ${({ zIndex }) => zIndex};
   background-color: white;
 
   overflow-y: overlay;
