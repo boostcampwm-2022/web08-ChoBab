@@ -115,8 +115,9 @@ function MeetLocationSettingFooter() {
   return (
     <FooterBox>
       <GuideTextBox>
-        <strong>모임 위치를 정해주세요!</strong>
-        <p>(추후 수정 가능합니다.)</p>
+        <p>
+          <strong>모임 위치를 정해주세요!</strong>
+        </p>
       </GuideTextBox>
 
       <SearchBarBox>
