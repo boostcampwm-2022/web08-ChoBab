@@ -16,8 +16,8 @@ function RestaurantCategory() {
     (state) => state
   );
 
-  const handleToggleCategory = (categoryName: CATEGORY_TYPE | null): ((event: Event) => void) => {
-    return () => {
+  const handleToggleCategory = (categoryName: CATEGORY_TYPE | null): (() => void) => {
+    return (): void => {
       // '전체'가 선택된 경우
       if (!categoryName) {
         updateSelectedCategoryData(new Set());
@@ -80,9 +80,12 @@ function RestaurantCategory() {
           >
             전체
           </button>
-          {Object.values(CATEGORY_TYPE).map((categoryName) => {
+          {Object.values(CATEGORY_TYPE).map((categoryName, index) => {
             return (
               <button
+                // categoryName 은 변하지 않는 데이터
+                // eslint-disable-next-line react/no-array-index-key
+                key={`${categoryName}${index}`}
                 type="button"
                 onClick={handleToggleCategory(categoryName)}
                 style={{
