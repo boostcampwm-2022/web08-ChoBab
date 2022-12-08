@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import * as palette from '@styles/Variables';
 import { ReactComponent as MarkerIcon } from '@assets/images/marker.svg';
 import { ReactComponent as PhoneIcon } from '@assets/images/phone-icon.svg';
+import RestaurantDetailDrivingInfo from '@components/RestaurantDetail/RestaurantDetailDrivingInfo';
 import {
   AddressBox,
   IconBox,
@@ -22,6 +23,7 @@ interface PropsType {
 }
 
 export function RestaurantDetailModalBody({ id, address, lat, lng, phone }: PropsType) {
+  const restaurantPos = { lat, lng };
   const [isSelectLeft, setSelectLeft] = useState<boolean>(true);
   const operationInfoButtonRef = useRef<HTMLDivElement>(null);
   const getDirectionButtonRef = useRef<HTMLDivElement>(null);
@@ -99,7 +101,9 @@ export function RestaurantDetailModalBody({ id, address, lat, lng, phone }: Prop
           </MapLayout>
         </ModalBodyContent>
       ) : (
-        <ModalBodyContent>길찾기</ModalBodyContent>
+        <ModalBodyContent>
+          <RestaurantDetailDrivingInfo restaurantPos={restaurantPos} />
+        </ModalBodyContent>
       )}
     </ModalBody>
   );
