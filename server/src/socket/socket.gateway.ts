@@ -211,8 +211,8 @@ export class EventsGateway
       });
     });
 
-    // 투표 현황 내림차순 정렬
-    voteResult.sort((a: VoteResultType, b: VoteResultType) => b.count - a.count);
+    // // 투표 현황 내림차순 정렬
+    // voteResult.sort((a: VoteResultType, b: VoteResultType) => b.count - a.count);
     return voteResult;
   };
 }
