@@ -42,14 +42,13 @@ export const Header = styled.header`
   height: 100%;
 `;
 
-export const CategoryToggle = styled.div`
+export const CategoryBox = styled.div`
   position: absolute;
   top: ${palette.HEADER_HEIGHT_RATIO}%;
   width: 100%;
   height: ${palette.CATEGORY_HEIGHT_RATIO}%;
   background-color: white;
-  padding: 1% 3%;
-  border: 1px solid ${palette.PRIMARY};
+  border-bottom: 1px solid ${palette.PRIMARY};
   z-index: ${palette.CATEGORY_Z_INDEX};
 `;
 
