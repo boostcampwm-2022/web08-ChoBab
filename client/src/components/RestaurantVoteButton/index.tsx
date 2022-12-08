@@ -8,6 +8,8 @@ import { VoteLayout, VoteButton, LikeButton } from './styles';
 interface PropsType {
   id: string;
   restaurantListType: string;
+  // eslint-disable-next-line react/require-default-props
+  likeCnt?: number;
 }
 interface ResultType {
   message: string;
@@ -18,7 +20,11 @@ interface VoteResultType {
   message: string;
   data?: { restaurantId: string };
 }
-function RestaurantVoteButton({ id: restaurantId, restaurantListType: listType }: PropsType) {
+function RestaurantVoteButton({
+  id: restaurantId,
+  restaurantListType: listType,
+  likeCnt,
+}: PropsType) {
   const [isVoted, setIsVoted] = useState(false);
 
   const { socket } = useSocketStore((state) => state);
@@ -98,7 +104,7 @@ function RestaurantVoteButton({ id: restaurantId, restaurantListType: listType }
           {isVoted ? '❌ 투표' : '✔️ 투표'}
         </VoteButton>
       )}
-      {listType === RESTAURANT_LIST_TYPES.candidate && <LikeButton>추가 예정</LikeButton>}
+      {listType === RESTAURANT_LIST_TYPES.candidate && <LikeButton>{likeCnt}</LikeButton>}
     </VoteLayout>
   );
 }

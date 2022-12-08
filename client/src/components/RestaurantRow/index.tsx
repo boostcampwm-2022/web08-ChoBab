@@ -20,9 +20,11 @@ import {
 interface PropsType {
   restaurant: RestaurantType;
   restaurantListType: RESTAURANT_LIST_TYPES;
+  // eslint-disable-next-line react/require-default-props
+  likeCnt?: number;
 }
 
-function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
+function RestaurantRow({ restaurant, restaurantListType, likeCnt }: PropsType) {
   const { id, name, category, lat, lng, rating, photoKeyList } = restaurant;
 
   const {
@@ -52,7 +54,7 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
         </RatingBox>
         <DistanceBox>모임 위치에서 {distanceToDisplay(straightDistance)}</DistanceBox>
       </InfoBox>
-      <RestaurantVoteButton id={id} restaurantListType={restaurantListType} />
+      <RestaurantVoteButton id={id} restaurantListType={restaurantListType} likeCnt={likeCnt} />
     </RestaurantRowBox>
   );
 }
