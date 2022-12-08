@@ -229,6 +229,22 @@ export class EventsGateway
     this.server.in(roomCode).emit('voteResultUpdate', SOCKET_RES.UPDATE_VOTE_RESULT(voteResult));
   }
 
+  // 현재 투표 현황 요청
+  @SubscribeMessage('getVoteResult')
+  async getVoteResult(@ConnectedSocket() client: Socket) {
+    console.log('getVoteResult');
+    const roomCode = client.roomCode;
+    const data = await this.roomDynamicModel.findOne({
+      roomCode,
+    });
+
+    const candidateList = data ? data.candidateList : [];
+    client.emit(
+      'currentVoteResult',
+      SOCKET_RES.CURRENT_VOTE_RESULT(this.getCurrentVoteResult(candidateList || []))
+    );
+  }
+
   async handleDisconnect(client: Socket) {
     const { sessionID, roomCode } = client;
 
