@@ -9,6 +9,10 @@ interface PropsType {
   id: string;
   restaurantListType: string;
 }
+interface ResultType {
+  message: string;
+  data?: { candidateList: { restaurantId: string; count: number }[] };
+}
 
 interface VoteResultType {
   message: string;
@@ -38,7 +42,7 @@ function RestaurantVoteButton({ id: restaurantId, restaurantListType: listType }
     // 이미 투표한 식당인 경우, 투표 취소
     // isVoted 판단 -> 추후 서버에서 받아온 투표 List에 포함되어있는지에 따라 세팅하도록 수정 필요
     if (isVoted) {
-      socket.emit('cancelVoteRestaurant', restaurantId);
+      socket.emit('cancelVoteRestaurant', { restaurantId });
       socket.on('voteRestaurantResult', (result: VoteResultType) => {
         // TODO: 윤희님이 투표 취소 로직 개발 후, 수정 예정
         if (result.message === '투표 취소 성공') {
@@ -52,7 +56,7 @@ function RestaurantVoteButton({ id: restaurantId, restaurantListType: listType }
     }
 
     // 투표한 적 없는 식당인 경우, 투표
-    socket.emit('voteRestaurant', restaurantId);
+    socket.emit('voteRestaurant', { restaurantId });
     socket.on('voteRestaurantResult', (result: VoteResultType) => {
       // 성공 시
       if (result.message === '투표 성공') {
@@ -62,6 +66,11 @@ function RestaurantVoteButton({ id: restaurantId, restaurantListType: listType }
         // TODO: 어떤 처리를 해야할 지 고민
       }
     });
+
+    // socket.on('voteResultUpdate', (result: ResultType) => {
+    //   console.log('투표 결과');
+    //   console.log(result);
+    // });
   };
 
   const handleClick: React.MouseEventHandler = (e) => {
