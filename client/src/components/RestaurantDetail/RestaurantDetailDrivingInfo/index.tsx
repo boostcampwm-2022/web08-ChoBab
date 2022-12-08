@@ -14,11 +14,6 @@ interface PropsType {
   restaurantPos: PositionType;
 }
 
-interface ResTemplateType<T> {
-  message: string;
-  data: T;
-}
-
 interface DrivingInfoType {
   start: number[];
   goal: number[];
