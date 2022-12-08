@@ -19,7 +19,8 @@
       "@response/*": ["./src/common/response/*"],
       "@socket/*": ["./src/socket/*"],
       "@map/*": ["./src/map/*"],
-      "@cache/*": ["./src/cache/*"]
+      "@cache/*": ["./src/cache/*"],
+      "@task/*": ["./src/task/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

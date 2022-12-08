@@ -5,6 +5,7 @@ import { RoomModule } from '@room/room.module';
 import * as Joi from 'joi';
 import { SocketModule } from '@socket/socket.module';
 import { MapModule } from '@map/map.module';
+import { TaskModule } from '@task/task.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { MapModule } from '@map/map.module';
     RoomModule,
     SocketModule,
     MapModule,
+    TaskModule,
   ],
   controllers: [],
   providers: [],
