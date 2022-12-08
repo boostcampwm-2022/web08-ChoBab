@@ -1,4 +1,3 @@
-import React from 'react';
 import { ReactComponent as ShareImage } from '@assets/images/share.svg';
 import { TOAST_DURATION_TIME, SUCCCESS_COPY_MESSAGE, FAIL_COPY_MESSAGE } from '@constants/toast';
 import { useToast } from '@hooks/useToast';

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import * as palette from '@styles/Variables';
 
 export const RestaurantFilteredBox = styled.div`
   width: 100%;
