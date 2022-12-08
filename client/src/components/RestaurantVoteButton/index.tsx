@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { useSocketStore } from '@store/socket';
 import { useVotedRestaurantListStore } from '@store/vote';
@@ -8,6 +8,10 @@ import { VoteLayout, VoteButton, LikeButton } from './styles';
 interface PropsType {
   id: string;
   restaurantListType: string;
+}
+interface ResultType {
+  message: string;
+  data?: { candidateList: { restaurantId: string; count: number }[] };
 }
 
 interface VoteResultType {
@@ -22,59 +26,69 @@ function RestaurantVoteButton({ id: restaurantId, restaurantListType: listType }
   const { votedRestaurantList, addVotedRestaurant, removeVotedRestaurant } =
     useVotedRestaurantListStore((state) => state);
 
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     if (votedRestaurantList.has(restaurantId)) {
       setIsVoted(true);
     }
   }, []);
 
-  const handleClick: React.MouseEventHandler = (e) => {
-    // 이벤트 버블링 방지: 버튼 클릭 시 상세 정보 모달이 열리지 않기 위해 필요
-    e.stopPropagation();
-
+  const voteRestaurant = () => {
     if (!(socket instanceof Socket)) {
       throw new Error();
     }
 
-    // TODO: 디바운싱 처리 필요, isVoted값 바뀌고 있는데 세팅하면 곤란함
-
-    // console.log(restaurantId);
-    // console.log(votedRestaurantList);
-
     // 이미 투표한 식당인 경우, 투표 취소
     // isVoted 판단 -> 추후 서버에서 받아온 투표 List에 포함되어있는지에 따라 세팅하도록 수정 필요
     if (isVoted) {
-      socket.emit('cancelVoteRestaurant', restaurantId);
+      socket.emit('cancelVoteRestaurant', { restaurantId });
       socket.on('voteRestaurantResult', (result: VoteResultType) => {
         // TODO: 윤희님이 투표 취소 로직 개발 후, 수정 예정
         if (result.message === '투표 취소 성공') {
-          // TODO: 변경 필요
           removeVotedRestaurant(restaurantId);
-
-          setIsVoted(false);
         } else {
           // 투표 취소 실패
-          // 어떤 처리를 해야할 지 고민
+          // TODO: 어떤 처리를 해야할 지 고민
         }
       });
       return;
     }
 
     // 투표한 적 없는 식당인 경우, 투표
-    socket.emit('voteRestaurant', restaurantId);
+    socket.emit('voteRestaurant', { restaurantId });
     socket.on('voteRestaurantResult', (result: VoteResultType) => {
-      // console.log(result);
-
       // 성공 시
       if (result.message === '투표 성공') {
-        // TODO: 추후 수정 필요
         addVotedRestaurant(restaurantId);
-        setIsVoted(true);
       } else {
         // 투표 실패
-        // 어떤 처리를 해야할 지 고민
+        // TODO: 어떤 처리를 해야할 지 고민
       }
     });
+
+    // socket.on('voteResultUpdate', (result: ResultType) => {
+    //   console.log('투표 결과');
+    //   console.log(result);
+    // });
+  };
+
+  const handleClick: React.MouseEventHandler = (e) => {
+    // 이벤트 버블링 방지: 버튼 클릭 시 상세 정보 모달이 열리지 않기 위해 필요
+    e.stopPropagation();
+
+    // 쓰로틀링: 버튼 연속 클릭 방지
+    if (timerRef.current) {
+      return;
+    }
+
+    // 버튼 색상 변경은 클릭 시 즉각적으로 일어나야 함
+    setIsVoted(!isVoted);
+
+    timerRef.current = setTimeout(() => {
+      voteRestaurant();
+      timerRef.current = null;
+    }, 500);
   };
 
   return (

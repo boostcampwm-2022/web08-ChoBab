@@ -125,6 +125,7 @@ export class EventsGateway
     const { candidateList } = await this.roomDynamicModel.findOne({
       roomCode,
     });
+    console.log(restaurantId);
 
     // 후보 식당 리스트에 이미 식당 ID가 등록되어 있는지 확인
     const candidateIdx = candidateList.findIndex(
@@ -162,6 +163,8 @@ export class EventsGateway
     client.emit('voteRestaurantResult', SOCKET_RES.VOTE_RESTAURANT_SUCCESS(restaurantId));
 
     const voteResult = this.getCurrentVoteResult(candidateList);
+    console.log(candidateList);
+    console.log(voteResult);
 
     // 모임방의 모든 사용자들에게 투표 현황 전송
     this.server.in(roomCode).emit('voteResultUpdate', SOCKET_RES.UPDATE_VOTE_RESULT(voteResult));

@@ -93,6 +93,7 @@ function MainPage() {
         console.log(data.message);
         return;
       }
+      // candidateList가 여기에 있는게 맞나?
       const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
 
       const tmp = new Map<string, UserType>();
@@ -110,6 +111,17 @@ function MainPage() {
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
     });
+
+    // test
+    // interface ResultType {
+    //   message: string;
+    //   data?: { candidateList: { restaurantId: string; count: number }[] };
+    // }
+
+    // clientSocket.on('voteResultUpdate', (result: ResultType) => {
+    //   console.log('투표 결과 업데이트됨');
+    //   console.log(result);
+    // });
 
     clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
   };
