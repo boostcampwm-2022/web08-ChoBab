@@ -206,6 +206,12 @@ export class EventsGateway
     candidateList[candidateIdx].usersSessionId = candidateList[candidateIdx].usersSessionId.filter(
       (userSessionId) => userSessionId !== client.sessionID
     );
+
+    // 투표 취소로 인해 후보 식당의 투표 수가 0이 되는 경우
+    if (candidateList[candidateIdx].usersSessionId.length === 0) {
+      candidateList.splice(candidateIdx, 1);
+    }
+
     await this.roomDynamicModel.findOneAndUpdate({ roomCode }, { candidateList: candidateList });
 
     // 투표 취소를 요청한 사용자에게 처리 결과(성공적으로 처리됨) 전송
