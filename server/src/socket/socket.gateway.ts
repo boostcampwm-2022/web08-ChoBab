@@ -83,8 +83,6 @@ export class EventsGateway
         await this.roomDynamicModel.findOneAndUpdate({ roomCode }, { userList: newUserList });
       }
 
-      const currentVoteResult = this.getCurrentVoteResult(candidateList);
-
       client.emit(
         'connectResult',
         SOCKET_RES.CONNECT_SUCCESS(
@@ -92,7 +90,6 @@ export class EventsGateway
           lat,
           lng,
           restaurantList,
-          currentVoteResult,
           newUserList,
           user.userId,
           user.userName

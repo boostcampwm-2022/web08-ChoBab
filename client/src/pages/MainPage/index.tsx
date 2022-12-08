@@ -41,7 +41,6 @@ function MainPage() {
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const [candidateData, setCandidateData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
     lat: NAVER_LAT,
     lng: NAVER_LNG,
@@ -93,8 +92,7 @@ function MainPage() {
         console.log(data.message);
         return;
       }
-      // candidateList가 여기에 있는게 맞나?
-      const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
+      const { lat, lng, userList, restaurantList, userId, userName } = data.data;
 
       const tmp = new Map<string, UserType>();
 
@@ -107,21 +105,9 @@ function MainPage() {
       setMyId(userId);
       setMyName(userName);
       setRoomConnect(true);
-      setCandidateData(candidateList);
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
     });
-
-    // test
-    // interface ResultType {
-    //   message: string;
-    //   data?: { candidateList: { restaurantId: string; count: number }[] };
-    // }
-
-    // clientSocket.on('voteResultUpdate', (result: ResultType) => {
-    //   console.log('투표 결과 업데이트됨');
-    //   console.log(result);
-    // });
 
     clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
   };
@@ -208,7 +194,7 @@ function MainPage() {
       </MapOrListButton>
 
       {/* 식당 리스트 & 식당 상세정보 Full-Screen 모달 컴포넌트 */}
-      <RestaurantListLayer restaurantData={restaurantData} candidateData={candidateData} />
+      <RestaurantListLayer restaurantData={restaurantData} />
       <RestaurantDetailLayer />
     </MainPageLayout>
   );

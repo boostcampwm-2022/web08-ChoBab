@@ -24,7 +24,6 @@ export const SOCKET_RES = {
     lat: number,
     lng: number,
     restaurantList: RestaurantType[],
-    candidateList: VoteResultType[],
     userList: UserType[],
     userId: string,
     userName: string
@@ -34,7 +33,6 @@ export const SOCKET_RES = {
       lat,
       lng,
       restaurantList,
-      candidateList,
       userList,
       userId,
       userName,
