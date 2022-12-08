@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import * as palette from '@styles/Variables';
-import { motion } from 'framer-motion';
 
-export const ModalLayout = styled(motion.div)`
+export const ModalLayout = styled.div`
   width: 100%;
   height: 100%;
   max-height: 100%;
@@ -20,7 +19,7 @@ export const BackwardButton = styled.div`
 
 export const AddCandidatesButton = styled.div`
   position: absolute;
-  top:10px;
+  top: 10px;
   right: 10px;
   display: flex;
   height: 20px;
@@ -30,7 +29,7 @@ export const AddCandidatesButton = styled.div`
   font-size: 12px;
   justify-content: center;
   align-items: center;
-  color:white;
+  color: white;
   z-index: 999;
 `;
 

@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 
-import RiceImage from '@assets/images/rice.svg';
-import SushiImage from '@assets/images/sushi.svg';
-import DumplingImage from '@assets/images/dumpling.svg';
-import SpaghettiImage from '@assets/images/spaghetti.svg';
-import ChickenImage from '@assets/images/chicken.svg';
-import HamburgerImage from '@assets/images/hamburger.svg';
-import HotdogImage from '@assets/images/hotdog.svg';
+import riceImageSrc from '@assets/images/rice.svg';
+import sushiImageSrc from '@assets/images/sushi.svg';
+import dumplingImageSrc from '@assets/images/dumpling.svg';
+import spaghettiImageSrc from '@assets/images/spaghetti.svg';
+import chickenImageSrc from '@assets/images/chicken.svg';
+import hamburgerImageSrc from '@assets/images/hamburger.svg';
+import hotdogImageSrc from '@assets/images/hotdog.svg';
+import userImageSrc from '@assets/images/user.svg';
 import { ReactComponent as LoadingSpinner } from '@assets/images/loading-spinner.svg';
+
+import stc from 'string-to-color';
 
 import { useNaverMaps } from '@hooks/useNaverMaps';
 
@@ -35,38 +38,109 @@ interface RoomLocationType {
 interface PropsType {
   restaurantData: RestaurantType[];
   roomLocation: RoomLocationType;
+  joinList: Map<string, UserType>;
 }
 
 const getIconUrlByCategory = (category: string) => {
   switch (category) {
     case '일식':
-      return SushiImage;
+      return sushiImageSrc;
     case '중식':
-      return DumplingImage;
+      return dumplingImageSrc;
     case '양식':
-      return SpaghettiImage;
+      return spaghettiImageSrc;
     case '치킨':
-      return ChickenImage;
+      return chickenImageSrc;
     case '패스트푸드':
-      return HamburgerImage;
+      return hamburgerImageSrc;
     case '분식':
-      return HotdogImage;
+      return hotdogImageSrc;
     case '한식':
     default:
-      return RiceImage;
+      return riceImageSrc;
   }
 };
 
-function MainMap({ restaurantData, roomLocation }: PropsType) {
+type userIdType = string;
+
+function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   const [mapRef, mapDivRef] = useNaverMaps();
+
+  const joinListMarkerRef = useRef<Map<userIdType, naver.maps.Marker>>(new Map());
+  const joinListInfoWindowRef = useRef<Map<userIdType, naver.maps.InfoWindow>>(new Map());
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 
-  const closeAllMarkerInfoWindow = () => {
+  const closeAllRestaurantMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
       infoWindow.close();
+    });
+  };
+
+  const updateExitUserMarker = () => {
+    joinListMarkerRef.current.forEach((marker, userId, thisMap) => {
+      if (joinList.has(userId)) {
+        return;
+      }
+
+      marker.setMap(null);
+
+      thisMap.delete(userId);
+    });
+  };
+
+  const updateExitUserInfoWindow = () => {
+    joinListInfoWindowRef.current.forEach((infoWindow, userId, thisMap) => {
+      if (joinList.has(userId)) {
+        return;
+      }
+
+      infoWindow.setMap(null);
+
+      thisMap.delete(userId);
+    });
+  };
+
+  const updateJoinUserMarkerAndInfoWindow = () => {
+    const map = mapRef.current;
+
+    if (!map) {
+      return;
+    }
+
+    joinList.forEach((user, userId) => {
+      const { userLat, userLng, userName } = user;
+
+      if (joinListMarkerRef.current.has(userId)) {
+        return;
+      }
+
+      const marker = new naver.maps.Marker({
+        map,
+        position: new naver.maps.LatLng(userLat, userLng),
+        title: userName,
+        icon: {
+          content: `
+            <div class="${classes.userMarker}" style="background:${stc(userId)}">
+              <img src="${userImageSrc}">
+            </div>
+          `,
+        },
+      });
+
+      joinListMarkerRef.current.set(userId, marker);
+
+      const infoWindow = new naver.maps.InfoWindow({
+        content: userName,
+      });
+
+      joinListInfoWindowRef.current.set(userId, infoWindow);
+
+      naver.maps.Event.addListener(marker, 'click', () => {
+        infoWindow.open(map, marker);
+      });
     });
   };
 
@@ -174,7 +248,7 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
         return;
       }
 
-      closeAllMarkerInfoWindow();
+      closeAllRestaurantMarkerInfoWindow();
     });
     return onDragendListener;
   };
@@ -185,7 +259,7 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
         return;
       }
 
-      closeAllMarkerInfoWindow();
+      closeAllRestaurantMarkerInfoWindow();
     });
 
     return onClickListener;
@@ -218,6 +292,12 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
 
     return onZoomChangedListener;
   };
+
+  useEffect(() => {
+    updateExitUserMarker();
+    updateExitUserInfoWindow();
+    updateJoinUserMarkerAndInfoWindow();
+  }, [joinList]);
 
   useEffect(() => {
     if (!mapRef.current) {

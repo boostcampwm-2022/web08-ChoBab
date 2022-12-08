@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import * as palette from '@styles/Variables';
+import { motion } from 'framer-motion';
 
-export const LayerBox = styled.div`
+export const LayerBox = styled(motion.div)`
   position: absolute;
   width: 100%;
   height: 100%;
