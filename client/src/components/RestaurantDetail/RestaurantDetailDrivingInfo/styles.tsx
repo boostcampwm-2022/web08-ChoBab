@@ -6,3 +6,15 @@ export const MapBox = styled.div`
   border: 0.1px solid gray;
   border-radius: 5px;
 `;
+
+export const DrivingInfoBox = styled.div`
+  display: inline;
+  svg {
+    height: 22px;
+  }
+
+  span {
+    display: block;
+    margin-bottom: 5px;
+  }
+`;

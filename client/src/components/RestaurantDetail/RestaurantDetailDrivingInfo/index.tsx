@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useUserLocationStore } from '@store/index';
-import { MapBox } from './styles';
+import { distanceToDisplay } from '@utils/distance';
+import { msToTimeDisplay } from '@utils/time';
+import { DrivingInfoBox, MapBox } from './styles';
 
 interface PositionType {
   lat: number;
@@ -31,6 +33,7 @@ interface DrivingInfoType {
 function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
   const { userLocation } = useUserLocationStore();
   const userPos: PositionType = userLocation;
+  const [drivingInfo, setDrivingInfo] = useState<DrivingInfoType>();
 
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -43,14 +46,15 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
     const { lat: goalLat, lng: goalLng } = goalPos;
     try {
       const {
-        data: { data: drivingInfo },
+        data: { data: drivingInfoData },
       } = await axios.get<ResTemplateType<DrivingInfoType>>('/api/map/driving', {
         params: {
           start: `${startLng},${startLat}`,
           goal: `${goalLng},${goalLat}`,
         },
       });
-      return drivingInfo;
+      setDrivingInfo(() => drivingInfoData);
+      return drivingInfoData;
     } catch (error: any) {
       console.log(error.response.data.message ?? '길찾기 정보를 불러오는데 실패했습니다.');
       return {} as DrivingInfoType;
@@ -64,7 +68,7 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
 
     const map = new naver.maps.Map(mapRef.current, {
       center: new naver.maps.LatLng(userPos.lat, userPos.lng),
-      zoom: 12,
+      zoom: 11,
     });
 
     const { lat: startLat, lng: startLng } = userPos;
@@ -81,15 +85,15 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
     });
 
     // 길찾기 정보를 받아오는 함수 호출
-    const drivingInfo = await getDrivingInfo(userPos, restaurantPos);
-    if (!drivingInfo) {
+    const { path } = await getDrivingInfo(userPos, restaurantPos);
+
+    if (!path) {
       return;
     }
 
-    // 경로를 표시할 좌표들 배열
-    const drivingInfoPaths: naver.maps.LatLng[] = drivingInfo.path?.map(
-      (pos: number[]) => new naver.maps.LatLng(pos[1], pos[0])
-    );
+    // 경로를 표시할 좌표들 배열 -> naver.maps.LatLng 객체로 변환
+    const drivingInfoPaths =
+      path.map((pos: number[]) => new naver.maps.LatLng(pos[1], pos[0])) || [];
 
     // 경로 그리기
     const polyline = new naver.maps.Polyline({
@@ -108,7 +112,15 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
     mapSetting().then();
   }, []);
 
-  return <MapBox ref={mapRef} />;
+  return (
+    <>
+      <DrivingInfoBox>
+        <span>소요 시간 : {msToTimeDisplay(drivingInfo?.duration || 0)}</span>
+        <span>이동 거리 : {distanceToDisplay(drivingInfo?.distance || 0)}</span>
+      </DrivingInfoBox>
+      <MapBox ref={mapRef} />
+    </>
+  );
 }
 
 export default RestaurantDetailDrivingInfo;
