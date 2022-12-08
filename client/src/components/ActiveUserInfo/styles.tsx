@@ -44,8 +44,9 @@ export const ActiveUserInfoItem = styled.li`
 `;
 
 export const ActiveUserIconBox = styled.div`
-  width: 25px;
-  height: 25px;
+  width: 10px;
+  height: 10px;
+  margin: 5px;
   border-radius: 100px;
   background-color: gray;
   margin-right: 5px;
