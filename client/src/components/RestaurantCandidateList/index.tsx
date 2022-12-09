@@ -3,7 +3,6 @@ import { useEffect, useState, useRef } from 'react';
 import RestaurantRow from '@components/RestaurantRow';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { useSocketStore } from '@store/socket';
-import { useVotedRestaurantListStore } from '@store/vote';
 
 import { Socket } from 'socket.io-client';
 import { CandidateListModalBox, CandidateListModalLayout } from './styles';
