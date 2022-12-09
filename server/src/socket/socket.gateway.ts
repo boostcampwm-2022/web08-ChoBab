@@ -156,6 +156,9 @@ export class EventsGateway
 
     client.emit('voteRestaurantResult', SOCKET_RES.VOTE_RESTAURANT_SUCCESS(restaurantId));
 
+    // 식당 투표 성공 시 - 클라이언트에게 사용자가 투표한 식당의 id 리스트 전송
+    this.getUserVoteRestaurantIdList(client);
+
     const voteResult = this.getCurrentVoteResult(candidateList);
 
     // 모임방의 모든 사용자들에게 투표 현황 전송
@@ -213,6 +216,9 @@ export class EventsGateway
       'cancelVoteRestaurantResult',
       SOCKET_RES.CANCEL_VOTE_RESTAURANT_SUCCESS(restaurantId)
     );
+
+    // 식당 투표 취소 성공 시 - 클라이언트에게 사용자가 투표한 식당의 id 리스트 전송
+    this.getUserVoteRestaurantIdList(client);
 
     const voteResult = this.getCurrentVoteResult(candidateList);
 
