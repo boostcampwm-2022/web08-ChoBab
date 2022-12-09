@@ -16,12 +16,6 @@ interface PropsType {
   likeCnt?: number;
 }
 
-// 안씀
-interface ResultType {
-  message: string;
-  data?: { candidateList: { restaurantId: string; count: number }[] };
-}
-
 interface VoteResultType {
   message: string;
   data?: { restaurantId: string };
