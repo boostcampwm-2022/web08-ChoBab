@@ -7,7 +7,7 @@ import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { useSocketStore } from '@store/socket';
 import { useVotedRestaurantListStore } from '@store/vote';
 import { Socket } from 'socket.io-client';
-import { VoteLayout, VoteButton, LikeButton } from './styles';
+import { VoteLayout, VoteButton, LikeButton, LikeCountSpan } from './styles';
 
 interface PropsType {
   id: string;
@@ -100,7 +100,7 @@ function RestaurantVoteButton({
       {/* 후보 리스트일 때 */}
       {listType === RESTAURANT_LIST_TYPES.candidate && (
         <LikeButton type="button" isVoted={isVoted} onClick={handleClick}>
-          <span>{likeCnt}</span>
+          <LikeCountSpan>{likeCnt}</LikeCountSpan>
           {isVoted ? (
             <LikeImage width="20" height="20" fill="#EF5F21" />
           ) : (

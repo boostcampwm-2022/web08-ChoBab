@@ -55,8 +55,9 @@ export const LikeButton = styled.button<LikeButtonPropsType>`
   color: ${({ isVoted }) => (isVoted ? palette.PRIMARY : 'black')};
   font-size: 1rem;
   border-radius: 10px;
-
   box-shadow: 0 0 2px 2px ${palette.BORDER};
 
   z-index: 1000;
 `;
+
+export const LikeCountSpan = styled.span``;
