@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { ReactComponent as BackwardIcon } from '@assets/images/backward-arrow-icon.svg';
-import { RestaurantDetailModalTitle } from '@components/RestaurantDetail/RestaurantDetailModalTitle';
-import { RestaurantDetailCarousel } from '@components/RestaurantDetail/RestaurantDetailModalCarousel';
+import { RestaurantDetailModalTitle } from '@components/RestaurantDetail/RestaurantDetailTitle';
+import { RestaurantDetailCarousel } from '@components/RestaurantDetail/RestaurantDetailCarousel';
 import { RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { useSelectedRestaurantDataStore } from '@store/index';
 import { ModalBox, ModalLayout, BackwardButton, AddCandidatesButton } from './styles';
-import { RestaurantDetailModalBody } from './RestaurantDetailModalBody';
+import { RestaurantDetailModalBody } from './RestaurantDetailBody';
 
 interface PropsType {
   updateRestaurantDetailLayerStatus: (restaurantDetailType: RESTAURANT_DETAIL_TYPES) => void;
@@ -35,7 +35,7 @@ export function RestaurantDetailModal({ updateRestaurantDetailLayerStatus }: Pro
       </BackwardButton>
       <AddCandidatesButton>후보 추가</AddCandidatesButton>
       <ModalBox>
-        <RestaurantDetailCarousel imageUrlList={selectedRestaurantData?.photoKeyList || []} />
+        <RestaurantDetailCarousel imageUrlList={selectedRestaurantData?.photoUrlList || []} />
         <RestaurantDetailModalTitle
           name={selectedRestaurantData?.name || ''}
           category={selectedRestaurantData?.category || ''}
