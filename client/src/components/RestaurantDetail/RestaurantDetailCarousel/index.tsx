@@ -10,6 +10,9 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
   const [visibleImageIdx, setVisibleImageIdx] = useState<number>(0);
   const touchPosition = useRef<{ start: number; end: number }>({ start: 0, end: 0 });
   const MIN_SLIDE_UNIT = 50;
+
+  const throttlingTimerRef = useRef<NodeJS.Timer | null>(null);
+  const THROTTLINGTIME = 1500;
   return (
     <ImageCarousel
       onTouchStart={(e) => {
@@ -26,8 +29,23 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
         }
         if (touchEnd - touchStart > MIN_SLIDE_UNIT) {
           setVisibleImageIdx(visibleImageIdx > 0 ? visibleImageIdx - 1 : visibleImageIdx);
-          
         }
+      }}
+      onWheel={(e) => {
+        if (throttlingTimerRef.current) {
+          return;
+        }
+        throttlingTimerRef.current = setTimeout(() => {
+          throttlingTimerRef.current = null;
+        }, THROTTLINGTIME);
+        const isScrollLeft = e.deltaX > 0;
+        if (isScrollLeft) {
+          setVisibleImageIdx(
+            visibleImageIdx < imageCount - 1 ? visibleImageIdx + 1 : visibleImageIdx
+          );
+          return;
+        }
+        setVisibleImageIdx(visibleImageIdx > 0 ? visibleImageIdx - 1 : visibleImageIdx);
       }}
     >
       <ImageBox style={{ marginLeft: `-${visibleImageIdx * 100}%` }}>
