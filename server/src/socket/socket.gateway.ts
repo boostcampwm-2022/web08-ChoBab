@@ -116,7 +116,6 @@ export class EventsGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() voteRestaurantDto: VoteRestaurantDto
   ) {
-    console.log('voteRestaurant');
     const { restaurantId } = voteRestaurantDto;
     const roomCode = client.roomCode;
     const { candidateList } = await this.roomDynamicModel.findOne({
@@ -169,7 +168,6 @@ export class EventsGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() voteRestaurantDto: VoteRestaurantDto
   ) {
-    console.log('cancelVoteRestaurant');
     const { restaurantId } = voteRestaurantDto;
     const roomCode = client.roomCode;
     const { candidateList } = await this.roomDynamicModel.findOne({
@@ -225,7 +223,6 @@ export class EventsGateway
   // 현재 투표 현황 요청
   @SubscribeMessage('getVoteResult')
   async getVoteResult(@ConnectedSocket() client: Socket) {
-    console.log('getVoteResult');
     const roomCode = client.roomCode;
     const data = await this.roomDynamicModel.findOne({
       roomCode,
