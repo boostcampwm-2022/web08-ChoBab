@@ -235,6 +235,29 @@ export class EventsGateway
     );
   }
 
+  // 사용자가 투표한 식당의 id 리스트 요청
+  @SubscribeMessage('getUserVoteRestaurantIdList')
+  async getUserVoteRestaurantIdList(@ConnectedSocket() client: Socket) {
+    const roomCode = client.roomCode;
+    const { candidateList } = await this.roomDynamicModel.findOne({
+      roomCode,
+    });
+
+    // 사용자가 투표한 식당의 id 리스트
+    const userVoteRestaurantIdList = candidateList
+      .filter((candidate) =>
+        candidate.usersSessionId.some((userSessionId) => userSessionId === client.sessionID)
+      )
+      .map((candidate) => candidate.restaurantId);
+
+    console.log(userVoteRestaurantIdList);
+
+    client.emit(
+      'userVoteRestaurantIdList',
+      SOCKET_RES.USER_VOTE_RESTAURANT_ID_LIST(userVoteRestaurantIdList)
+    );
+  }
+
   async handleDisconnect(client: Socket) {
     const { sessionID, roomCode } = client;
 

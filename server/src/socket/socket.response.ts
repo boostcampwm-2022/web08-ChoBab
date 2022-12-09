@@ -46,4 +46,6 @@ export const SOCKET_RES = {
   CANCEL_VOTE_RESTAURANT_FAIL: dataTemplate('투표 취소 실패'),
   CURRENT_VOTE_RESULT: (candidateList: VoteResultType[]) =>
     dataTemplate('현재 투표 결과', { candidateList }),
+  USER_VOTE_RESTAURANT_ID_LIST: (voteRestaurantIdList: string[]) =>
+    dataTemplate('사용자 투표 식당 ID 리스트', { voteRestaurantIdList }),
 };
