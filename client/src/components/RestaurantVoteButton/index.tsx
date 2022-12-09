@@ -25,7 +25,7 @@ interface VoteResultType {
 
 interface VoteRestaurantListType {
   message: string;
-  data?: { voteRestaurantIdList: string[] };
+  data: { voteRestaurantIdList: string[] };
 }
 
 function RestaurantVoteButton({
@@ -35,7 +35,7 @@ function RestaurantVoteButton({
 }: PropsType) {
   const [isVoted, setIsVoted] = useState(false);
   const { socket } = useSocketStore((state) => state);
-  const votedRestaurantListRef = useRef([]); // 사용자가 투표한 음식점 리스트
+  const votedRestaurantListRef = useRef<string[]>([]); // 사용자가 투표한 음식점 리스트
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { fireToast } = useToast();
 

@@ -39,7 +39,7 @@ export function CandidateListModal({ restaurantData }: PropsType) {
 
     // voteList에 있는 후보 음식점들의 상세정보를 candidateData에 세팅
     restaurantData.forEach((restaurantItem) => {
-      voteList.current.forEach((voteItem) => {
+      voteList.current.forEach((voteItem: VoteDataType) => {
         if (restaurantItem.id === voteItem.restaurantId) {
           // 좋아요 수 렌더링을 위해 음식점 상세정보에 투표 count값 추가
           // eslint-disable-next-line no-param-reassign
@@ -76,7 +76,7 @@ export function CandidateListModal({ restaurantData }: PropsType) {
   return (
     <CandidateListModalLayout>
       <CandidateListModalBox>
-        {candidateData.map((candidate) => (
+        {candidateData.map((candidate: CandidateType) => (
           <RestaurantRow
             key={candidate.id}
             restaurant={candidate}
