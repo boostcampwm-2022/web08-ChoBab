@@ -53,15 +53,7 @@ function RestaurantCategory() {
         <RestaurantCategoryGuideParagraph>
           {!selectedCategoryData.size
             ? '먹고싶은 음식을 선택해주세요!'
-            : [...selectedCategoryData].reduce((acc, categoryName, index, arr) => {
-                let ret = '';
-                if (index === arr.length - 1) {
-                  ret = acc.concat(`${categoryName}`);
-                } else {
-                  ret = acc.concat(`${categoryName}, `);
-                }
-                return ret;
-              }, '')}
+            : [...selectedCategoryData].join(', ')}
         </RestaurantCategoryGuideParagraph>
         <RestaurantCategoryToggleButton
           isOpen={isCategoryOpen}
@@ -89,7 +81,7 @@ function RestaurantCategory() {
               return (
                 <RestaurantCategoryItem
                   isSelect={selectedCategoryData.has(categoryName)}
-                  // categoryName 은 변하지 않는 데이터
+                  // categoryName은 변하지 않는 데이터. index와 함께 쓸 명분이 있다.
                   // eslint-disable-next-line react/no-array-index-key
                   key={`${categoryName}${index}`}
                   onClick={handleToggleCategory(categoryName)}

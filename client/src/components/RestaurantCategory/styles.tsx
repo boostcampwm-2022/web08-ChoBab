@@ -23,7 +23,7 @@ interface CategoryToggleButtonStateType {
   isOpen: boolean;
 }
 
-export const RestaurantCategoryToggleButton = styled.div<CategoryToggleButtonStateType>`
+export const RestaurantCategoryToggleButton = styled.button<CategoryToggleButtonStateType>`
   width: 15%;
   height: 100%;
   background: none;
