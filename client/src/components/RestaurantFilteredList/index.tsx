@@ -1,14 +1,13 @@
-import { useRestaurantDetailLayerStatusStore, useSelectedRestaurantDataStore , useSelectedCategoryStore } from '@store/index';
+import {
+  useRestaurantDetailLayerStatusStore,
+  useSelectedRestaurantDataStore,
+  useSelectedCategoryStore,
+} from '@store/index';
 import RestaurantRow from '@components/RestaurantRow';
+import EmptyListPlaceholder from '@components/EmptyListPlaceholder';
 import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { CATEGORY_TYPE } from '@constants/category';
-import {
-  RestaurantFilteredParagraph,
-  RestaurantFilteredBox,
-  RestaurantFilteredList,
-  RestaurantFilteredItem,
-  RestaurantFilteredGuideBox,
-} from './styles';
+import { RestaurantFilteredBox, RestaurantFilteredList, RestaurantFilteredItem } from './styles';
 
 interface PropsType {
   restaurantData: RestaurantType[];
@@ -33,11 +32,7 @@ function RestaurantFiltered({ restaurantData }: PropsType) {
   return (
     <RestaurantFilteredBox>
       {!restaurantFilteredList.length ? (
-        <RestaurantFilteredGuideBox>
-          <RestaurantFilteredParagraph>
-            {['컾', '핒', '짲', '잌', '칰'][Math.floor(Math.random() * 5)]}
-          </RestaurantFilteredParagraph>
-        </RestaurantFilteredGuideBox>
+        <EmptyListPlaceholder />
       ) : (
         <RestaurantFilteredList>
           {restaurantFilteredList.map((restaurant) => {
