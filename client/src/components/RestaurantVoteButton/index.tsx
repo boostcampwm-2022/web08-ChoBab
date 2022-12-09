@@ -15,6 +15,8 @@ interface PropsType {
   // eslint-disable-next-line react/require-default-props
   likeCnt?: number;
 }
+
+// 안씀
 interface ResultType {
   message: string;
   data?: { candidateList: { restaurantId: string; count: number }[] };
@@ -39,10 +41,8 @@ function RestaurantVoteButton({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (votedRestaurantList.has(restaurantId)) {
-      setIsVoted(true);
-    }
-  }, []);
+    setIsVoted(votedRestaurantList.has(restaurantId));
+  });
 
   const voteRestaurant = () => {
     if (!(socket instanceof Socket)) {
@@ -99,13 +99,13 @@ function RestaurantVoteButton({
     <VoteLayout whileTap={{ scale: 0.85 }}>
       {/* 음식점 리스트일 때 */}
       {listType === RESTAURANT_LIST_TYPES.filtered && (
-        <VoteButton isVoted={isVoted} onClick={handleClick}>
+        <VoteButton type="button" isVoted={isVoted} onClick={handleClick}>
           {isVoted ? '❌ 투표' : '✔️ 투표'}
         </VoteButton>
       )}
       {/* 후보 리스트일 때 */}
       {listType === RESTAURANT_LIST_TYPES.candidate && (
-        <LikeButton isVoted={isVoted} onClick={handleClick}>
+        <LikeButton type="button" isVoted={isVoted} onClick={handleClick}>
           <span>{likeCnt}</span>
           {isVoted ? (
             <LikeImage width="20" height="20" fill="#EF5F21" />
