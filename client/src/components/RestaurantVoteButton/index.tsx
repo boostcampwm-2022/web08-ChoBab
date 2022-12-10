@@ -48,45 +48,36 @@ function RestaurantVoteButton({
       return;
     }
 
-    socket.on('userVoteRestaurantIdList', (result: VoteRestaurantListType) => {
-      votedRestaurantListRef.current = result.data.voteRestaurantIdList;
-      setIsVoted(votedRestaurantListRef.current.includes(restaurantId));
-    });
     socket.emit('getUserVoteRestaurantIdList');
   };
 
   useEffect(() => {
-    setVotedRestaurantList();
-  }, []);
-
-  const voteRestaurant = () => {
     if (!(socket instanceof Socket)) {
       return;
     }
 
-    // 사용자가 이미 투표한 식당인 경우, 투표 취소
-    if (isVoted) {
-      socket.on('cancelVoteRestaurantResult', (result: VoteResultType) => {
-        if (restaurantId !== result.data?.restaurantId) {
-          return;
-        }
+    socket.on('userVoteRestaurantIdList', (result: VoteRestaurantListType) => {
+      votedRestaurantListRef.current = result.data.voteRestaurantIdList;
+      setIsVoted(votedRestaurantListRef.current.includes(restaurantId));
+    });
 
-        if (result.message === FAIL_CANCEL_VOTE) {
-          fireToast({
-            content: FAIL_CANCEL_VOTE_MESSAGE,
-            duration: TOAST_DURATION_TIME,
-            bottom: 280,
-          });
-          setIsVoted(true);
-          return;
-        }
-        setIsVoted(false);
-      });
-      socket.emit('cancelVoteRestaurant', { restaurantId });
-      return;
-    }
+    socket.on('cancelVoteRestaurantResult', (result: VoteResultType) => {
+      if (restaurantId !== result.data?.restaurantId) {
+        return;
+      }
 
-    // 사용자가 투표하지 않은 식당인 경우, 투표
+      if (result.message === FAIL_CANCEL_VOTE) {
+        fireToast({
+          content: FAIL_CANCEL_VOTE_MESSAGE,
+          duration: TOAST_DURATION_TIME,
+          bottom: 280,
+        });
+        setIsVoted(true);
+        return;
+      }
+      setIsVoted(false);
+    });
+
     socket.on('voteRestaurantResult', (result: VoteResultType) => {
       if (restaurantId !== result.data?.restaurantId) {
         return;
@@ -103,6 +94,22 @@ function RestaurantVoteButton({
       }
       setIsVoted(true);
     });
+
+    setVotedRestaurantList();
+  }, []);
+
+  const voteRestaurant = () => {
+    if (!(socket instanceof Socket)) {
+      return;
+    }
+
+    // 사용자가 이미 투표한 식당인 경우, 투표 취소
+    if (isVoted) {
+      socket.emit('cancelVoteRestaurant', { restaurantId });
+      return;
+    }
+
+    // 사용자가 투표하지 않은 식당인 경우, 투표
     socket.emit('voteRestaurant', { restaurantId });
   };
 
