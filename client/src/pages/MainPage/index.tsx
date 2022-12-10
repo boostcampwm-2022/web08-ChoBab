@@ -131,12 +131,11 @@ function MainPage() {
 
       connectRoom();
     } catch (error: any) {
-      if (error.response.status === 400) {
-        navigate(URL_PATH.INVALID_ROOM);
+      if (error.response.status === 500) {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
         return;
       }
-
-      navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+      navigate(URL_PATH.INVALID_ROOM);
     }
   };
 

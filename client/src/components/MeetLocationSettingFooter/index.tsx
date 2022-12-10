@@ -110,7 +110,11 @@ function MeetLocationSettingFooter() {
         lng,
       });
       navigate(`${URL_PATH.JOIN_ROOM}/${roomCode}`);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response.status === 500) {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+        return;
+      }
       console.log(error);
     }
   };
