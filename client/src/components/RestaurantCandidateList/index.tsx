@@ -55,7 +55,7 @@ export function CandidateListModal({ restaurantData }: PropsType) {
         return;
       }
 
-      setCandidateData(makeCandidateData(result.data?.candidateList));
+      setCandidateData(makeCandidateData(result.data.candidateList));
     });
     // 투표 결과 요청
     socket.emit('getVoteResult');
@@ -66,7 +66,7 @@ export function CandidateListModal({ restaurantData }: PropsType) {
         return;
       }
 
-      setCandidateData(makeCandidateData(result.data?.candidateList));
+      setCandidateData(makeCandidateData(result.data.candidateList));
     });
   }, []);
 

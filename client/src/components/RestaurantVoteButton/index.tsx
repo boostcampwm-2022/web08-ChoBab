@@ -46,7 +46,7 @@ function RestaurantVoteButton({
     }
 
     socket.on('userVoteRestaurantIdList', (result: VoteRestaurantListType) => {
-      votedRestaurantListRef.current = result.data?.voteRestaurantIdList;
+      votedRestaurantListRef.current = result.data.voteRestaurantIdList;
       setIsVoted(votedRestaurantListRef.current.includes(restaurantId));
     });
     socket.emit('getUserVoteRestaurantIdList');
