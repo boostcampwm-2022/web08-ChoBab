@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
@@ -15,6 +15,7 @@ import MainMap from '@components/MainMap';
 
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+import { URL_PATH } from '@constants/url';
 
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import RestaurantListLayer from '@components/RestaurantListLayer';
@@ -34,6 +35,7 @@ import {
 } from './styles';
 
 function MainPage() {
+  const navigate = useNavigate();
   const userLocation = useCurrentLocation();
   const { roomCode } = useParams<{ roomCode: string }>();
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
@@ -125,15 +127,15 @@ function MainPage() {
        */
       const isRoomValid = await apiService.getRoomValid(roomCode);
 
-      if (!isRoomValid) {
-        throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
-      }
-
       await connectSocket();
 
       connectRoom();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response.status === 500) {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+        return;
+      }
+      navigate(URL_PATH.INVALID_ROOM);
     }
   };
 
