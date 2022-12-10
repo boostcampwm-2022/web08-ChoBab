@@ -31,7 +31,6 @@ function RestaurantRow({ restaurant, restaurantListType }: PropsType) {
 
   const straightDistance = getDistance({ lat, lng }, { lat: roomLat, lng: roomLng });
 
-  // 커밋에 기록이 남는게 찝찝해서 하드코딩하여 테스트했던 api key 일단 삭제.
   const thumbnailSrc = photoUrlList && photoUrlList[0] ? photoUrlList[0] : '';
 
   return (
