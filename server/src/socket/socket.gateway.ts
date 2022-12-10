@@ -256,8 +256,6 @@ export class EventsGateway
       )
       .map((candidate) => candidate.restaurantId);
 
-    console.log(userVoteRestaurantIdList);
-
     client.emit(
       'userVoteRestaurantIdList',
       SOCKET_RES.USER_VOTE_RESTAURANT_ID_LIST(userVoteRestaurantIdList)
