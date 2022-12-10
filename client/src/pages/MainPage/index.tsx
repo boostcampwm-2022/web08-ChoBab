@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
@@ -32,6 +32,7 @@ import {
 } from './styles';
 
 function MainPage() {
+  const navigate = useNavigate();
   const userLocation = useCurrentLocation();
   const { roomCode } = useParams<{ roomCode: string }>();
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
@@ -126,15 +127,16 @@ function MainPage() {
         },
       } = await axios.get<ResTemplateType<RoomValidType>>(`/api/room/valid?roomCode=${roomCode}`);
 
-      if (!isRoomValid) {
-        throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
-      }
-
       await connectSocket();
 
       connectRoom();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response.status === 400) {
+        navigate('/error/invalid-room');
+        return;
+      }
+
+      navigate('/error/internal-server');
     }
   };
 
