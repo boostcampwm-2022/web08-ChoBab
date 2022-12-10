@@ -22,12 +22,16 @@ function RestaurantFiltered({ restaurantData }: PropsType) {
 
   const { updateSelectedRestaurantData } = useSelectedRestaurantDataStore((state) => state);
 
+  const isNotAnyFilter = () => {
+    return selectedCategoryData.size === 0;
+  };
+
   const restaurantFilteredList = restaurantData
-    .slice(0, 20)
     .filter(
       (restaurant) =>
-        selectedCategoryData.has(restaurant.category as CATEGORY_TYPE) || !selectedCategoryData.size
-    );
+        isNotAnyFilter() || selectedCategoryData.has(restaurant.category as CATEGORY_TYPE)
+    )
+    .slice(0, 20);
 
   return (
     <RestaurantFilteredBox>
