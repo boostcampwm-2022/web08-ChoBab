@@ -23,6 +23,7 @@ interface RoomCreateResponseType {
 
 function MeetLocationSettingFooter() {
   const [address, setAddress] = useState<string>(NAVER_ADDRESS);
+  const [isCreateRoomLoading, setCreateRoomLoading] = useState<boolean>(false);
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -97,6 +98,7 @@ function MeetLocationSettingFooter() {
 
   const initRoom = async () => {
     const { lat, lng } = meetLocation;
+    setCreateRoomLoading(true);
     try {
       const {
         data: {
@@ -132,11 +134,14 @@ function MeetLocationSettingFooter() {
       <StartButton
         title="시작하기"
         onClick={(e) => {
+          if (isCreateRoomLoading) {
+            return;
+          }
           e.preventDefault();
           initRoom();
         }}
       >
-        시작하기
+        {isCreateRoomLoading ? '로딩 중...' : '시작하기'}
       </StartButton>
     </FooterBox>
   );
