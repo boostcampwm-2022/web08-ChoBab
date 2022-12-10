@@ -20,6 +20,7 @@ interface VoteDataType {
   restaurantId: string;
   count: number;
 }
+
 interface VoteResultType {
   message: string;
   data?: { candidateList: VoteDataType[] };

@@ -1,17 +1,18 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as SearchImage } from '@assets/images/search.svg';
 import { NAVER_ADDRESS } from '@constants/map';
 import {
-  TOAST_DURATION_TIME,
+  FAIL_SEARCH_MESSAGE,
   FAIL_UPDATE_ADDR_MESSAGE,
   NO_RESULTS_MESSAGE,
-  FAIL_SEARCH_MESSAGE,
+  TOAST_DURATION_TIME,
 } from '@constants/toast';
 import { useMeetLocationStore } from '@store/index';
 import { useToast } from '@hooks/useToast';
 
 import { apiService } from '@apis/index';
+import { URL_PATH } from '@constants/url';
 import { FooterBox, GuideTextBox, SearchBarBox, StartButton } from './styles';
 
 function MeetLocationSettingFooter() {
@@ -95,9 +96,13 @@ function MeetLocationSettingFooter() {
     try {
       const roomCode = await apiService.postRoom(lat, lng);
 
-      navigate(`/room/${roomCode}`);
-    } catch (error) {
-      console.log(error);
+      navigate(`${URL_PATH.JOIN_ROOM}/${roomCode}`);
+    } catch (error: any) {
+      if (error.response.status === 500) {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+        return;
+      }
+      navigate(URL_PATH.FAIL_CREATE_ROOM);
     }
   };
 
