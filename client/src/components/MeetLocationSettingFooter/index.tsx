@@ -133,6 +133,7 @@ function MeetLocationSettingFooter() {
 
       <StartButton
         title="시작하기"
+        disabled={isCreateRoomLoading}
         onClick={(e) => {
           if (isCreateRoomLoading) {
             return;
