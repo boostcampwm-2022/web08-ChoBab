@@ -2,6 +2,19 @@ import styled, { createGlobalStyle } from 'styled-components';
 import * as palette from '@styles/Variables';
 
 const GlobalStyle = createGlobalStyle`
+  :root {
+    --border-color: #ABABAB;
+
+    --infowindow-max-width: 140px;
+    --infowindow-border-width: 1px;
+
+    --anchor-size: 7px;
+    --anchor-bg-size: calc(var(--anchor-size) + var(--infowindow-border-width));
+
+    --restaurant-marker-size: 30px;
+    --user-marker-size: 36px;
+  }
+
   html, body, #root {
     height: 100%;
   }
