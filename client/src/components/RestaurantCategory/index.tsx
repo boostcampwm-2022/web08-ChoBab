@@ -14,7 +14,7 @@ import {
 } from './styles';
 
 function RestaurantCategory() {
-  const [isCategoryOpen, setCategoryOpen] = useState<boolean>(false);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const { selectedCategoryData, updateSelectedCategoryData } = useSelectedCategoryStore(
     (state) => state
@@ -56,10 +56,10 @@ function RestaurantCategory() {
             : [...selectedCategoryData].join(', ')}
         </RestaurantCategoryGuideParagraph>
         <RestaurantCategoryToggleButton
-          isOpen={isCategoryOpen}
+          isOpen={isModalOpen}
           type="button"
           onClick={(event) => {
-            setCategoryOpen(!isCategoryOpen);
+            setModalOpen(!isModalOpen);
 
             event.stopPropagation();
           }}
@@ -68,7 +68,7 @@ function RestaurantCategory() {
         </RestaurantCategoryToggleButton>
       </RestaurantCategoryControlBarBox>
 
-      <Modal isOpen={isCategoryOpen} setIsOpen={setCategoryOpen}>
+      <Modal isOpen={isModalOpen} setIsOpen={setModalOpen}>
         <RestaurantCategoryBox>
           <RestaurantCategoryList>
             <RestaurantCategoryItem
