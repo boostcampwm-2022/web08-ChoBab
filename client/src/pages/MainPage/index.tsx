@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useRestaurantListLayerStatusStore } from '@store/index';
 
@@ -22,6 +21,7 @@ import RestaurantListLayer from '@components/RestaurantListLayer';
 import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
 import RestaurantCategory from '@components/RestaurantCategory';
 
+import { apiService } from '@apis/index';
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -117,15 +117,14 @@ function MainPage() {
 
   const initService = async () => {
     try {
+      if (!roomCode) {
+        throw new Error('입장하고자 하는 방의 코드가 존재하지 않습니다.');
+      }
       /**
        * connect 순서 매우 중요
        * 세션 객체 생성을 위해 rest api 가 먼저 호출되어야 한다.
        */
-      const {
-        data: {
-          data: { isRoomValid },
-        },
-      } = await axios.get<ResTemplateType<RoomValidType>>(`/api/room/valid?roomCode=${roomCode}`);
+      const isRoomValid = await apiService.get.roomValid(roomCode);
 
       if (!isRoomValid) {
         throw new Error('입장하고자 하는 방이 올바르지 않습니다.');

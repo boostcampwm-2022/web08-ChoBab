@@ -36,3 +36,14 @@ declare interface RoomDataType {
   userId: string;
   userName: string;
 }
+
+declare interface DrivingInfoType {
+  start: number[];
+  goal: number[];
+  distance: number;
+  duration: number;
+  tollFare: number;
+  taxiFare: number;
+  fuelPrice: number;
+  path: number[][];
+}
