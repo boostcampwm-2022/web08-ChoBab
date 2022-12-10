@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [react(), svgr(), VitePluginHtmlEnv()],
   resolve: {
     alias: {
+      '@apis': resolve(__dirname, 'src/apis'),
       '@assets': resolve(__dirname, 'src/assets'),
       '@components': resolve(__dirname, 'src/components'),
       '@constants': resolve(__dirname, 'src/constants'),
@@ -25,8 +26,8 @@ export default defineConfig({
       '/socket.io': {
         target: 'http://localhost:3000',
       },
-      '/api': { 
-        target: 'http://localhost:3000' 
+      '/api': {
+        target: 'http://localhost:3000',
       },
     },
   },
