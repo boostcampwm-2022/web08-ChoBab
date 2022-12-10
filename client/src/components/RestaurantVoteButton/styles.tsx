@@ -20,7 +20,7 @@ export const VoteLayout = styled(motion.div)`
   position: absolute;
   top: 15px;
   right: 15px;
-  width: 3.5rem;
+  width: 3.8rem;
   height: 1.6rem;
 `;
 
@@ -29,6 +29,11 @@ export const VoteButton = styled.button<VoteButtonPropsType>`
   height: 100%;
   border: none;
   outline: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0.5rem;
 
   background-color: ${({ isVoted }) => (isVoted ? palette.BUTTON_COLOR_GREEN : palette.PRIMARY)};
   font-size: 0.8rem;

@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import { ReactComponent as LikeImage } from '@assets/images/filled-like.svg';
 import { ReactComponent as UnLikeImage } from '@assets/images/unfilled-like.svg';
+import { ReactComponent as VoteImage } from '@assets/images/vote.svg';
+import { ReactComponent as XImage } from '@assets/images/x.svg';
 
 import { TOAST_DURATION_TIME, FAIL_VOTE_MESSAGE, FAIL_CANCEL_VOTE_MESSAGE } from '@constants/toast';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
@@ -117,7 +119,15 @@ function RestaurantVoteButton({
       {/* 음식점 리스트일 때 */}
       {listType === RESTAURANT_LIST_TYPES.filtered && (
         <VoteButton type="button" isVoted={isVoted} onClick={handleClick}>
-          {isVoted ? '❌ 투표' : '✔️ 투표'}
+          {isVoted ? (
+            <>
+              <XImage width="15" fill="white" /> <span>&nbsp; 투표</span>
+            </>
+          ) : (
+            <>
+              <VoteImage width="15" fill="white" /> <span>&nbsp; 투표</span>
+            </>
+          )}
         </VoteButton>
       )}
       {/* 후보 리스트일 때 */}
