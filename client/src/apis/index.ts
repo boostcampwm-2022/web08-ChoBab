@@ -2,8 +2,7 @@ import { API_URL } from '@constants/url';
 import axios from 'axios';
 
 export const apiService = {
-  get: {
-    roomValid: async (roomCode: string) => {
+    getRoomValid: async (roomCode: string) => {
       const {
         data: {
           data: { isRoomValid },
@@ -14,7 +13,7 @@ export const apiService = {
       return isRoomValid;
     },
 
-    drivingInfoData: async (
+    getDrivingInfoData: async (
       startLat: number,
       startLng: number,
       goalLat: number,
@@ -30,10 +29,8 @@ export const apiService = {
       });
       return drivingInfoData;
     },
-  },
 
-  post: {
-    createRoom: async (lat: number, lng: number) => {
+    postRoom: async (lat: number, lng: number) => {
       const {
         data: {
           data: { roomCode },
@@ -45,5 +42,4 @@ export const apiService = {
 
       return roomCode;
     },
-  },
 };

@@ -93,7 +93,7 @@ function MeetLocationSettingFooter() {
     const { lat, lng } = meetLocation;
     setCreateRoomLoading(true);
     try {
-      const roomCode = await apiService.post.createRoom(lat, lng);
+      const roomCode = await apiService.postRoom(lat, lng);
 
       navigate(`/room/${roomCode}`);
     } catch (error) {

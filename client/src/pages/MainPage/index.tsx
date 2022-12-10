@@ -122,7 +122,7 @@ function MainPage() {
        * connect 순서 매우 중요
        * 세션 객체 생성을 위해 rest api 가 먼저 호출되어야 한다.
        */
-      const isRoomValid = await apiService.get.roomValid(roomCode);
+      const isRoomValid = await apiService.getRoomValid(roomCode);
 
       if (!isRoomValid) {
         throw new Error('입장하고자 하는 방이 올바르지 않습니다.');

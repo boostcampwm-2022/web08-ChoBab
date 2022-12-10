@@ -29,7 +29,7 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
     const { lat: startLat, lng: startLng } = startPos;
     const { lat: goalLat, lng: goalLng } = goalPos;
     try {
-      const drivingInfoData = await apiService.get.drivingInfoData(
+      const drivingInfoData = await apiService.getDrivingInfoData(
         startLat,
         startLng,
         goalLat,
