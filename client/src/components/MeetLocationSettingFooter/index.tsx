@@ -142,7 +142,7 @@ function MeetLocationSettingFooter() {
           initRoom();
         }}
       >
-        {isCreateRoomLoading ? '로딩 중...' : '시작하기'}
+        {isCreateRoomLoading ? '모임 생성 중...' : '시작하기'}
       </StartButton>
     </FooterBox>
   );
