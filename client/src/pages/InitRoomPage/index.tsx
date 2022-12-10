@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+
 import { InitRoomPageLayout } from '@pages/InitRoomPage/styles';
 import MeetLocationSettingMap from '@components/MeetLocationSettingMap';
 import MeetLocationSettingFooter from '@components/MeetLocationSettingFooter';
+import LoadingSpinner from '@components/LoadingSpinner';
+
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import { useMeetLocationStore } from '@store/index';
 
@@ -27,8 +30,9 @@ function InitRoomPage() {
     }
     updateMeetLocation(userLocation.lat, userLocation.lng);
   }, [isGPSReady]);
+
   return !isGPSReady ? (
-    <div>loading...</div>
+    <LoadingSpinner type="normal" message="위치 받아오는 중..." />
   ) : (
     <InitRoomPageLayout>
       <MeetLocationSettingMap userLocation={userLocation} />
