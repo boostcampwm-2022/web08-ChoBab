@@ -43,14 +43,13 @@ export const RestaurantCategoryToggleButton = styled.button<CategoryToggleButton
 export const RestaurantCategoryBox = styled.div`
   position: absolute;
 
-  top: 1px; // category shell border 1px
   left: 0;
   right: 0;
 
   padding: 3%;
 
   background: white;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 4px 4px rgb(104 94 94 / 25%), inset 0px 4px 4px rgb(0 0 0 / 25%);
 `;
 
 export const RestaurantCategoryList = styled.ul`

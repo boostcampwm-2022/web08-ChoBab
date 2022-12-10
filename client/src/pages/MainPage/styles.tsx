@@ -48,7 +48,7 @@ export const CategoryBox = styled.div`
   width: 100%;
   height: ${palette.CATEGORY_HEIGHT_RATIO}%;
   background-color: white;
-  border-bottom: 1px solid ${palette.PRIMARY};
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
   z-index: ${palette.CATEGORY_Z_INDEX};
 `;
 
