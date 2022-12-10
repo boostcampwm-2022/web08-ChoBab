@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [react(), svgr(), VitePluginHtmlEnv()],
   resolve: {
     alias: {
+      '@apis': resolve(__dirname, 'src/apis'),
       '@assets': resolve(__dirname, 'src/assets'),
       '@components': resolve(__dirname, 'src/components'),
       '@constants': resolve(__dirname, 'src/constants'),
@@ -18,7 +19,6 @@ export default defineConfig({
       '@utils': resolve(__dirname, 'src/utils'),
       '@store': resolve(__dirname, 'src/store'),
       '@styles': resolve(__dirname, 'src/styles'),
-      '@apis': resolve(__dirname, 'src/apis'),
     },
   },
   server: {
