@@ -14,8 +14,7 @@ declare interface RestaurantType {
   lng: number;
   address: string;
   rating?: number;
-  photoKeyList?: string[];
-  priceLevel?: number;
+  photoUrlList?: string[];
 }
 
 declare interface ResTemplateType<T> {
