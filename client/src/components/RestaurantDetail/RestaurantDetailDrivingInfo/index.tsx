@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { URL_PATH } from '@constants/url';
 import { useUserLocationStore } from '@store/index';
 import { distanceToDisplay } from '@utils/distance';
 import { msToTimeDisplay } from '@utils/time';
+import { ERROR_REASON } from '@constants/error';
 import { DrivingInfoBox, MapBox } from './styles';
 
 interface PositionType {
@@ -26,6 +29,7 @@ interface DrivingInfoType {
 }
 
 function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
+  const navigate = useNavigate();
   const { userLocation } = useUserLocationStore();
   const userPos: PositionType = userLocation;
   const [drivingInfo, setDrivingInfo] = useState<DrivingInfoType>();
@@ -51,6 +55,9 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
       setDrivingInfo(() => drivingInfoData);
       return drivingInfoData;
     } catch (error: any) {
+      if (error.response.status === 500) {
+        throw new Error(ERROR_REASON.INTERNAL_SERVER_ERROR);
+      }
       console.log(error.response.data.message ?? '길찾기 정보를 불러오는데 실패했습니다.');
       return {} as DrivingInfoType;
     }
@@ -104,7 +111,11 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
   }, []);
 
   useEffect(() => {
-    mapSetting().then();
+    mapSetting()
+      .then()
+      .catch((error) => {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+      });
   }, []);
 
   return (
