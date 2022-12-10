@@ -62,7 +62,7 @@ function RestaurantVoteButton({
     }
 
     // 사용자가 이미 투표한 식당인 경우, 투표 취소
-    if (votedRestaurantListRef.current.includes(restaurantId)) {
+    if (isVoted) {
       socket.on('cancelVoteRestaurantResult', (result: VoteResultType) => {
         if (result.message === '투표 취소 실패') {
           fireToast({
