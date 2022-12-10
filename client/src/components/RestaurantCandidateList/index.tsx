@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import RestaurantRow from '@components/RestaurantRow';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
@@ -20,6 +20,7 @@ interface VoteDataType {
   restaurantId: string;
   count: number;
 }
+
 interface VoteResultType {
   message: string;
   data?: { candidateList: VoteDataType[] };
@@ -28,6 +29,15 @@ interface VoteResultType {
 export function CandidateListModal({ restaurantData }: PropsType) {
   const { socket } = useSocketStore((state) => state);
   const [candidateData, setCandidateData] = useState<CandidateType[]>([]); // 투표된 음식점의 정보 데이터
+
+  const compare = (a: CandidateType, b: CandidateType): number => {
+    const aCount = a.count || 0;
+    const bCount = b.count || 0;
+    if (aCount > bCount) {
+      return -1;
+    }
+    return 1;
+  };
 
   const makeCandidateData = (candidateList: VoteDataType[]): CandidateType[] => {
     const tempList: CandidateType[] = [];
@@ -44,6 +54,7 @@ export function CandidateListModal({ restaurantData }: PropsType) {
         }
       });
     });
+
     return tempList;
   };
 
@@ -77,16 +88,16 @@ export function CandidateListModal({ restaurantData }: PropsType) {
       {!candidateData.length ? (
         <EmptyListPlaceholder />
       ) : (
-      <CandidateListModalBox>
-        {candidateData.map((candidate: CandidateType) => (
-          <RestaurantRow
-            key={candidate.id}
-            restaurant={candidate}
-            restaurantListType={RESTAURANT_LIST_TYPES.candidate}
-            likeCnt={candidate.count}
-          />
-        ))}
-      </CandidateListModalBox>
+        <CandidateListModalBox>
+          {[...candidateData].sort(compare).map((candidate: CandidateType) => (
+            <RestaurantRow
+              key={candidate.id}
+              restaurant={candidate}
+              restaurantListType={RESTAURANT_LIST_TYPES.candidate}
+              likeCnt={candidate.count}
+            />
+          ))}
+        </CandidateListModalBox>
       )}
     </CandidateListModalLayout>
   );

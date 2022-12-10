@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { URL_PATH } from '@constants/url';
 import { useUserLocationStore } from '@store/index';
 import { distanceToDisplay } from '@utils/distance';
 import { msToTimeDisplay } from '@utils/time';
 import { ERROR_REASON } from '@constants/error';
+import { apiService } from '@apis/index';
 import { DrivingInfoBox, MapBox } from './styles';
 
 interface PositionType {
@@ -15,17 +15,6 @@ interface PositionType {
 
 interface PropsType {
   restaurantPos: PositionType;
-}
-
-interface DrivingInfoType {
-  start: number[];
-  goal: number[];
-  distance: number;
-  duration: number;
-  tollFare: number;
-  taxiFare: number;
-  fuelPrice: number;
-  path: number[][];
 }
 
 function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
@@ -44,14 +33,12 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
     const { lat: startLat, lng: startLng } = startPos;
     const { lat: goalLat, lng: goalLng } = goalPos;
     try {
-      const {
-        data: { data: drivingInfoData },
-      } = await axios.get<ResTemplateType<DrivingInfoType>>('/api/map/driving', {
-        params: {
-          start: `${startLng},${startLat}`,
-          goal: `${goalLng},${goalLat}`,
-        },
-      });
+      const drivingInfoData = await apiService.getDrivingInfoData(
+        startLat,
+        startLng,
+        goalLat,
+        goalLng
+      );
       setDrivingInfo(() => drivingInfoData);
       return drivingInfoData;
     } catch (error: any) {

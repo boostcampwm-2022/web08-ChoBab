@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as SearchImage } from '@assets/images/search.svg';
@@ -12,15 +11,9 @@ import {
 import { useMeetLocationStore } from '@store/index';
 import { useToast } from '@hooks/useToast';
 
+import { apiService } from '@apis/index';
 import { URL_PATH } from '@constants/url';
 import { FooterBox, GuideTextBox, SearchBarBox, StartButton } from './styles';
-
-interface RoomCreateResponseType {
-  message: string;
-  data: {
-    roomCode: string;
-  };
-}
 
 function MeetLocationSettingFooter() {
   const [address, setAddress] = useState<string>(NAVER_ADDRESS);
@@ -101,14 +94,8 @@ function MeetLocationSettingFooter() {
     const { lat, lng } = meetLocation;
     setCreateRoomLoading(true);
     try {
-      const {
-        data: {
-          data: { roomCode },
-        },
-      } = await axios.post<RoomCreateResponseType>('/api/room/', {
-        lat,
-        lng,
-      });
+      const roomCode = await apiService.postRoom(lat, lng);
+
       navigate(`${URL_PATH.JOIN_ROOM}/${roomCode}`);
     } catch (error: any) {
       if (error.response.status === 500) {
