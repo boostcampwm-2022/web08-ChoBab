@@ -1,13 +1,13 @@
 import axios from 'axios';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as SearchImage } from '@assets/images/search.svg';
 import { NAVER_ADDRESS } from '@constants/map';
 import {
-  TOAST_DURATION_TIME,
+  FAIL_SEARCH_MESSAGE,
   FAIL_UPDATE_ADDR_MESSAGE,
   NO_RESULTS_MESSAGE,
-  FAIL_SEARCH_MESSAGE,
+  TOAST_DURATION_TIME,
 } from '@constants/toast';
 import { useMeetLocationStore } from '@store/index';
 import { useToast } from '@hooks/useToast';
@@ -115,7 +115,7 @@ function MeetLocationSettingFooter() {
         navigate(URL_PATH.INTERNAL_SERVER_ERROR);
         return;
       }
-      console.log(error);
+      navigate(URL_PATH.FAIL_CREATE_ROOM);
     }
   };
 

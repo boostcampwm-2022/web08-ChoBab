@@ -18,6 +18,10 @@ function Router() {
           <Route path={URL_PATH.INIT_ROOM} element={<InitRoomPage />} />
           <Route path={`${URL_PATH.JOIN_ROOM}/:roomCode`} element={<MainPage />} />
           <Route
+            path={URL_PATH.FAIL_CREATE_ROOM}
+            element={<ErrorPage reason={ERROR_REASON.FAIL_CREATE_ROOM} />}
+          />
+          <Route
             path={URL_PATH.INVALID_ROOM}
             element={<ErrorPage reason={ERROR_REASON.INVALID_ROOM} />}
           />
