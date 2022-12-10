@@ -20,6 +20,12 @@ export const FooterBox = styled.div`
   border-top: 2px solid ${palette.BORDER};
 `;
 
+export const GuideTextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const SearchBarBox = styled.div`
   display: flex;
   border: 1.5px solid ${palette.BORDER};

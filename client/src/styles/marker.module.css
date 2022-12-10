@@ -16,3 +16,62 @@
   align-items: center;
   justify-content: center;
 }
+
+.infoWindowBox {
+  position: absolute;
+  top: -10px;
+  width: 120%;
+  padding: 4%;
+  border-radius: 5px;
+  border: var(--infowindow-border-width) solid var(--border-color);
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: var(--infowindow-max-width);
+}
+
+.infoWindowBox::before {
+  position: absolute;
+  left: calc(50% - var(--anchor-bg-size));
+  bottom: calc(var(--anchor-bg-size) * 2 * -1);
+  content: '';
+  border-top: var(--anchor-bg-size) solid var(--border-color);
+  border-left: var(--anchor-bg-size) solid transparent;
+  border-right: var(--anchor-bg-size) solid transparent;
+  border-bottom: var(--anchor-bg-size) solid transparent;
+}
+
+.infoWindowBox::after {
+  position: absolute;
+  left: calc(50% - var(--anchor-size));
+  bottom: calc(var(--anchor-size) * 2 * -1);
+  content: '';
+  border-top: var(--anchor-size) solid white;
+  border-left: var(--anchor-size) solid transparent;
+  border-right: var(--anchor-size) solid transparent;
+  border-bottom: var(--anchor-size) solid transparent;
+}
+
+.infoWindowParagraph {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.restaurantMarker {
+  position: absolute;
+  left: calc(var(--anchor-size) * -1);
+  width: var(--restaurant-marker-size);
+  height: var(--restaurant-marker-size);
+}
+
+.userMarker {
+  border-radius: 30px;
+  width: var(--user-marker-size);
+  height: var(--user-marker-size);
+  position: absolute;
+  z-index: 100;
+  overflow: hidden;
+  box-shadow: 0px 0px 4px rgb(0 0 0 / 50%);
+}

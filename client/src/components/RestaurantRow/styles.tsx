@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import * as palette from '@styles/Variables';
+import { motion } from 'framer-motion';
 
-export const RestaurantRowBox = styled.div`
+export const RestaurantRowBox = styled(motion.div)`
   width: 100%;
   height: 30%;
   background-color: white;

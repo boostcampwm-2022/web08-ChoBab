@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 
-import RiceImage from '@assets/images/rice.svg';
-import SushiImage from '@assets/images/sushi.svg';
-import DumplingImage from '@assets/images/dumpling.svg';
-import SpaghettiImage from '@assets/images/spaghetti.svg';
-import ChickenImage from '@assets/images/chicken.svg';
-import HamburgerImage from '@assets/images/hamburger.svg';
-import HotdogImage from '@assets/images/hotdog.svg';
+import riceImageSrc from '@assets/images/rice.svg';
+import sushiImageSrc from '@assets/images/sushi.svg';
+import dumplingImageSrc from '@assets/images/dumpling.svg';
+import spaghettiImageSrc from '@assets/images/spaghetti.svg';
+import chickenImageSrc from '@assets/images/chicken.svg';
+import hamburgerImageSrc from '@assets/images/hamburger.svg';
+import hotdogImageSrc from '@assets/images/hotdog.svg';
+import userImageSrc from '@assets/images/user.svg';
 import { ReactComponent as LoadingSpinner } from '@assets/images/loading-spinner.svg';
+
+import { useSelectedCategoryStore } from '@store/index';
+
+import { CATEGORY_TYPE } from '@constants/category';
+
+import stc from 'string-to-color';
 
 import { useNaverMaps } from '@hooks/useNaverMaps';
 
@@ -35,66 +42,198 @@ interface RoomLocationType {
 interface PropsType {
   restaurantData: RestaurantType[];
   roomLocation: RoomLocationType;
+  joinList: Map<string, UserType>;
 }
 
-const getIconUrlByCategory = (category: string) => {
+const getIconUrlByCategory = (category: CATEGORY_TYPE) => {
   switch (category) {
-    case '일식':
-      return SushiImage;
-    case '중식':
-      return DumplingImage;
-    case '양식':
-      return SpaghettiImage;
-    case '치킨':
-      return ChickenImage;
-    case '패스트푸드':
-      return HamburgerImage;
-    case '분식':
-      return HotdogImage;
-    case '한식':
+    case CATEGORY_TYPE.일식:
+      return sushiImageSrc;
+    case CATEGORY_TYPE.중식:
+      return dumplingImageSrc;
+    case CATEGORY_TYPE.양식:
+      return spaghettiImageSrc;
+    case CATEGORY_TYPE.치킨:
+      return chickenImageSrc;
+    case CATEGORY_TYPE.패스트푸드:
+      return hamburgerImageSrc;
+    case CATEGORY_TYPE.분식:
+      return hotdogImageSrc;
+    case CATEGORY_TYPE.한식:
     default:
-      return RiceImage;
+      return riceImageSrc;
   }
 };
 
-function MainMap({ restaurantData, roomLocation }: PropsType) {
+type userIdType = string;
+
+function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [mapRef, mapDivRef] = useNaverMaps();
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const joinListMarkersRef = useRef<Map<userIdType, naver.maps.Marker>>(new Map());
+  const joinListInfoWindowsRef = useRef<Map<userIdType, naver.maps.InfoWindow>>(new Map());
 
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 
-  const closeAllMarkerInfoWindow = () => {
+  const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
+
+  const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
+
+  const closeAllRestaurantMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
       infoWindow.close();
     });
   };
 
-  const initMarkers = (map: naver.maps.Map) => {
+  const updateExitUserMarker = () => {
+    joinListMarkersRef.current.forEach((marker, userId, thisMap) => {
+      if (joinList.has(userId)) {
+        return;
+      }
+
+      marker.setMap(null);
+
+      thisMap.delete(userId);
+    });
+  };
+
+  const updateExitUserInfoWindow = () => {
+    joinListInfoWindowsRef.current.forEach((infoWindow, userId, thisMap) => {
+      if (joinList.has(userId)) {
+        return;
+      }
+
+      infoWindow.setMap(null);
+
+      thisMap.delete(userId);
+    });
+  };
+
+  const updateJoinUserMarkerAndInfoWindow = () => {
+    const map = mapRef.current;
+
     if (!map) {
       return;
     }
 
-    const restaurantListByCategory: Map<string, RestaurantType[]> = new Map();
+    joinList.forEach((user, userId) => {
+      const { userLat, userLng, userName } = user;
+
+      if (joinListMarkersRef.current.has(userId)) {
+        return;
+      }
+
+      const marker = new naver.maps.Marker({
+        map,
+        position: new naver.maps.LatLng(userLat, userLng),
+        title: userName,
+        icon: {
+          content: `
+            <div class="${classes.userMarker}" style="background:${stc(userId)}">
+              <img src="${userImageSrc}">
+            </div>
+          `,
+        },
+      });
+
+      joinListMarkersRef.current.set(userId, marker);
+
+      const infoWindow = new naver.maps.InfoWindow({
+        content: `
+          <div class="${classes.infoWindowBox}">
+            <p class="${classes.infoWindowParagraph}">${userName}</p>
+          </div>
+        `,
+        disableAnchor: true,
+        borderWidth: 0,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+      });
+
+      joinListInfoWindowsRef.current.set(userId, infoWindow);
+
+      naver.maps.Event.addListener(marker, 'click', () => {
+        infoWindow.open(map, marker);
+      });
+    });
+  };
+
+  const getRestaurantDividedByCategory = (): Map<CATEGORY_TYPE, RestaurantType[]> => {
+    const restaurantListDividedByCategory: Map<CATEGORY_TYPE, RestaurantType[]> = new Map();
 
     // 카테고리로 분류
     restaurantData.forEach((restaurant) => {
-      const { category } = restaurant;
+      const { category } = restaurant as { category: CATEGORY_TYPE };
 
-      if (!restaurantListByCategory.has(category)) {
-        restaurantListByCategory.set(category, []);
+      if (!selectedCategoryData.has(category) && selectedCategoryData.size) {
+        return;
       }
 
-      restaurantListByCategory.get(category)?.push(restaurant);
+      if (!restaurantListDividedByCategory.has(category)) {
+        restaurantListDividedByCategory.set(category, []);
+      }
+
+      restaurantListDividedByCategory.get(category)?.push(restaurant);
     });
 
-    // 카테고리별 클러스터 생성
-    restaurantListByCategory.forEach((restaurants, category) => {
+    return restaurantListDividedByCategory;
+  };
+
+  const createMarkerClusteringObjects = (map: naver.maps.Map) => {
+    Object.values(CATEGORY_TYPE).forEach((categoryName) => {
+      const iconUrl = getIconUrlByCategory(categoryName);
+
+      const markerClustering = new MarkerClustering({
+        map,
+        maxZoom: 18,
+        gridSize: 200,
+        disableClickZoom: false,
+        icons: [
+          {
+            content: `
+              <div class="${classes.clusterMarkerLayout}">
+                <div name="counter" class="${classes.clusterMarkerCountBox}">0</div>
+                <img src=${iconUrl} width="30" height="30" />
+              </div>
+            `,
+          },
+        ],
+        indexGenerator: [0],
+        // @types/navermaps 에 Marker 클래스 타입에 getElement 메서드가 정의되어 있질 않다.
+        stylingFunction: (clusterMarker: any, count) => {
+          const markerDom = clusterMarker.getElement() as HTMLElement;
+
+          const counterDOM = markerDom.querySelector('div[name="counter"]');
+
+          if (!(counterDOM instanceof HTMLElement)) {
+            return;
+          }
+
+          counterDOM.innerText = `${count}`;
+        },
+      });
+
+      markerClusteringObjectsRef.current.set(categoryName, markerClustering);
+    });
+  };
+
+  const updateMarkerClusteringObjects = (
+    restaurantListDividedByCategory: Map<CATEGORY_TYPE, RestaurantType[]>
+  ) => {
+    const map = mapRef.current;
+
+    if (!map) {
+      return;
+    }
+
+    markerClusteringObjectsRef.current.forEach((markerClustering, categoryName) => {
       const markers: naver.maps.Marker[] = [];
 
-      const iconUrl = getIconUrlByCategory(category);
+      const iconUrl = getIconUrlByCategory(categoryName);
 
-      restaurants.forEach((restaurant) => {
+      restaurantListDividedByCategory.get(categoryName)?.forEach((restaurant) => {
         const { name, lat, lng } = restaurant;
 
         // (map 에 반영시키지 않는)마커 객체 생성
@@ -102,7 +241,13 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
           title: name,
           position: new naver.maps.LatLng(lat, lng),
           icon: {
-            content: `<img src=${iconUrl} width="30" height="30" alt=${name}/>`,
+            content: `
+              <img
+                class="${classes.restaurantMarker}"
+                src=${iconUrl}
+                alt=${name}
+              />
+            `,
           },
         });
 
@@ -110,7 +255,15 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
 
         // 인포윈도우 객체 생성
         const infoWindow = new naver.maps.InfoWindow({
-          content: name,
+          content: `
+            <div class="${classes.infoWindowBox}">
+              <p class="${classes.infoWindowParagraph}">${name}</p>
+            </div>
+          `,
+          disableAnchor: true,
+          borderWidth: 0,
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
         });
 
         infoWindowsRef.current.push(infoWindow);
@@ -121,40 +274,11 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
         });
       });
 
-      // eslint 의 no-new, no-undef 에러를 피하기 위해 즉시실행함수로 작성
-      (() => {
-        return new MarkerClustering({
-          map,
-          markers,
-          maxZoom: 19,
-          gridSize: 300,
-          disableClickZoom: false,
-          icons: [
-            {
-              content: `
-                <div class="${classes.clusterMarkerLayout}">
-                  <div name="counter" class="${classes.clusterMarkerCountBox}">0</div>
-                  <img src=${iconUrl} width="30" height="30" />
-                </div>
-              `,
-            },
-          ],
-          indexGenerator: [0],
-          // @types/navermaps 에 Marker 클래스 타입에 getElement 메서드가 정의되어 있질 않다.
-          stylingFunction: (clusterMarker: any, count) => {
-            const markerDom = clusterMarker.getElement() as HTMLElement;
-
-            const counterDOM = markerDom.querySelector('div[name="counter"]');
-
-            if (!(counterDOM instanceof HTMLElement)) {
-              return;
-            }
-
-            counterDOM.innerText = `${count}`;
-          },
-        });
-      })();
+      markerClustering.setMarkers(markers);
     });
+
+    // 갱신을 위해 map 좌표를 제자리로 이동
+    map.setCenter(map.getBounds().getCenter());
   };
 
   const onInit = (map: naver.maps.Map): naver.maps.MapEventListener => {
@@ -163,7 +287,9 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
         return;
       }
 
-      initMarkers(map);
+      createMarkerClusteringObjects(map);
+      const restaurantListDividedByCategory = getRestaurantDividedByCategory();
+      updateMarkerClusteringObjects(restaurantListDividedByCategory);
     });
     return onInitListener;
   };
@@ -174,7 +300,7 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
         return;
       }
 
-      closeAllMarkerInfoWindow();
+      closeAllRestaurantMarkerInfoWindow();
     });
     return onDragendListener;
   };
@@ -185,7 +311,7 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
         return;
       }
 
-      closeAllMarkerInfoWindow();
+      closeAllRestaurantMarkerInfoWindow();
     });
 
     return onClickListener;
@@ -218,6 +344,17 @@ function MainMap({ restaurantData, roomLocation }: PropsType) {
 
     return onZoomChangedListener;
   };
+
+  useEffect(() => {
+    const restaurantListDividedByCategory = getRestaurantDividedByCategory();
+    updateMarkerClusteringObjects(restaurantListDividedByCategory);
+  }, [selectedCategoryData]);
+
+  useEffect(() => {
+    updateExitUserMarker();
+    updateExitUserInfoWindow();
+    updateJoinUserMarkerAndInfoWindow();
+  }, [joinList]);
 
   useEffect(() => {
     if (!mapRef.current) {
