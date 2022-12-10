@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import RestaurantRow from '@components/RestaurantRow';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
@@ -72,21 +72,25 @@ export function CandidateListModal({ restaurantData }: PropsType) {
     });
   }, []);
 
+  const sort = (a: CandidateType, b: CandidateType) => {
+    return +((a.count || 0) < (b.count || 0));
+  };
+
   return (
     <CandidateListModalLayout>
       {!candidateData.length ? (
         <EmptyListPlaceholder />
       ) : (
-      <CandidateListModalBox>
-        {candidateData.map((candidate: CandidateType) => (
-          <RestaurantRow
-            key={candidate.id}
-            restaurant={candidate}
-            restaurantListType={RESTAURANT_LIST_TYPES.candidate}
-            likeCnt={candidate.count}
-          />
-        ))}
-      </CandidateListModalBox>
+        <CandidateListModalBox>
+          {[...candidateData].sort(sort).map((candidate: CandidateType) => (
+            <RestaurantRow
+              key={candidate.id}
+              restaurant={candidate}
+              restaurantListType={RESTAURANT_LIST_TYPES.candidate}
+              likeCnt={candidate.count}
+            />
+          ))}
+        </CandidateListModalBox>
       )}
     </CandidateListModalLayout>
   );

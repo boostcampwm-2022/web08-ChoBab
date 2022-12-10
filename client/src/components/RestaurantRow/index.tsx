@@ -36,7 +36,7 @@ function RestaurantRow({ restaurant, restaurantListType, likeCnt }: PropsType) {
   const thumbnailSrc = photoUrlList && photoUrlList[0] ? photoUrlList[0] : '';
 
   return (
-    <RestaurantRowBox>
+    <RestaurantRowBox layout>
       <ImageBox>
         <ThumbnailImage src={thumbnailSrc} />
       </ImageBox>
