@@ -9,8 +9,12 @@ export const CandidateListModalLayout = styled.div`
 
 export const CandidateListModalBox = styled.div`
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+`;
+
+export const CandidateItem = styled.li`
+  list-style: none;
+  padding-bottom: 5%;
+  &:last-child {
+    padding-bottom: 0;
+  }
 `;
