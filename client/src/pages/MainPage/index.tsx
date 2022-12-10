@@ -16,6 +16,7 @@ import MainMap from '@components/MainMap';
 
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+import { URL_PATH } from '@constants/url';
 
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import RestaurantListLayer from '@components/RestaurantListLayer';
@@ -131,11 +132,11 @@ function MainPage() {
       connectRoom();
     } catch (error: any) {
       if (error.response.status === 400) {
-        navigate('/error/invalid-room');
+        navigate(URL_PATH.INVALID_ROOM);
         return;
       }
 
-      navigate('/error/internal-server');
+      navigate(URL_PATH.INTERNAL_SERVER_ERROR);
     }
   };
 

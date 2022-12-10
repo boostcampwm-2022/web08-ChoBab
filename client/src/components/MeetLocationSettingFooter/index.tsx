@@ -12,6 +12,7 @@ import {
 import { useMeetLocationStore } from '@store/index';
 import { useToast } from '@hooks/useToast';
 
+import { URL_PATH } from '@constants/url';
 import { FooterBox, GuideTextBox, SearchBarBox, StartButton } from './styles';
 
 interface RoomCreateResponseType {
@@ -108,7 +109,7 @@ function MeetLocationSettingFooter() {
         lat,
         lng,
       });
-      navigate(`/room/${roomCode}`);
+      navigate(`${URL_PATH.JOIN_ROOM}/${roomCode}`);
     } catch (error) {
       console.log(error);
     }
