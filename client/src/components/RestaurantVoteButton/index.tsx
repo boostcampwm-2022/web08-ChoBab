@@ -67,6 +67,10 @@ function RestaurantVoteButton({
     // 사용자가 이미 투표한 식당인 경우, 투표 취소
     if (isVoted) {
       socket.on('cancelVoteRestaurantResult', (result: VoteResultType) => {
+        if (restaurantId !== result.data?.restaurantId) {
+          return;
+        }
+
         if (result.message === FAIL_CANCEL_VOTE) {
           fireToast({
             content: FAIL_CANCEL_VOTE_MESSAGE,
@@ -84,6 +88,10 @@ function RestaurantVoteButton({
 
     // 사용자가 투표하지 않은 식당인 경우, 투표
     socket.on('voteRestaurantResult', (result: VoteResultType) => {
+      if (restaurantId !== result.data?.restaurantId) {
+        return;
+      }
+
       if (result.message === FAIL_VOTE) {
         fireToast({
           content: FAIL_VOTE_MESSAGE,
