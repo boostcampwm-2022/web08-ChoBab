@@ -5,6 +5,7 @@ import { ReactComponent as UnLikeImage } from '@assets/images/unfilled-like.svg'
 
 import { TOAST_DURATION_TIME, FAIL_VOTE_MESSAGE, FAIL_CANCEL_VOTE_MESSAGE } from '@constants/toast';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+import { FAIL_VOTE, FAIL_CANCEL_VOTE } from '@constants/vote';
 import { useSocketStore } from '@store/socket';
 import { useToast } from '@hooks/useToast';
 
@@ -64,7 +65,7 @@ function RestaurantVoteButton({
     // 사용자가 이미 투표한 식당인 경우, 투표 취소
     if (isVoted) {
       socket.on('cancelVoteRestaurantResult', (result: VoteResultType) => {
-        if (result.message === '투표 취소 실패') {
+        if (result.message === FAIL_CANCEL_VOTE) {
           fireToast({
             content: FAIL_CANCEL_VOTE_MESSAGE,
             duration: TOAST_DURATION_TIME,
@@ -81,7 +82,7 @@ function RestaurantVoteButton({
 
     // 사용자가 투표하지 않은 식당인 경우, 투표
     socket.on('voteRestaurantResult', (result: VoteResultType) => {
-      if (result.message === '투표 실패') {
+      if (result.message === FAIL_VOTE) {
         fireToast({
           content: FAIL_VOTE_MESSAGE,
           duration: TOAST_DURATION_TIME,
