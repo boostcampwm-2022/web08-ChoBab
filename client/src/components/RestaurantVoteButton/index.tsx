@@ -45,11 +45,11 @@ function RestaurantVoteButton({
       throw new Error();
     }
 
-    socket.emit('getUserVoteRestaurantIdList');
     socket.on('userVoteRestaurantIdList', (result: VoteRestaurantListType) => {
       votedRestaurantListRef.current = result.data?.voteRestaurantIdList;
       setIsVoted(votedRestaurantListRef.current.includes(restaurantId));
     });
+    socket.emit('getUserVoteRestaurantIdList');
   };
 
   useEffect(() => {
@@ -63,7 +63,6 @@ function RestaurantVoteButton({
 
     // 사용자가 이미 투표한 식당인 경우, 투표 취소
     if (votedRestaurantListRef.current.includes(restaurantId)) {
-      socket.emit('cancelVoteRestaurant', { restaurantId });
       socket.on('cancelVoteRestaurantResult', (result: VoteResultType) => {
         if (result.message === '투표 취소 실패') {
           fireToast({
@@ -74,11 +73,11 @@ function RestaurantVoteButton({
           setIsVoted(true);
         }
       });
+      socket.emit('cancelVoteRestaurant', { restaurantId });
       return;
     }
 
     // 사용자가 투표하지 않은 식당인 경우, 투표
-    socket.emit('voteRestaurant', { restaurantId });
     socket.on('voteRestaurantResult', (result: VoteResultType) => {
       if (result.message === '투표 실패') {
         fireToast({
@@ -89,6 +88,7 @@ function RestaurantVoteButton({
         setIsVoted(false);
       }
     });
+    socket.emit('voteRestaurant', { restaurantId });
   };
 
   const handleClick: React.MouseEventHandler = (e) => {

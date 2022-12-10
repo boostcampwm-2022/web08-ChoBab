@@ -50,8 +50,6 @@ export function CandidateListModal({ restaurantData }: PropsType) {
   };
 
   useEffect(() => {
-    // 투표 결과 요청
-    socket.emit('getVoteResult');
     socket.on('currentVoteResult', (result: VoteResultType) => {
       if (!result.data) {
         return;
@@ -59,6 +57,8 @@ export function CandidateListModal({ restaurantData }: PropsType) {
 
       setCandidateData(makeCandidateData(result.data?.candidateList));
     });
+    // 투표 결과 요청
+    socket.emit('getVoteResult');
 
     // 투표 결과 업데이트 (다른 참여자가 투표하는 경우 발생)
     socket.on('voteResultUpdate', (result: VoteResultType) => {
