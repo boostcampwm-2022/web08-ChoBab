@@ -18,6 +18,7 @@ export default defineConfig({
       '@utils': resolve(__dirname, 'src/utils'),
       '@store': resolve(__dirname, 'src/store'),
       '@styles': resolve(__dirname, 'src/styles'),
+      '@apis': resolve(__dirname, 'src/apis'),
     },
   },
   server: {
@@ -25,8 +26,8 @@ export default defineConfig({
       '/socket.io': {
         target: 'http://localhost:3000',
       },
-      '/api': { 
-        target: 'http://localhost:3000' 
+      '/api': {
+        target: 'http://localhost:3000',
       },
     },
   },
