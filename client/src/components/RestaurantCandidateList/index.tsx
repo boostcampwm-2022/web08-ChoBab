@@ -32,7 +32,7 @@ export function CandidateListModal({ restaurantData }: PropsType) {
   const compare = (a: CandidateType, b: CandidateType): number => {
     const aCount = a.count || 0;
     const bCount = b.count || 0;
-    if (aCount < bCount) {
+    if (aCount > bCount) {
       return -1;
     }
     return 1;
