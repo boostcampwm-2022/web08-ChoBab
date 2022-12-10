@@ -129,7 +129,7 @@ function RestaurantVoteButton({
         <VoteButton type="button" isVoted={isVoted} onClick={handleClick}>
           {isVoted ? (
             <>
-              <XImage width="15" fill="white" /> <span>&nbsp; 투표</span>
+              <XImage width="10" fill="white" /> <span>&nbsp; 투표</span>
             </>
           ) : (
             <>
