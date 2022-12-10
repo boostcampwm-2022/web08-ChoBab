@@ -102,9 +102,9 @@ function RestaurantVoteButton({
 
     // 버튼 색상 변경은 클릭 시 즉각적으로 일어나야 함(쓰로틀링 딜레이 시간 이후 변하면 X)
     setIsVoted(!isVoted);
+    voteRestaurant();
 
     timerRef.current = setTimeout(() => {
-      voteRestaurant();
       timerRef.current = null;
     }, 500);
   };
