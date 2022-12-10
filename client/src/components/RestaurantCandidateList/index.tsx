@@ -26,29 +26,26 @@ interface VoteResultType {
 
 export function CandidateListModal({ restaurantData }: PropsType) {
   const { socket } = useSocketStore((state) => state);
-  const voteList = useRef<VoteDataType[]>([]);
   const [candidateData, setCandidateData] = useState<CandidateType[]>([]); // 투표된 음식점의 정보 데이터
 
   if (!(socket instanceof Socket)) {
     throw new Error();
   }
 
-  const makeCandidateData = (candidateList: VoteDataType[]) => {
-    voteList.current = candidateList;
-    let tempList: CandidateType[] = [];
+  const makeCandidateData = (candidateList: VoteDataType[]): CandidateType[] => {
+    const tempList: CandidateType[] = [];
 
     // voteList에 있는 후보 음식점들의 상세정보를 candidateData에 세팅
     restaurantData.forEach((restaurantItem) => {
-      voteList.current.forEach((voteItem: VoteDataType) => {
+      candidateList.forEach((voteItem: VoteDataType) => {
         if (restaurantItem.id === voteItem.restaurantId) {
           // 좋아요 수 렌더링을 위해 음식점 상세정보에 투표 count값 추가
           // eslint-disable-next-line no-param-reassign
           restaurantItem.count = voteItem.count;
-          tempList = [...tempList, restaurantItem];
+          tempList.push(restaurantItem);
         }
       });
     });
-
     return tempList;
   };
 
