@@ -7,12 +7,15 @@ import {
   OriginRestaurantType,
   PreprocessedRestaurantType,
   RestaurantApiResultType,
-  RestaurantDetailResponseType,
 } from './restaurant';
-import { RESTAURANT_CATEGORY, RESTAURANT_DETAIL_FIELD } from '@constants/restaurant';
-import { MAX_RADIUS, MAX_DETAIL_SEARCH_RADIUS } from '@constants/location';
+import { RESTAURANT_CATEGORY } from '@constants/restaurant';
+import { MAX_RADIUS } from '@constants/location';
 import { LOCATION_EXCEPTION } from '@response/location';
-import { RESTAURANT_DETAIL_API_URL, RESTAURANT_LIST_API_URL } from '@constants/api';
+import { RESTAURANT_LIST_API_URL } from '@constants/api';
+import { InjectModel } from '@nestjs/mongoose';
+import { RestaurantCategory, RestaurantCategoryDocument } from './restaurant.schema';
+import { Model } from 'mongoose';
+import { getRandomNum, getRandomRating } from '@utils/random';
 
 const restaurantListApiConfig = (
   lat: number,
@@ -35,32 +38,16 @@ const restaurantListApiConfig = (
   };
 };
 
-const restaurantDetailApiConfig = (
-  name: string,
-  address: string,
-  lat: number,
-  lng: number,
-  apiKey: string
-) => {
-  return {
-    params: {
-      input: address + ' ' + name,
-      inputtype: 'textquery',
-      locationrestriction: `circle:${MAX_DETAIL_SEARCH_RADIUS}@${lat},${lng}`,
-      fields: RESTAURANT_DETAIL_FIELD.join(','),
-      key: apiKey,
-    },
-  };
-};
-
 @Injectable()
 export class RestaurantService {
   private readonly KAKAO_API_KEY: string;
-  private readonly GOOGLE_API_KEY: string;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    @InjectModel(RestaurantCategory.name)
+    private restaurantCategoryModel: Model<RestaurantCategoryDocument>
+  ) {
     this.KAKAO_API_KEY = this.configService.get('KAKAO_API_KEY');
-    this.GOOGLE_API_KEY = this.configService.get('GOOGLE_API_KEY');
   }
 
   private async getRestaurantUsingCategory(
@@ -145,31 +132,29 @@ export class RestaurantService {
     return restaurantMap;
   }
 
-  async getRestaurantDetail(id: string, address: string, name: string, lat: number, lng: number) {
+  async getRestaurantDetail(id: string, category: string) {
+    const randomRating = getRandomRating();
     try {
-      const {
-        data: { candidates },
-      } = await axios.get<RestaurantDetailResponseType>(
-        RESTAURANT_DETAIL_API_URL,
-        restaurantDetailApiConfig(name, address, lat, lng, this.GOOGLE_API_KEY)
-      );
-      const result = candidates[0];
-      if (!result) {
-        throw new Error();
-      }
-      const {
-        rating,
-        photos, // 이 후 이미지 API 를 위해 일단 놔둠
-        price_level: priceLevel,
-      } = result;
-      const photoKeyList = photos.map((photo) => photo?.photo_reference);
+      const { photoUrl: photoUrlList } = await this.restaurantCategoryModel.findOne({ category });
 
-      return { id, rating, priceLevel, photoKeyList };
+      const photoCnt = photoUrlList.length;
+      const selectedPhotoUrlList: string[] = [];
+
+      for (let idx = 0; idx < 3; idx++) {
+        const randomIdx = getRandomNum(photoCnt - idx);
+        selectedPhotoUrlList.push(photoUrlList.splice(randomIdx, 1)[0]);
+        if (!photoUrlList.length) {
+          break;
+        }
+      }
+
+      return { id, rating: randomRating, photoUrlList: selectedPhotoUrlList };
     } catch (error) {
+      console.log(error);
       // 단일 요청에 대한 에러 처리가 아닌, 모든 음식점에 대해 일괄적으로 상세정보를 불러오고
       // 만약 상세정보가 없을 시에도 에러를 반환하는 것이 아닌 값을 반환해주어야 함
       // 상세정보가 없는 것은 서비스 적으로 전혀 문제되는 상황이 아님.
-      return { id };
+      return { id, rating: randomRating, photoUrlList: [] as string[] };
     }
   }
 }

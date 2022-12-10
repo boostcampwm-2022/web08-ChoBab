@@ -10,6 +10,10 @@ import hotdogImageSrc from '@assets/images/hotdog.svg';
 import userImageSrc from '@assets/images/user.svg';
 import { ReactComponent as LoadingSpinner } from '@assets/images/loading-spinner.svg';
 
+import { useSelectedCategoryStore } from '@store/index';
+
+import { CATEGORY_TYPE } from '@constants/category';
+
 import stc from 'string-to-color';
 
 import { useNaverMaps } from '@hooks/useNaverMaps';
@@ -41,21 +45,21 @@ interface PropsType {
   joinList: Map<string, UserType>;
 }
 
-const getIconUrlByCategory = (category: string) => {
+const getIconUrlByCategory = (category: CATEGORY_TYPE) => {
   switch (category) {
-    case '일식':
+    case CATEGORY_TYPE.일식:
       return sushiImageSrc;
-    case '중식':
+    case CATEGORY_TYPE.중식:
       return dumplingImageSrc;
-    case '양식':
+    case CATEGORY_TYPE.양식:
       return spaghettiImageSrc;
-    case '치킨':
+    case CATEGORY_TYPE.치킨:
       return chickenImageSrc;
-    case '패스트푸드':
+    case CATEGORY_TYPE.패스트푸드:
       return hamburgerImageSrc;
-    case '분식':
+    case CATEGORY_TYPE.분식:
       return hotdogImageSrc;
-    case '한식':
+    case CATEGORY_TYPE.한식:
     default:
       return riceImageSrc;
   }
@@ -64,14 +68,18 @@ const getIconUrlByCategory = (category: string) => {
 type userIdType = string;
 
 function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
-  const [mapRef, mapDivRef] = useNaverMaps();
-
-  const joinListMarkerRef = useRef<Map<userIdType, naver.maps.Marker>>(new Map());
-  const joinListInfoWindowRef = useRef<Map<userIdType, naver.maps.InfoWindow>>(new Map());
-
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [mapRef, mapDivRef] = useNaverMaps();
+
+  const joinListMarkersRef = useRef<Map<userIdType, naver.maps.Marker>>(new Map());
+  const joinListInfoWindowsRef = useRef<Map<userIdType, naver.maps.InfoWindow>>(new Map());
+
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
+
+  const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
+
+  const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
 
   const closeAllRestaurantMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
@@ -80,7 +88,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   };
 
   const updateExitUserMarker = () => {
-    joinListMarkerRef.current.forEach((marker, userId, thisMap) => {
+    joinListMarkersRef.current.forEach((marker, userId, thisMap) => {
       if (joinList.has(userId)) {
         return;
       }
@@ -92,7 +100,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   };
 
   const updateExitUserInfoWindow = () => {
-    joinListInfoWindowRef.current.forEach((infoWindow, userId, thisMap) => {
+    joinListInfoWindowsRef.current.forEach((infoWindow, userId, thisMap) => {
       if (joinList.has(userId)) {
         return;
       }
@@ -113,7 +121,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     joinList.forEach((user, userId) => {
       const { userLat, userLng, userName } = user;
 
-      if (joinListMarkerRef.current.has(userId)) {
+      if (joinListMarkersRef.current.has(userId)) {
         return;
       }
 
@@ -130,13 +138,21 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         },
       });
 
-      joinListMarkerRef.current.set(userId, marker);
+      joinListMarkersRef.current.set(userId, marker);
 
       const infoWindow = new naver.maps.InfoWindow({
-        content: userName,
+        content: `
+          <div class="${classes.infoWindowBox}">
+            <p class="${classes.infoWindowParagraph}">${userName}</p>
+          </div>
+        `,
+        disableAnchor: true,
+        borderWidth: 0,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
       });
 
-      joinListInfoWindowRef.current.set(userId, infoWindow);
+      joinListInfoWindowsRef.current.set(userId, infoWindow);
 
       naver.maps.Event.addListener(marker, 'click', () => {
         infoWindow.open(map, marker);
@@ -144,31 +160,80 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     });
   };
 
-  const initMarkers = (map: naver.maps.Map) => {
+  const getRestaurantDividedByCategory = (): Map<CATEGORY_TYPE, RestaurantType[]> => {
+    const restaurantListDividedByCategory: Map<CATEGORY_TYPE, RestaurantType[]> = new Map();
+
+    // 카테고리로 분류
+    restaurantData.forEach((restaurant) => {
+      const { category } = restaurant as { category: CATEGORY_TYPE };
+
+      if (!selectedCategoryData.has(category) && selectedCategoryData.size) {
+        return;
+      }
+
+      if (!restaurantListDividedByCategory.has(category)) {
+        restaurantListDividedByCategory.set(category, []);
+      }
+
+      restaurantListDividedByCategory.get(category)?.push(restaurant);
+    });
+
+    return restaurantListDividedByCategory;
+  };
+
+  const createMarkerClusteringObjects = (map: naver.maps.Map) => {
+    Object.values(CATEGORY_TYPE).forEach((categoryName) => {
+      const iconUrl = getIconUrlByCategory(categoryName);
+
+      const markerClustering = new MarkerClustering({
+        map,
+        maxZoom: 18,
+        gridSize: 200,
+        disableClickZoom: false,
+        icons: [
+          {
+            content: `
+              <div class="${classes.clusterMarkerLayout}">
+                <div name="counter" class="${classes.clusterMarkerCountBox}">0</div>
+                <img src=${iconUrl} width="30" height="30" />
+              </div>
+            `,
+          },
+        ],
+        indexGenerator: [0],
+        // @types/navermaps 에 Marker 클래스 타입에 getElement 메서드가 정의되어 있질 않다.
+        stylingFunction: (clusterMarker: any, count) => {
+          const markerDom = clusterMarker.getElement() as HTMLElement;
+
+          const counterDOM = markerDom.querySelector('div[name="counter"]');
+
+          if (!(counterDOM instanceof HTMLElement)) {
+            return;
+          }
+
+          counterDOM.innerText = `${count}`;
+        },
+      });
+
+      markerClusteringObjectsRef.current.set(categoryName, markerClustering);
+    });
+  };
+
+  const updateMarkerClusteringObjects = (
+    restaurantListDividedByCategory: Map<CATEGORY_TYPE, RestaurantType[]>
+  ) => {
+    const map = mapRef.current;
+
     if (!map) {
       return;
     }
 
-    const restaurantListByCategory: Map<string, RestaurantType[]> = new Map();
-
-    // 카테고리로 분류
-    restaurantData.forEach((restaurant) => {
-      const { category } = restaurant;
-
-      if (!restaurantListByCategory.has(category)) {
-        restaurantListByCategory.set(category, []);
-      }
-
-      restaurantListByCategory.get(category)?.push(restaurant);
-    });
-
-    // 카테고리별 클러스터 생성
-    restaurantListByCategory.forEach((restaurants, category) => {
+    markerClusteringObjectsRef.current.forEach((markerClustering, categoryName) => {
       const markers: naver.maps.Marker[] = [];
 
-      const iconUrl = getIconUrlByCategory(category);
+      const iconUrl = getIconUrlByCategory(categoryName);
 
-      restaurants.forEach((restaurant) => {
+      restaurantListDividedByCategory.get(categoryName)?.forEach((restaurant) => {
         const { name, lat, lng } = restaurant;
 
         // (map 에 반영시키지 않는)마커 객체 생성
@@ -176,7 +241,13 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
           title: name,
           position: new naver.maps.LatLng(lat, lng),
           icon: {
-            content: `<img src=${iconUrl} width="30" height="30" alt=${name}/>`,
+            content: `
+              <img
+                class="${classes.restaurantMarker}"
+                src=${iconUrl}
+                alt=${name}
+              />
+            `,
           },
         });
 
@@ -184,7 +255,15 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
         // 인포윈도우 객체 생성
         const infoWindow = new naver.maps.InfoWindow({
-          content: name,
+          content: `
+            <div class="${classes.infoWindowBox}">
+              <p class="${classes.infoWindowParagraph}">${name}</p>
+            </div>
+          `,
+          disableAnchor: true,
+          borderWidth: 0,
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
         });
 
         infoWindowsRef.current.push(infoWindow);
@@ -195,40 +274,11 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         });
       });
 
-      // eslint 의 no-new, no-undef 에러를 피하기 위해 즉시실행함수로 작성
-      (() => {
-        return new MarkerClustering({
-          map,
-          markers,
-          maxZoom: 19,
-          gridSize: 300,
-          disableClickZoom: false,
-          icons: [
-            {
-              content: `
-                <div class="${classes.clusterMarkerLayout}">
-                  <div name="counter" class="${classes.clusterMarkerCountBox}">0</div>
-                  <img src=${iconUrl} width="30" height="30" />
-                </div>
-              `,
-            },
-          ],
-          indexGenerator: [0],
-          // @types/navermaps 에 Marker 클래스 타입에 getElement 메서드가 정의되어 있질 않다.
-          stylingFunction: (clusterMarker: any, count) => {
-            const markerDom = clusterMarker.getElement() as HTMLElement;
-
-            const counterDOM = markerDom.querySelector('div[name="counter"]');
-
-            if (!(counterDOM instanceof HTMLElement)) {
-              return;
-            }
-
-            counterDOM.innerText = `${count}`;
-          },
-        });
-      })();
+      markerClustering.setMarkers(markers);
     });
+
+    // 갱신을 위해 map 좌표를 제자리로 이동
+    map.setCenter(map.getBounds().getCenter());
   };
 
   const onInit = (map: naver.maps.Map): naver.maps.MapEventListener => {
@@ -237,7 +287,9 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         return;
       }
 
-      initMarkers(map);
+      createMarkerClusteringObjects(map);
+      const restaurantListDividedByCategory = getRestaurantDividedByCategory();
+      updateMarkerClusteringObjects(restaurantListDividedByCategory);
     });
     return onInitListener;
   };
@@ -292,6 +344,11 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
     return onZoomChangedListener;
   };
+
+  useEffect(() => {
+    const restaurantListDividedByCategory = getRestaurantDividedByCategory();
+    updateMarkerClusteringObjects(restaurantListDividedByCategory);
+  }, [selectedCategoryData]);
 
   useEffect(() => {
     updateExitUserMarker();

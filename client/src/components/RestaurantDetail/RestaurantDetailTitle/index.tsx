@@ -8,7 +8,7 @@ interface PropsType {
   rating: number;
 }
 
-export function RestaurantDetailModalTitle({ name, category, rating = 0 }: PropsType) {
+export function RestaurantDetailTitle({ name, category, rating = 0 }: PropsType) {
   return (
     <ModalTitleLayout>
       <ModalTitleBox>

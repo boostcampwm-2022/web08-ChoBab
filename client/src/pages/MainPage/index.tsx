@@ -20,11 +20,12 @@ import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import RestaurantListLayer from '@components/RestaurantListLayer';
 import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
+import RestaurantCategory from '@components/RestaurantCategory';
 
 import {
   ButtonInnerTextBox,
   CandidateListButton,
-  CategoryToggle,
+  CategoryBox,
   Header,
   HeaderBox,
   MainPageLayout,
@@ -42,7 +43,6 @@ function MainPage() {
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const [candidateData, setCandidateData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
     lat: NAVER_LAT,
     lng: NAVER_LNG,
@@ -94,7 +94,7 @@ function MainPage() {
         console.log(data.message);
         return;
       }
-      const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
+      const { lat, lng, userList, restaurantList, userId, userName } = data.data;
 
       const tmp = new Map<string, UserType>();
 
@@ -107,7 +107,6 @@ function MainPage() {
       setMyId(userId);
       setMyName(userName);
       setRoomConnect(true);
-      setCandidateData(candidateList);
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
     });
@@ -180,7 +179,10 @@ function MainPage() {
           <LinkShareButton />
         </Header>
       </HeaderBox>
-      <CategoryToggle />
+
+      <CategoryBox>
+        <RestaurantCategory />
+      </CategoryBox>
 
       {/* 식당 후보 목록 <-> 지도 화면 */}
       {/* 식당 후보 목록 <-- 전체 식당 목록 */}
@@ -198,7 +200,7 @@ function MainPage() {
       </MapOrListButton>
 
       {/* 식당 리스트 & 식당 상세정보 Full-Screen 모달 컴포넌트 */}
-      <RestaurantListLayer restaurantData={restaurantData} candidateData={candidateData} />
+      <RestaurantListLayer restaurantData={restaurantData} />
       <RestaurantDetailLayer />
     </MainPageLayout>
   );
