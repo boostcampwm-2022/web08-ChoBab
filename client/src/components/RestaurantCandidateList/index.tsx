@@ -2,9 +2,10 @@ import { useEffect, useState, useRef } from 'react';
 
 import RestaurantRow from '@components/RestaurantRow';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
-import { useSocketStore } from '@store/socket';
 
+import { useSocketStore } from '@store/socket';
 import { Socket } from 'socket.io-client';
+import EmptyListPlaceholder from '@components/EmptyListPlaceholder';
 import { CandidateListModalBox, CandidateListModalLayout } from './styles';
 
 interface CandidateType extends RestaurantType {
@@ -73,6 +74,9 @@ export function CandidateListModal({ restaurantData }: PropsType) {
 
   return (
     <CandidateListModalLayout>
+      {!candidateData.length ? (
+        <EmptyListPlaceholder />
+      ) : (
       <CandidateListModalBox>
         {candidateData.map((candidate: CandidateType) => (
           <RestaurantRow
@@ -83,6 +87,7 @@ export function CandidateListModal({ restaurantData }: PropsType) {
           />
         ))}
       </CandidateListModalBox>
+      )}
     </CandidateListModalLayout>
   );
 }

@@ -22,7 +22,7 @@ interface PropsType {
   phone: string;
 }
 
-export function RestaurantDetailModalBody({ id, address, lat, lng, phone }: PropsType) {
+export function RestaurantDetailBody({ id, address, lat, lng, phone }: PropsType) {
   const restaurantPos = { lat, lng };
   const [isSelectLeft, setSelectLeft] = useState<boolean>(true);
   const operationInfoButtonRef = useRef<HTMLDivElement>(null);

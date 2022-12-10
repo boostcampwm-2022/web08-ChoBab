@@ -20,11 +20,12 @@ import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import RestaurantListLayer from '@components/RestaurantListLayer';
 import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
+import RestaurantCategory from '@components/RestaurantCategory';
 
 import {
   ButtonInnerTextBox,
   CandidateListButton,
-  CategoryToggle,
+  CategoryBox,
   Header,
   HeaderBox,
   MainPageLayout,
@@ -176,7 +177,10 @@ function MainPage() {
           <LinkShareButton />
         </Header>
       </HeaderBox>
-      <CategoryToggle />
+
+      <CategoryBox>
+        <RestaurantCategory />
+      </CategoryBox>
 
       {/* 식당 후보 목록 <-> 지도 화면 */}
       {/* 식당 후보 목록 <-- 전체 식당 목록 */}

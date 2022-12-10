@@ -25,7 +25,7 @@ interface PropsType {
 }
 
 function RestaurantRow({ restaurant, restaurantListType, likeCnt }: PropsType) {
-  const { id, name, category, lat, lng, rating, photoKeyList } = restaurant;
+  const { id, name, category, lat, lng, rating, photoUrlList } = restaurant;
 
   const {
     meetLocation: { lat: roomLat, lng: roomLng },
@@ -33,17 +33,12 @@ function RestaurantRow({ restaurant, restaurantListType, likeCnt }: PropsType) {
 
   const straightDistance = getDistance({ lat, lng }, { lat: roomLat, lng: roomLng });
 
-  // 커밋에 기록이 남는게 찝찝해서 하드코딩하여 테스트했던 api key 일단 삭제.
-  const googleApiKey = '';
-
-  const photoReference = photoKeyList && photoKeyList.length > 0 ? photoKeyList[0] : '';
-
-  const imageSrc = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photoReference}&key=${googleApiKey}`;
+  const thumbnailSrc = photoUrlList && photoUrlList[0] ? photoUrlList[0] : '';
 
   return (
     <RestaurantRowBox>
       <ImageBox>
-        <ThumbnailImage src={imageSrc} />
+        <ThumbnailImage src={thumbnailSrc} />
       </ImageBox>
       <InfoBox>
         <NameBox>{name}</NameBox>
