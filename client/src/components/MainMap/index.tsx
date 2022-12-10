@@ -141,7 +141,15 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       joinListMarkersRef.current.set(userId, marker);
 
       const infoWindow = new naver.maps.InfoWindow({
-        content: userName,
+        content: `
+          <div class="${classes.infoWindowBox}">
+            <p class="${classes.infoWindowParagraph}">${userName}</p>
+          </div>
+        `,
+        disableAnchor: true,
+        borderWidth: 0,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
       });
 
       joinListInfoWindowsRef.current.set(userId, infoWindow);
@@ -179,8 +187,8 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
       const markerClustering = new MarkerClustering({
         map,
-        maxZoom: 19,
-        gridSize: 300,
+        maxZoom: 18,
+        gridSize: 200,
         disableClickZoom: false,
         icons: [
           {
@@ -233,7 +241,13 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
           title: name,
           position: new naver.maps.LatLng(lat, lng),
           icon: {
-            content: `<img src=${iconUrl} width="30" height="30" alt=${name}/>`,
+            content: `
+              <img
+                class="${classes.restaurantMarker}"
+                src=${iconUrl}
+                alt=${name}
+              />
+            `,
           },
         });
 
@@ -241,7 +255,15 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
         // 인포윈도우 객체 생성
         const infoWindow = new naver.maps.InfoWindow({
-          content: name,
+          content: `
+            <div class="${classes.infoWindowBox}">
+              <p class="${classes.infoWindowParagraph}">${name}</p>
+            </div>
+          `,
+          disableAnchor: true,
+          borderWidth: 0,
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
         });
 
         infoWindowsRef.current.push(infoWindow);
