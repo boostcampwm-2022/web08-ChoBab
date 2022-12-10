@@ -15,3 +15,8 @@ declare module 'socket.io' {
     roomCode: string;
   }
 }
+
+export interface VoteResultType {
+  restaurantId: string;
+  count: number;
+}
