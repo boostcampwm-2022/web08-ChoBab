@@ -7,7 +7,6 @@ export const ModalLayout = styled.div`
   max-height: 100%;
   position: absolute;
   visibility: visible;
-  z-index: ${palette.RESTAURANT_DETAIL_MODAL_Z_INDEX};
 `;
 
 export const BackwardButton = styled.div`
