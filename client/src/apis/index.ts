@@ -38,7 +38,7 @@ export const apiService = {
         data: {
           data: { roomCode },
         },
-      } = await axios.post<ResTemplateType<{ roomCode: string }>>(API_URL.POST.CREATE_ROOM, {
+      } = await axios.post<ResTemplateType<RoomCodeType>>(API_URL.POST.CREATE_ROOM, {
         lat,
         lng,
       });

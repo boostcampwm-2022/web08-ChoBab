@@ -26,8 +26,11 @@ declare interface RoomValidType {
   isRoomValid: boolean;
 }
 
-declare interface RoomDataType {
+declare interface RoomCodeType {
   roomCode: string;
+}
+
+declare interface RoomDataType extends RoomCodeType {
   lat: number;
   lng: number;
   userList: UserType[];
