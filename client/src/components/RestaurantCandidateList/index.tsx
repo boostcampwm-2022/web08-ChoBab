@@ -1,5 +1,6 @@
 import RestaurantRow from '@components/RestaurantRow';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+import EmptyListPlaceholder from '@components/EmptyListPlaceholder';
 import { CandidateListModalBox, CandidateListModalLayout } from './styles';
 
 interface CandidateType {
@@ -23,17 +24,20 @@ class CandidateMap {
 
 export function CandidateListModal({ candidateData }: PropsType) {
   return (
-    <CandidateListModalLayout
-    >
-      <CandidateListModalBox>
-        {candidateData.map((candidate) => (
-          <RestaurantRow
-            key={candidate.id}
-            restaurant={candidate}
-            restaurantListType={RESTAURANT_LIST_TYPES.candidate}
-          />
-        ))}
-      </CandidateListModalBox>
+    <CandidateListModalLayout>
+      {!candidateData.length ? (
+        <EmptyListPlaceholder />
+      ) : (
+        <CandidateListModalBox>
+          {candidateData.map((candidate) => (
+            <RestaurantRow
+              key={candidate.id}
+              restaurant={candidate}
+              restaurantListType={RESTAURANT_LIST_TYPES.candidate}
+            />
+          ))}
+        </CandidateListModalBox>
+      )}
     </CandidateListModalLayout>
   );
 }

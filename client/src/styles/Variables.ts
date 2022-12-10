@@ -12,12 +12,15 @@ export const HEADER_HEIGHT_RATIO = 10;
 export const CATEGORY_HEIGHT_RATIO = 6;
 
 // z-index
+
+export const RESTAURANT_FILTERED_LIST_LAYER_Z_INDEX = 5;
+
+export const CATEGORY_Z_INDEX = 6;
+
+export const RESTAURANT_CANDIDATE_LIST_LAYER_Z_INDEX = 7;
+
 export const HEADER_Z_INDEX = 8;
 
-export const CATEGORY_Z_INDEX = 2;
-
 export const CONTROLER_Z_INDEX = 8;
-
-export const RESTAURANT_LIST_LAYER_Z_INDEX = 6;
 
 export const RESTAURANT_DETAIL_LAYER_Z_INDEX = 10;

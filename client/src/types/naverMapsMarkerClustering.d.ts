@@ -50,5 +50,7 @@ interface MarkerClusteringOptionsType {
 declare class MarkerClustering {
   constructor(options: MarkerClusteringOptionsType);
 
-  // 많은 메서드가 있지만 당장 사용되지 않아 선언하지 않았습니다.
+  setMarkers(markers: naver.maps.Marker[]): void;
+
+  getMarkers(): naver.maps.Marker[];
 }
