@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 import { ReactComponent as BackwardIcon } from '@assets/images/backward-arrow-icon.svg';
+
 import { RestaurantDetailTitle } from '@components/RestaurantDetail/RestaurantDetailTitle';
 import { RestaurantDetailCarousel } from '@components/RestaurantDetail/RestaurantDetailCarousel';
-import { RESTAURANT_DETAIL_TYPES } from '@constants/modal';
+import RestaurantVoteButton from '@components/RestaurantVoteButton';
+
+import { RESTAURANT_DETAIL_TYPES, RESTAURANT_LIST_TYPES } from '@constants/modal';
 import { useSelectedRestaurantDataStore } from '@store/index';
-import { ModalBox, ModalLayout, BackwardButton, AddCandidatesButton } from './styles';
+import { ModalBox, ModalLayout, BackwardButton, VoteButtonLayout } from './styles';
 import { RestaurantDetailBody } from './RestaurantDetailBody';
 
 interface PropsType {
@@ -26,15 +29,20 @@ export function RestaurantDetailModal({ updateRestaurantDetailLayerStatus }: Pro
 
   return (
     <ModalLayout>
-      <BackwardButton
-        onClick={() => {
-          updateRestaurantDetailLayerStatus(RESTAURANT_DETAIL_TYPES.hidden);
-        }}
-      >
-        <BackwardIcon fill="white" />
-      </BackwardButton>
-      <AddCandidatesButton>후보 추가</AddCandidatesButton>
       <ModalBox>
+        <BackwardButton
+          onClick={() => {
+            updateRestaurantDetailLayerStatus(RESTAURANT_DETAIL_TYPES.hidden);
+          }}
+        >
+          <BackwardIcon fill="white" />
+        </BackwardButton>
+        <VoteButtonLayout>
+          <RestaurantVoteButton
+            id={selectedRestaurantData?.id || ''}
+            restaurantListType={RESTAURANT_LIST_TYPES.filtered}
+          />
+        </VoteButtonLayout>
         <RestaurantDetailCarousel imageUrlList={selectedRestaurantData?.photoUrlList || []} />
         <RestaurantDetailTitle
           name={selectedRestaurantData?.name || ''}
