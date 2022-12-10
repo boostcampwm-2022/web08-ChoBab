@@ -28,10 +28,6 @@ export function CandidateListModal({ restaurantData }: PropsType) {
   const { socket } = useSocketStore((state) => state);
   const [candidateData, setCandidateData] = useState<CandidateType[]>([]); // 투표된 음식점의 정보 데이터
 
-  if (!(socket instanceof Socket)) {
-    throw new Error();
-  }
-
   const makeCandidateData = (candidateList: VoteDataType[]): CandidateType[] => {
     const tempList: CandidateType[] = [];
 
@@ -50,6 +46,10 @@ export function CandidateListModal({ restaurantData }: PropsType) {
   };
 
   useEffect(() => {
+    if (!(socket instanceof Socket)) {
+      return;
+    }
+
     socket.on('currentVoteResult', (result: VoteResultType) => {
       if (!result.data) {
         return;

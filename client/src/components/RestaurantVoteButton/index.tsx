@@ -42,7 +42,7 @@ function RestaurantVoteButton({
   // 서버로부터 사용자가 투표한 음식점 목록을 받아와서 votedRestaurantListRef에 저장
   const setVotedRestaurantList = () => {
     if (!(socket instanceof Socket)) {
-      throw new Error();
+      return;
     }
 
     socket.on('userVoteRestaurantIdList', (result: VoteRestaurantListType) => {
@@ -58,7 +58,7 @@ function RestaurantVoteButton({
 
   const voteRestaurant = () => {
     if (!(socket instanceof Socket)) {
-      throw new Error();
+      return;
     }
 
     // 사용자가 이미 투표한 식당인 경우, 투표 취소
