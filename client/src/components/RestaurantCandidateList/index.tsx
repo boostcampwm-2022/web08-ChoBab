@@ -12,7 +12,7 @@ interface CandidateType extends RestaurantType {
 }
 
 interface PropsType {
-  restaurantData: CandidateType[];
+  restaurantData: RestaurantType[];
 }
 
 interface VoteDataType {
@@ -35,10 +35,11 @@ export function CandidateListModal({ restaurantData }: PropsType) {
     restaurantData.forEach((restaurantItem) => {
       candidateList.forEach((voteItem: VoteDataType) => {
         if (restaurantItem.id === voteItem.restaurantId) {
+          const tempItem: CandidateType = { ...restaurantItem };
+
           // 좋아요 수 렌더링을 위해 음식점 상세정보에 투표 count값 추가
-          // eslint-disable-next-line no-param-reassign
-          restaurantItem.count = voteItem.count;
-          tempList.push(restaurantItem);
+          tempItem.count = voteItem.count;
+          tempList.push(tempItem);
         }
       });
     });
