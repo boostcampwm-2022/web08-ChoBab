@@ -11,16 +11,20 @@ import userImageSrc from '@assets/images/user.svg';
 import { ReactComponent as LoadingSpinner } from '@assets/images/loading-spinner.svg';
 
 import { useSelectedCategoryStore } from '@store/index';
+import { useSocketStore } from '@store/socket';
 
 import { CATEGORY_TYPE } from '@constants/category';
 
 import stc from 'string-to-color';
 
 import { useNaverMaps } from '@hooks/useNaverMaps';
+import useCurrentLocation from '@hooks/useCurrentLocation';
 
 import classes from '@styles/marker.module.css';
 
 import '@utils/MarkerClustering.js';
+
+import { Socket } from 'socket.io-client';
 
 import { MapLayout, MapLoadingBox, MapBox } from './styles';
 
@@ -79,7 +83,11 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
   const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
 
+  const userLocation = useCurrentLocation();
+
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
+
+  const { socket } = useSocketStore((state) => state);
 
   const closeAllRestaurantMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
@@ -385,6 +393,27 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
     mapRef.current.setCenter({ x: roomLocation.lng, y: roomLocation.lat });
   }, [roomLocation]);
+
+  useEffect(() => {
+    if (!(socket instanceof Socket) || !userLocation.lat || !userLocation.lng) {
+      return;
+    }
+
+    socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
+  }, [userLocation]);
+
+  useEffect(() => {
+    if (!(socket instanceof Socket)) {
+      return;
+    }
+
+    socket.on('changeUserLocation', (data) => {
+      const { userId, userLat, userLng } = data;
+
+      const marker = joinListMarkersRef.current.get(userId);
+      marker?.setPosition(new naver.maps.LatLng(userLat, userLng));
+    });
+  }, []);
 
   return (
     <MapLayout>

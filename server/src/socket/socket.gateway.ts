@@ -10,17 +10,20 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Room, RoomDocument, RoomDynamic, RoomDynamicDocument } from '@room/room.schema';
 import { Model } from 'mongoose';
 import { Server, Socket } from 'socket.io';
-import { sessionMiddleware } from '@utils/session';
 import { NextFunction, Request, Response } from 'express';
-import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
+
+import { Room, RoomDocument, RoomDynamic, RoomDynamicDocument } from '@room/room.schema';
 import { makeUserRandomNickname } from '@utils/nickname';
+import { sessionMiddleware } from '@utils/session';
 import { SOCKET_RES } from '@socket/socket.response';
-import { CandidateType } from '@restaurant/restaurant';
-import { VoteRestaurantDto } from '@socket/dto/vote-restaurant.dto';
 import { VoteResultType } from '@socket/socket';
+import { CandidateType } from '@restaurant/restaurant';
+
+import { VoteRestaurantDto } from '@socket/dto/vote-restaurant.dto';
+import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
+import { UserLocationDto } from './dto/user-location.dto';
 
 @WebSocketGateway({ namespace: 'room' })
 export class EventsGateway
@@ -61,7 +64,7 @@ export class EventsGateway
 
     try {
       const { lat, lng } = await this.roomModel.findOne({ roomCode });
-      const { restaurantList, userList, candidateList } = await this.roomDynamicModel.findOne({
+      const { restaurantList, userList } = await this.roomDynamicModel.findOne({
         roomCode,
       });
 
@@ -96,7 +99,7 @@ export class EventsGateway
         )
       );
 
-      client.to(roomCode).emit('join', user); // 자신을 제외하네?
+      client.to(roomCode).emit('join', user);
     } catch (error) {
       client.emit('connectResult', SOCKET_RES.CONNECT_FAIL);
     }
@@ -108,6 +111,31 @@ export class EventsGateway
 
   handleConnection() {
     console.log('connected');
+  }
+
+  @SubscribeMessage('changeMyLocation')
+  async handleMyLoc(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() userLocationDto: UserLocationDto
+  ) {
+    const { sessionID, roomCode } = client;
+    const { userLat, userLng } = userLocationDto;
+
+    // 유저 정보 업데이트
+    const { userList } = await this.roomDynamicModel.findOne({
+      roomCode,
+    });
+
+    const userIds = userList.map((userData) => userData.userId);
+
+    const userIndex = userIds.indexOf(sessionID);
+
+    userList[userIndex] = { ...userList[userIndex], userLat, userLng };
+
+    await this.roomDynamicModel.findOneAndUpdate({ roomCode }, { userList });
+
+    // 모든 사용자에게 업데이트 된 위치를 알림
+    this.server.in(roomCode).emit('changeUserLocation', { userId: sessionID, userLat, userLng });
   }
 
   // 식당 투표

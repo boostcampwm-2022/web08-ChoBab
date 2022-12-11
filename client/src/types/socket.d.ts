@@ -51,4 +51,4 @@ declare interface DrivingInfoType {
   path: number[][];
 }
 
-declare type userId = string;
+declare type userIdType = string;
