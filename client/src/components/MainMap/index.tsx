@@ -394,6 +394,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     mapRef.current.setCenter({ x: roomLocation.lng, y: roomLocation.lat });
   }, [roomLocation]);
 
+  // geolocation으로 사용자 위치 불러와질 경우 모든 사용자에게 알림.
   useEffect(() => {
     if (!(socket instanceof Socket) || !userLocation) {
       return;
@@ -402,6 +403,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
   }, [userLocation]);
 
+  // 사용자의 위치 변경이 있을 경우 반영하는 소켓 이벤트
   useEffect(() => {
     if (!(socket instanceof Socket)) {
       return;
