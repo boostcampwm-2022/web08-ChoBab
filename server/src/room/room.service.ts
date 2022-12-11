@@ -7,7 +7,7 @@ import { CustomException } from '@common/exceptions/custom.exception';
 import { isInKorea } from '@utils/location';
 import { RestaurantService } from '@restaurant/restaurant.service';
 import { LOCATION_EXCEPTION } from '@response/location';
-import { ROOM_EXCEPTION } from '@response/room';
+import { ROOM_EXCEPTION } from '@room/room.response';
 
 @Injectable()
 export class RoomService {

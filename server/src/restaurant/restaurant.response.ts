@@ -1,4 +1,4 @@
-import { failRes, successRes } from './index';
+import { failRes, successRes } from '@response/index';
 
 export const RESTAURANT_RES = {
   SUCCESS_SEARCH_RESTAURANT_DETAIL: (rating?: number, priceLevel?: number) =>

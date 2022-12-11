@@ -7,7 +7,7 @@ import { NaverDrivingResType, SummaryType, TraoptimalType } from '@map/map';
 import { NAVER_DRIVING_API_URL } from '@constants/api';
 import { COMMON_EXCEPTION } from '@response/common';
 import { LOCATION_EXCEPTION } from '@response/location';
-import { MAP_EXCEPTION } from '@response/map';
+import { MAP_EXCEPTION } from '@map/map.response';
 
 @Injectable()
 export class MapService {
