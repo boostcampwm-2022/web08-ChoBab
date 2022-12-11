@@ -50,3 +50,5 @@ declare interface DrivingInfoType {
   fuelPrice: number;
   path: number[][];
 }
+
+declare type userId = string;

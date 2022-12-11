@@ -44,11 +44,10 @@ function MainPage() {
   const socketRef = useRef<Socket | null>(null);
   const { setSocket } = useSocketStore((state) => state);
 
-  // isRoomConnect를 제외한 값들은 상태이어야 할까?
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
   const [myName, setMyName] = useState<string>('');
-  const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
+  const [joinList, setJoinList] = useState<Map<userId, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
     lat: NAVER_LAT,
@@ -88,6 +87,16 @@ function MainPage() {
     updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
   };
 
+  const divideByUserId = (userList: UserType[]): Map<userId, UserType> => {
+    const tmp = new Map<userId, UserType>();
+
+    userList.forEach((userInfo) => {
+      tmp.set(userInfo.userId, userInfo);
+    });
+
+    return tmp;
+  };
+
   const initService = async () => {
     try {
       if (!roomCode) {
@@ -108,6 +117,7 @@ function MainPage() {
         navigate(URL_PATH.INTERNAL_SERVER_ERROR);
         return;
       }
+
       navigate(URL_PATH.INVALID_ROOM);
     }
   };
@@ -120,8 +130,7 @@ function MainPage() {
     setSocket(socket);
 
     socket.on('connect', () => {
-      console.log('connected!');
-      socket.emit('connectRoom', { roomCode }); // joinRoom 으로 바꿨으면 한다.
+      socket.emit('connectRoom', { roomCode });
     });
 
     socket.on('connect_error', () => {
@@ -136,18 +145,13 @@ function MainPage() {
 
       const { lat, lng, userList, restaurantList, userId, userName } = data.data;
 
-      const tmp = new Map<string, UserType>();
-
-      userList.forEach((userInfo) => {
-        tmp.set(userInfo.userId, userInfo);
-      });
-
-      setJoinList(tmp);
       setMyId(userId);
       setMyName(userName);
-      setRoomConnect(true);
+      setJoinList(divideByUserId(userList));
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
+
+      setRoomConnect(true);
     });
   };
 
