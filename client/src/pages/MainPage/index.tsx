@@ -21,6 +21,7 @@ import useCurrentLocation from '@hooks/useCurrentLocation';
 import RestaurantListLayer from '@components/RestaurantListLayer';
 import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
 import RestaurantCategory from '@components/RestaurantCategory';
+import LoadingScreen from '@components/LoadingScreen';
 
 import { apiService } from '@apis/index';
 import {
@@ -163,7 +164,7 @@ function MainPage() {
   }, [userLocation]);
 
   return !isRoomConnect ? (
-    <div>loading...</div>
+    <LoadingScreen type="normal" message="모임방 입장 중..." />
   ) : (
     <MainPageLayout>
       <MainMap restaurantData={restaurantData} roomLocation={roomLocation} joinList={joinList} />
