@@ -16,7 +16,7 @@
       "@utils/*": ["./src/utils/*"],
       "@restaurant/*": ["./src/restaurant/*"],
       "@room/*": ["./src/room/*"],
-      "@response/*": ["./src/common/response/*"],
+      "@response/*": ["./src/constants/response/*"],
       "@socket/*": ["./src/socket/*"],
       "@map/*": ["./src/map/*"],
       "@cache/*": ["./src/cache/*"],
