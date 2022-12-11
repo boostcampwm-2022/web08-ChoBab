@@ -67,7 +67,7 @@ export class RedisService {
     },
 
     // 좋아요 투표를 수행하고 이에 대한 성공 여부를 반환
-    likeCandidate: async (
+    voteCandidate: async (
       roomCode: string,
       userId: string,
       restaurantId: string
@@ -88,7 +88,7 @@ export class RedisService {
     },
 
     // 투표 취소를 수행하고 이에 대한 성공 여부를 반환
-    unlikeCandidate: async (
+    cancelVoteCandidate: async (
       roomCode: string,
       userId: string,
       restaurantId: string

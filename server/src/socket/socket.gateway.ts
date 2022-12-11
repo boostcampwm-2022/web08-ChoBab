@@ -107,7 +107,7 @@ export class EventsGateway
     const roomCode = client.roomCode;
 
     try {
-      const voteResult = await this.redisService.candidateList.likeCandidate(
+      const voteResult = await this.redisService.candidateList.voteCandidate(
         roomCode,
         client.sessionID,
         restaurantId
@@ -144,7 +144,7 @@ export class EventsGateway
     const roomCode = client.roomCode;
 
     try {
-      const voteResult = await this.redisService.candidateList.unlikeCandidate(
+      const voteResult = await this.redisService.candidateList.cancelVoteCandidate(
         roomCode,
         client.sessionID,
         restaurantId
@@ -225,7 +225,7 @@ export class EventsGateway
     console.log('disconnected');
   }
 
-  // 투표 현황 데이터 가공 및 정렬 함수
+  // 투표 현황 데이터 가공 함수
   private getCurrentVoteResult = (candidateList: { [index: string]: string[] }) => {
     const voteResult: VoteResultType[] = [];
     Object.keys(candidateList).forEach((restaurantId) => {
