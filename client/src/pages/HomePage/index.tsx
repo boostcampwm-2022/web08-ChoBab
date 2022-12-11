@@ -1,6 +1,7 @@
 import { ReactComponent as LogoImage } from '@assets/images/logo.svg';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import { URL_PATH } from '@constants/url';
 import {
   HomePageLayout,
   HomePageBox,
@@ -50,7 +51,7 @@ function HomePage() {
         <LogoImage />
 
         <ButtonBox>
-          <Link to="/init-room">
+          <Link to={URL_PATH.INIT_ROOM}>
             <Button>모임 생성</Button>
           </Link>
           <Button onClick={() => setIsModalOpen(!isModalOpen)}>모임 참여</Button>

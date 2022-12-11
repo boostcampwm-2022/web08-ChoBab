@@ -4,6 +4,7 @@ import { Room, RoomDynamic, RoomDynamicSchema, RoomSchema } from './room.schema'
 import { RoomController } from './room.controller';
 import { RoomService } from './room.service';
 import { RestaurantService } from '@restaurant/restaurant.service';
+import { RestaurantModule } from '@restaurant/restaurant.module';
 
 @Module({
   imports: [
@@ -11,8 +12,9 @@ import { RestaurantService } from '@restaurant/restaurant.service';
       { name: Room.name, schema: RoomSchema },
       { name: RoomDynamic.name, schema: RoomDynamicSchema },
     ]),
+    RestaurantModule,
   ],
   controllers: [RoomController],
-  providers: [RoomService, RestaurantService],
+  providers: [RoomService],
 })
 export class RoomModule {}

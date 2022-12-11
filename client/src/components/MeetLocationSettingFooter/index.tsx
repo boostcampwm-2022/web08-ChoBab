@@ -1,28 +1,23 @@
-import axios from 'axios';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as SearchImage } from '@assets/images/search.svg';
 import { NAVER_ADDRESS } from '@constants/map';
 import {
-  TOAST_DURATION_TIME,
+  FAIL_SEARCH_MESSAGE,
   FAIL_UPDATE_ADDR_MESSAGE,
   NO_RESULTS_MESSAGE,
-  FAIL_SEARCH_MESSAGE,
+  TOAST_DURATION_TIME,
 } from '@constants/toast';
 import { useMeetLocationStore } from '@store/index';
 import { useToast } from '@hooks/useToast';
 
-import { FooterBox, SearchBarBox, StartButton } from './styles';
-
-interface RoomCreateResponseType {
-  message: string;
-  data: {
-    roomCode: string;
-  };
-}
+import { apiService } from '@apis/index';
+import { URL_PATH } from '@constants/url';
+import { FooterBox, GuideTextBox, SearchBarBox, StartButton } from './styles';
 
 function MeetLocationSettingFooter() {
   const [address, setAddress] = useState<string>(NAVER_ADDRESS);
+  const [isCreateRoomLoading, setCreateRoomLoading] = useState<boolean>(false);
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -97,42 +92,49 @@ function MeetLocationSettingFooter() {
 
   const initRoom = async () => {
     const { lat, lng } = meetLocation;
+    setCreateRoomLoading(true);
     try {
-      const {
-        data: {
-          data: { roomCode },
-        },
-      } = await axios.post<RoomCreateResponseType>('/api/room/', {
-        lat,
-        lng,
-      });
-      navigate(`/room/${roomCode}`);
-    } catch (error) {
-      console.log(error);
+      const roomCode = await apiService.postRoom(lat, lng);
+
+      navigate(`${URL_PATH.JOIN_ROOM}/${roomCode}`);
+    } catch (error: any) {
+      if (error.response.status === 500) {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+        return;
+      }
+      navigate(URL_PATH.FAIL_CREATE_ROOM);
     }
   };
 
   return (
     <FooterBox>
-      <span>
-        <p>모임 위치를 정해주세요!</p>
-        <p>(추후 수정 가능합니다.)</p>
-      </span>
+      <GuideTextBox>
+        <p>
+          <strong>모임 위치를 정해주세요!</strong>
+        </p>
+      </GuideTextBox>
+
       <SearchBarBox>
         <input ref={inputRef} type="text" placeholder="주소 검색" />
         <button type="button" onClick={handleClick}>
           <SearchImage />
         </button>
       </SearchBarBox>
+
       <div>{address}</div>
+
       <StartButton
         title="시작하기"
+        disabled={isCreateRoomLoading}
         onClick={(e) => {
+          if (isCreateRoomLoading) {
+            return;
+          }
           e.preventDefault();
           initRoom();
         }}
       >
-        시작하기
+        {isCreateRoomLoading ? '모임 생성 중...' : '시작하기'}
       </StartButton>
     </FooterBox>
   );

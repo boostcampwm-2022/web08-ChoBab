@@ -30,6 +30,6 @@ export const Image = styled.div`
   height: 100%;
   flex: none;
   background-position: 50% 50%;
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
 `;
