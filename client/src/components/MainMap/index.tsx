@@ -395,7 +395,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   }, [roomLocation]);
 
   useEffect(() => {
-    if (!(socket instanceof Socket) || !userLocation.lat || !userLocation.lng) {
+    if (!(socket instanceof Socket) || !userLocation) {
       return;
     }
 

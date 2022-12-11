@@ -9,24 +9,31 @@ function InitRoomPage() {
   const [isGPSReady, setGPSReady] = useState<boolean>(false);
   const userLocation = useCurrentLocation();
   const { updateMeetLocation } = useMeetLocationStore((state) => state);
-  useEffect(() => {
-    if (isGPSReady) {
-      return;
-    }
-    if (!userLocation.lat || !userLocation.lng) {
-      return;
-    }
-    setGPSReady(true);
-  }, [userLocation]);
+
   useEffect(() => {
     if (!isGPSReady) {
       return;
     }
-    if (!userLocation.lat || !userLocation.lng) {
+
+    if (!userLocation) {
       return;
     }
+
     updateMeetLocation(userLocation.lat, userLocation.lng);
   }, [isGPSReady]);
+
+  useEffect(() => {
+    if (isGPSReady) {
+      return;
+    }
+
+    if (!userLocation) {
+      return;
+    }
+
+    setGPSReady(true);
+  }, [userLocation]);
+
   return !isGPSReady ? (
     <div>loading...</div>
   ) : (
