@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
-import { Room, RoomDocument, RoomDynamic, RoomDynamicDocument } from '@room/room.schema';
+import { Room, RoomDocument } from '@room/room.schema';
 import { FilterQuery, Model } from 'mongoose';
 import { ONE_DAY_MILLISECOND } from '@constants/time';
 
@@ -9,10 +9,7 @@ import { ONE_DAY_MILLISECOND } from '@constants/time';
 export class TaskService {
   private readonly logger = new Logger(TaskService.name);
 
-  constructor(
-    @InjectModel(Room.name) private roomModel: Model<RoomDocument>,
-    @InjectModel(RoomDynamic.name) private roomDynamicModel: Model<RoomDynamicDocument>
-  ) {}
+  constructor(@InjectModel(Room.name) private roomModel: Model<RoomDocument>) {}
 
   /**
    * 매 시각 정각마다 실행하는 room 삭제 작업
@@ -29,14 +26,6 @@ export class TaskService {
     const condition: FilterQuery<Room> = {
       $and: [{ createdAt: { $lt: criteria } }, { deletedAt: { $exists: false } }],
     };
-
-    // 기준 시각 이전에 생성된 모임방(roomCode)에 해당하는 roomDynamic 삭제
-    const rooms = await this.roomModel.find(condition);
-    await Promise.all(
-      rooms.map(async (room) => {
-        await this.roomDynamicModel.deleteOne({ roomCode: room.roomCode });
-      })
-    );
 
     // 기준 시각 이전에 생성된 room soft delete
     await this.roomModel.updateMany(condition, { deletedAt: now });

@@ -24,7 +24,7 @@ export const SOCKET_RES = {
     lat: number,
     lng: number,
     restaurantList: RestaurantType[],
-    userList: UserType[],
+    userList: { [index: string]: UserType },
     userId: string,
     userName: string
   ) =>

@@ -16,8 +16,6 @@ export class RedisService {
   private readonly redisKey = {
     restaurantList: (roomCode: string) => `ROOM_CODE:${roomCode}:RESTAURANT_LIST`,
     candidateList: (roomCode: string) => `ROOM_CODE:${roomCode}:CANDIDATE_LIST`,
-    userLikeList: (roomCode: string, userId: string) =>
-      `ROOM_CODE:${roomCode}:USER_ID:${userId}:CANDIDATE_LIST`,
     joinList: (roomCode: string) => `ROOM_CODE:${roomCode}:JOIN_LIST`,
   };
 
@@ -41,7 +39,7 @@ export class RedisService {
     ) => {
       const candidateListKey = this.redisKey.candidateList(roomCode);
       const candidateHash = restaurantList.reduce((hash, restaurant) => {
-        hash[restaurant.id] = 0;
+        hash[restaurant.id] = [];
         return hash;
       }, {});
       await this.cacheManager.set(candidateListKey, candidateHash);
@@ -49,43 +47,54 @@ export class RedisService {
 
     getCandidateList: async (roomCode: string) => {
       const candidateListKey = this.redisKey.candidateList(roomCode);
-      const candidateHash = this.cacheManager.get<{ [index: string]: number }>(candidateListKey);
+      const candidateHash = this.cacheManager.get<{ [index: string]: string[] }>(candidateListKey);
       return candidateHash;
     },
 
-    likeCandidate: async (roomCode: string, userId: string, restaurantId: string) => {
+    likeCandidate: async (
+      roomCode: string,
+      userId: string,
+      restaurantId: string
+    ): Promise<boolean> => {
       const candidateListKey = this.redisKey.candidateList(roomCode);
-      const userLikeListKey = this.redisKey.userLikeList(roomCode, userId);
-      const userLikeList = await this.cacheManager.get<string[]>(userLikeListKey);
-      if (userLikeList.find((likeRestaurantId) => restaurantId === likeRestaurantId)) {
-        // 이미 좋아요를 누른 음식점에 대한 처리
-        return false;
-      }
-      const candidateHash = await this.cacheManager.get<{ [index: string]: number }>(
+      const candidateHash = await this.cacheManager.get<{ [index: string]: string[] }>(
         candidateListKey
       );
-      candidateHash[restaurantId] += 1;
+      const restaurantVoteList = candidateHash[restaurantId];
+      if (!restaurantVoteList) {
+        // 이후 throw로 예외처리 필요
+        return false;
+      }
+      // 이미 투표한 식당에 대한 처리
+      if (restaurantVoteList.find((voter) => voter === userId)) {
+        return false;
+      }
+      restaurantVoteList.push(userId);
       await this.cacheManager.set(candidateListKey, candidateHash);
-      await this.cacheManager.set(userLikeListKey, [...userLikeList, restaurantId]);
+      return true;
     },
 
-    unlikeCandidate: async (roomCode: string, userId: string, restaurantId: string) => {
+    unlikeCandidate: async (
+      roomCode: string,
+      userId: string,
+      restaurantId: string
+    ): Promise<boolean> => {
       const candidateListKey = this.redisKey.candidateList(roomCode);
-      const userLikeListKey = this.redisKey.userLikeList(roomCode, userId);
-      const userLikeList = await this.cacheManager.get<string[]>(userLikeListKey);
-      if (!userLikeList.find((likeRestaurantId) => restaurantId === likeRestaurantId)) {
-        // 좋아요를 누른 적이 없는데 좋아요 취소 요청이 들어왔을 때에 대한 처리
-        return false;
-      }
-      const candidateHash = await this.cacheManager.get<{ [index: string]: number }>(
+      const candidateHash = await this.cacheManager.get<{ [index: string]: string[] }>(
         candidateListKey
       );
-      candidateHash[restaurantId] -= 1;
+      const restaurantVoteList = candidateHash[restaurantId];
+      if (!restaurantVoteList) {
+        // 이후 throw로 예외처리 필요
+        return false;
+      }
+      // 이전에 투표한 적 없는 식당에 대한 처리
+      if (!restaurantVoteList.find((voter) => voter === userId)) {
+        return false;
+      }
+      candidateHash[restaurantId] = restaurantVoteList.filter((voter) => voter !== userId);
       await this.cacheManager.set(candidateListKey, candidateHash);
-      await this.cacheManager.set(
-        userLikeListKey,
-        userLikeList.filter((likeRestaurantId) => likeRestaurantId !== restaurantId)
-      );
+      return true;
     },
   };
 
@@ -104,7 +113,6 @@ export class RedisService {
     addUserToJoinList: async (roomCode: string, user: UserType) => {
       const { userId } = user;
       const joinListKey = this.redisKey.joinList(roomCode);
-      const userLikeListKey = this.redisKey.userLikeList(roomCode, userId);
       const findJoinHash = await this.cacheManager.get<{ [index: string]: UserType }>(joinListKey);
       // 이미 입장한 상태일 때
       if (findJoinHash[userId]) {
@@ -112,7 +120,6 @@ export class RedisService {
       }
       const addUserData = {};
       addUserData[userId] = user;
-      await this.cacheManager.set(userLikeListKey, []);
       await this.cacheManager.set(joinListKey, { ...findJoinHash, ...addUserData });
     },
 
