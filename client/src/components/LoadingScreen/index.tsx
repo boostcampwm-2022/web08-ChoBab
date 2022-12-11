@@ -8,7 +8,7 @@ interface PropType {
   message?: string;
 }
 
-function LoadingSpinner({ type, message }: PropType) {
+function LoadingScreen({ type, message }: PropType) {
   return (
     <LoadingContentsLayout>
       <LoadingSpinnerBox type={type}>
@@ -29,4 +29,4 @@ function LoadingSpinner({ type, message }: PropType) {
   );
 }
 
-export default LoadingSpinner;
+export default LoadingScreen;

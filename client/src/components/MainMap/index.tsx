@@ -13,7 +13,7 @@ import userImageSrc from '@assets/images/user.svg';
 import { useSelectedCategoryStore } from '@store/index';
 
 import { CATEGORY_TYPE } from '@constants/category';
-import LoadingSpinner from '@components/LoadingSpinner';
+import LoadingScreen from '@components/LoadingScreen';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 
 import classes from '@styles/marker.module.css';
@@ -388,7 +388,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     <MapLayout>
       {loading && (
         <MapLoadingBox>
-          <LoadingSpinner type="map" />
+          <LoadingScreen type="map" />
         </MapLoadingBox>
       )}
       <MapBox ref={mapDivRef} />
