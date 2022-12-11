@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 
 import RestaurantRow from '@components/RestaurantRow';
-import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+import { RESTAURANT_DETAIL_TYPES, RESTAURANT_LIST_TYPES } from '@constants/modal';
 
 import { useSocketStore } from '@store/socket';
 import { Socket } from 'socket.io-client';
 import EmptyListPlaceholder from '@components/EmptyListPlaceholder';
-import { CandidateListModalBox, CandidateListModalLayout } from './styles';
+import { useRestaurantDetailLayerStatusStore, useSelectedRestaurantDataStore } from '@store/index';
+import { CandidateItem, CandidateListModalBox, CandidateListModalLayout } from './styles';
 
 interface CandidateType extends RestaurantType {
   count?: number;
@@ -29,6 +30,10 @@ interface VoteResultType {
 export function CandidateListModal({ restaurantData }: PropsType) {
   const { socket } = useSocketStore((state) => state);
   const [candidateData, setCandidateData] = useState<CandidateType[]>([]); // 투표된 음식점의 정보 데이터
+  const { updateRestaurantDetailLayerStatus } = useRestaurantDetailLayerStatusStore(
+    (state) => state
+  );
+  const { updateSelectedRestaurantData } = useSelectedRestaurantDataStore((state) => state);
 
   const compare = (a: CandidateType, b: CandidateType): number => {
     const aCount = a.count || 0;
@@ -89,14 +94,24 @@ export function CandidateListModal({ restaurantData }: PropsType) {
         <EmptyListPlaceholder />
       ) : (
         <CandidateListModalBox>
-          {[...candidateData].sort(compare).map((candidate: CandidateType) => (
-            <RestaurantRow
-              key={candidate.id}
-              restaurant={candidate}
-              restaurantListType={RESTAURANT_LIST_TYPES.candidate}
-              likeCnt={candidate.count}
-            />
-          ))}
+          {[...candidateData].sort(compare).map((candidate: CandidateType) => {
+            return (
+              <CandidateItem
+                onClick={() => {
+                  updateRestaurantDetailLayerStatus(RESTAURANT_DETAIL_TYPES.show);
+                  updateSelectedRestaurantData(candidate);
+                }}
+                key={candidate.id}
+              >
+                <RestaurantRow
+                  key={candidate.id}
+                  restaurant={candidate}
+                  restaurantListType={RESTAURANT_LIST_TYPES.candidate}
+                  likeCnt={candidate.count}
+                />
+              </CandidateItem>
+            );
+          })}
         </CandidateListModalBox>
       )}
     </CandidateListModalLayout>
