@@ -97,13 +97,14 @@ function MainPage() {
       }
       const { lat, lng, userList, restaurantList, userId, userName } = data.data;
 
-      const tmp = new Map<string, UserType>();
+      const joinUserList = new Map<string, UserType>();
 
-      userList.forEach((userInfo) => {
-        tmp.set(userInfo.userId, userInfo);
+      Object.keys(userList).forEach((userIdInRoom) => {
+        const userInfo = userList[userIdInRoom];
+        joinUserList.set(userInfo.userId, userInfo);
       });
 
-      setJoinList(tmp);
+      setJoinList(joinUserList);
 
       setMyId(userId);
       setMyName(userName);

@@ -1,5 +1,7 @@
+export type RestaurantIdType = string;
+
 export interface OriginRestaurantType {
-  id: string;
+  id: RestaurantIdType;
   road_address_name: string;
   category_name: string;
   phone: string;
@@ -9,7 +11,7 @@ export interface OriginRestaurantType {
 }
 
 export interface PreprocessedRestaurantType {
-  id: string;
+  id: RestaurantIdType;
   name: string;
   category: string;
   phone: string;
@@ -33,18 +35,6 @@ export interface RestaurantApiResultType {
   documents: OriginRestaurantType[];
 }
 
-export interface RestaurantDetailType {
-  rating?: number;
-  photos?: { photo_reference?: string }[];
-  price_level?: number;
-}
-
-export interface RestaurantDetailResponseType {
-  candidates: RestaurantDetailType[];
-  status: string;
-}
-
-export interface CandidateType {
-  restaurantId: string;
-  usersSessionId: string[];
+export interface CandidateHashType {
+  [index: RestaurantIdType]: UserIdType[];
 }
