@@ -20,8 +20,8 @@ function LoadingSpinner({ type, message }: PropType) {
           wrapperClass=""
           ariaLabel="loading"
           secondaryColor="#949494"
-          strokeWidth={2}
-          strokeWidthSecondary={2}
+          strokeWidth={3}
+          strokeWidthSecondary={3}
         />
       </LoadingSpinnerBox>
       <LoadingMessageParagraph>{message}</LoadingMessageParagraph>
