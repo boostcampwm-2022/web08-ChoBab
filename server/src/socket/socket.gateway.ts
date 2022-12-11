@@ -111,7 +111,6 @@ export class EventsGateway
   ) {
     const { restaurantId } = voteRestaurantDto;
     const roomCode = client.roomCode;
-    const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
 
     const voteResult = await this.redisService.candidateList.likeCandidate(
       roomCode,
@@ -127,6 +126,8 @@ export class EventsGateway
 
     // 식당 투표 성공 시 - 클라이언트에게 사용자가 투표한 식당의 id 리스트 전송
     this.getUserVoteRestaurantIdList(client);
+
+    const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
 
     const voteCountResult = this.getCurrentVoteResult(candidateList);
 
@@ -144,7 +145,6 @@ export class EventsGateway
   ) {
     const { restaurantId } = voteRestaurantDto;
     const roomCode = client.roomCode;
-    const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
 
     const voteResult = await this.redisService.candidateList.unlikeCandidate(
       roomCode,
@@ -164,6 +164,8 @@ export class EventsGateway
 
     // 식당 투표 취소 성공 시 - 클라이언트에게 사용자가 투표한 식당의 id 리스트 전송
     this.getUserVoteRestaurantIdList(client);
+
+    const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
 
     const voteCountResult = this.getCurrentVoteResult(candidateList);
 
@@ -227,6 +229,9 @@ export class EventsGateway
   private getCurrentVoteResult = (candidateList: { [index: string]: string[] }) => {
     const voteResult: VoteResultType[] = [];
     Object.keys(candidateList).forEach((restaurantId) => {
+      if (!candidateList[restaurantId].length) {
+        return;
+      }
       voteResult.push({
         restaurantId,
         count: candidateList[restaurantId].length,
