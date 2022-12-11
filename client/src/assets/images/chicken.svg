@@ -1,219 +1,175 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-    xmlns:cc="http://web.resource.org/cc/"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    xmlns:dc="http://purl.org/dc/elements/1.1/"
-    xmlns:svg="http://www.w3.org/2000/svg"
-    xmlns:ns1="http://sozi.baierouge.fr"
-    id="svg2"
-    sodipodi:docname="kureci stehno.svg"
-    viewBox="0 0 473.4 523.31"
-    sodipodi:version="0.32"
-    version="1.0"
-    inkscape:version="0.44.1"
-    inkscape:label="Pozadí"
-    sodipodi:docbase="D:\_petr_\School\INKSCAPE\svg\05.Ovoce, zelenina, jidlo\jidlo"
-  >
-  <defs
-      id="defs3"
-    >
-    <radialGradient
-        id="radialGradient6450"
-        gradientUnits="userSpaceOnUse"
-        cy="248.76"
-        cx="138.54"
-        gradientTransform="matrix(1 0 0 1.1457 165.23 196.84)"
-        r="165.02"
-        inkscape:collect="always"
-      >
-      <stop
-          id="stop6446"
-          style="stop-color:#f60"
-          offset="0"
-      />
-      <stop
-          id="stop6448"
-          style="stop-color:#f60;stop-opacity:0"
-          offset="1"
-      />
-    </radialGradient
-    >
-    <radialGradient
-        id="radialGradient7347"
-        gradientUnits="userSpaceOnUse"
-        cy="622.49"
-        cx="468.86"
-        gradientTransform="matrix(1 0 0 .96283 165.23 285.77)"
-        r="169.77"
-        inkscape:collect="always"
-      >
-      <stop
-          id="stop7341"
-          style="stop-color:#f2f2f2"
-          offset="0"
-      />
-      <stop
-          id="stop7343"
-          style="stop-color:#f2f2f2;stop-opacity:0"
-          offset="1"
-      />
-    </radialGradient
-    >
-  </defs
-  >
-  <sodipodi:namedview
-      id="base"
-      bordercolor="#666666"
-      inkscape:pageshadow="2"
-      inkscape:window-y="-4"
-      pagecolor="#ffffff"
-      inkscape:window-height="712"
-      inkscape:zoom="0.49032549"
-      inkscape:window-x="-4"
-      borderopacity="1.0"
-      inkscape:current-layer="layer1"
-      inkscape:cx="374.7347"
-      inkscape:cy="281.4457"
-      inkscape:window-width="1024"
-      inkscape:pageopacity="0.0"
-      inkscape:document-units="px"
-  />
-  <g
-      id="layer1"
-      inkscape:label="Vrstva 1"
-      inkscape:groupmode="layer"
-      transform="translate(-165.23 -262.64)"
-    >
-    <g
-        id="g7349"
-        inkscape:export-ydpi="90"
-        inkscape:export-xdpi="90"
-        inkscape:export-filename="/media/KINGSTON/inkscape/8.b/Petra Thurlova/svg 3/Prace svg/jidlo/kureci stehno.png"
-      >
-      <path
-          id="path1871"
-          sodipodi:nodetypes="csssssssssc"
-          style="stroke:black;stroke-width:.54003;fill:#98808c"
-          d="m601.81 755.95c9.51 17.5-3.4 44.11-34.38 20.23-18.45-14.21 12.91-20.82-10.61-48.5-41.82-49.23-137.94-124.19-164.34-150.22-41.25-40.67-59.7-42.29-82.36-72.36s-3.52-29.64 3.17-34.82c6.7-5.18-1.88-22.37 29.56 0.9s39.86 48.13 81.1 88.8c32.75 32.29 113.17 113.4 164.29 155.7 13.27 10.99 41.41-1.24 47.38 14.68 13.22 35.25-25.17 28.19-33.81 25.59z"
-      />
-      <path
-          id="path6452"
-          sodipodi:nodetypes="csssssssssc"
-          style="opacity:.5;stroke:black;stroke-width:.54003;fill:url(#radialGradient7347)"
-          d="m601.81 755.95c9.51 17.5-3.4 44.11-34.38 20.23-18.45-14.21 12.91-20.82-10.61-48.5-41.82-49.23-137.94-124.19-164.34-150.22-41.25-40.67-59.7-42.29-82.36-72.36s-3.52-29.64 3.17-34.82c6.7-5.18-1.88-22.37 29.56 0.9s39.86 48.13 81.1 88.8c32.75 32.29 113.17 113.4 164.29 155.7 13.27 10.99 41.41-1.24 47.38 14.68 13.22 35.25-25.17 28.19-33.81 25.59z"
-      />
-      <path
-          id="path1941"
-          sodipodi:nodetypes="csssssssc"
-          style="stroke:black;stroke-width:.50799;fill:#f95"
-          d="m415.99 354.42c28.99 39.26 68.11 92.5 73.27 128.29s12.93 138.79-8.2 154.11-122.85-21.16-155.72-36.86-84.73-54.93-113.72-94.18c-29-39.26-40.24-92.07-45.39-127.86-5.16-35.79 17.65-68.84 38.77-84.16 21.13-15.32 65.04-41.76 97.91-26.06s84.08 47.46 113.08 86.72z"
-      />
-      <path
-          id="path5557"
-          sodipodi:nodetypes="csssssssc"
-          style="opacity:.69626;stroke:black;stroke-width:.50799;fill:url(#radialGradient6450)"
-          d="m415.99 354.42c28.99 39.26 68.11 92.5 73.27 128.29s12.93 138.79-8.2 154.11-122.85-21.16-155.72-36.86-84.73-54.93-113.72-94.18c-29-39.26-40.24-92.07-45.39-127.86-5.16-35.79 17.65-68.84 38.77-84.16 21.13-15.32 65.04-41.76 97.91-26.06s84.08 47.46 113.08 86.72z"
-      />
-    </g
-    >
-  </g
-  >
-  <metadata
-    >
-    <rdf:RDF
-      >
-      <cc:Work
-        >
-        <dc:format
-          >image/svg+xml</dc:format
-        >
-        <dc:type
-            rdf:resource="http://purl.org/dc/dcmitype/StillImage"
-        />
-        <cc:license
-            rdf:resource="http://creativecommons.org/licenses/publicdomain/"
-        />
-        <dc:publisher
-          >
-          <cc:Agent
-              rdf:about="http://openclipart.org/"
-            >
-            <dc:title
-              >Openclipart</dc:title
-            >
-          </cc:Agent
-          >
-        </dc:publisher
-        >
-        <dc:title
-          >chicken leg</dc:title
-        >
-        <dc:date
-          >2006-12-31T03:11:53</dc:date
-        >
-        <dc:description
-        />
-        <dc:source
-          >https://openclipart.org/detail/2589/chicken-leg-by-machovka</dc:source
-        >
-        <dc:creator
-          >
-          <cc:Agent
-            >
-            <dc:title
-              >Machovka</dc:title
-            >
-          </cc:Agent
-          >
-        </dc:creator
-        >
-        <dc:subject
-          >
-          <rdf:Bag
-            >
-            <rdf:li
-              >chicken</rdf:li
-            >
-            <rdf:li
-              >dinner</rdf:li
-            >
-            <rdf:li
-              >food</rdf:li
-            >
-            <rdf:li
-              >leg</rdf:li
-            >
-            <rdf:li
-              >meat</rdf:li
-            >
-          </rdf:Bag
-          >
-        </dc:subject
-        >
-      </cc:Work
-      >
-      <cc:License
-          rdf:about="http://creativecommons.org/licenses/publicdomain/"
-        >
-        <cc:permits
-            rdf:resource="http://creativecommons.org/ns#Reproduction"
-        />
-        <cc:permits
-            rdf:resource="http://creativecommons.org/ns#Distribution"
-        />
-        <cc:permits
-            rdf:resource="http://creativecommons.org/ns#DerivativeWorks"
-        />
-      </cc:License
-      >
-    </rdf:RDF
-    >
-  </metadata
-  >
-</svg
->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 48 48" style="enable-background:new 0 0 48 48;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFD4C3;stroke:#504B46;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st1{fill:#FFC258;}
+	.st2{fill:#4F4B45;}
+	.st3{fill:#FABFA5;}
+	.st4{fill:none;stroke:#504B46;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.Graphic_x0020_Style{opacity:0.15;fill:#45413C;}
+	.st5{opacity:0.15;fill:#45413C;}
+	.st6{fill:#DEBB7E;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st7{fill:#F0D5A8;}
+	.st8{fill:#F7E5C6;}
+	.st9{fill:#DEBB7E;}
+	.st10{fill:none;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st11{fill:#FFE500;}
+	.st12{fill:#EBCB00;}
+	.st13{fill:none;stroke:#EBCB00;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st14{fill:#FF6242;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st15{fill:#FFFFFF;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st16{fill:#E5F8FF;}
+	.st17{fill:#FFFFFF;}
+	.st18{fill:#E8F4FA;}
+	.st19{fill:#E8F4FA;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st20{fill:#FFCCDD;}
+	.st21{fill:#FFB0CA;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st22{fill:#FF87AF;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st23{fill:#E5F8FF;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st24{fill:#BF8256;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st25{fill:#9CEB60;}
+	.st26{fill:#6DD627;}
+	.st27{fill:#C8FFA1;}
+	.st28{fill:#FFFACF;}
+	.st29{fill:#FF87AF;}
+	.st30{fill:#FFB0CA;}
+	.st31{fill:#FF6196;}
+	.st32{fill:#FFCCDD;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st33{fill:#FF6196;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st34{fill:#FFE5EE;}
+	.st35{fill:#00B8F0;}
+	.st36{fill:#4ACFFF;}
+	.st37{fill:#BF8256;}
+	.st38{fill:#DEA47A;}
+	.st39{fill:#915E3A;}
+	.st40{fill:#FFF5E3;}
+	.st41{fill:#F0F0F0;}
+	.st42{fill:#8CA4B8;}
+	.st43{fill:#627B8C;}
+	.st44{fill:#C0DCEB;}
+	.st45{fill:#FFF48C;}
+	.st46{fill:#FFE500;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st47{fill:#FFAA54;}
+	.st48{fill:#6DD627;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st49{fill:#FF8A14;}
+	.st50{fill:#FFCC99;}
+	.st51{fill:#EBCB00;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st52{fill:#00F5BC;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st53{fill:#BF8DF2;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st54{fill:#FF8A14;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st55{fill:#4AEFF7;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st56{fill:#FFF48C;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st57{fill:#FF6242;}
+	.st58{fill:#E04122;}
+	.st59{fill:#46B000;}
+	.st60{fill:none;stroke:#45413C;stroke-miterlimit:10;}
+	.st61{fill:#00B8F0;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st62{fill:#FF866E;}
+	.st63{fill:#9F5AE5;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st64{fill:#E4FFD1;}
+	.st65{fill:#FFFEF2;}
+	.st66{fill:#B89558;}
+	.st67{fill:none;stroke:#915E3A;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st68{fill:#915E3A;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st69{fill:#BF8DF2;}
+	.st70{fill:#9F5AE5;}
+	.st71{fill:#DABFF5;}
+	.st72{fill:none;stroke:#45413C;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st73{fill:#656769;}
+	.st74{fill:#87898C;}
+	.st75{fill:#E0E0E0;}
+	.st76{fill:#BDBEC0;}
+	.st77{fill:#656769;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st78{fill:#45413C;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st79{fill:#FFA694;}
+	.st80{fill:#E04122;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st81{fill:#E0E0E0;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st82{fill:#F0F0F0;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st83{fill:#DAEDF7;}
+	.st84{fill:#BDBEC0;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st85{fill:#87898C;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st86{fill:#00DFEB;}
+	.st87{fill:#4AEFF7;}
+	.st88{fill:#DAEDF7;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st89{fill:#FFDA8F;}
+	.st90{fill:#FFBE3D;}
+	.st91{fill:#FFE9BD;}
+	.st92{fill:#DEA47A;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st93{fill:#45413C;}
+	.st94{fill:#F0C2A1;}
+	.st95{fill:none;stroke:#45413C;stroke-width:1.0064;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st96{fill:#525252;}
+	.st97{fill:#EB6D00;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st98{fill:#EB6D00;}
+	.st99{fill:#E5FEFF;}
+	.st100{fill:#FF866E;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st101{fill:#627B8C;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st102{fill:#FFFCE5;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st103{fill:#A6FBFF;}
+	.st104{fill:#D9FDFF;}
+	.st105{fill:#FFFACF;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st106{fill:#B8ECFF;}
+	.st107{fill:#FFCABF;}
+	.st108{fill:#E5FFF9;}
+	.st109{fill:#C8FFA1;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st110{fill:#4CF4FC;}
+	.st111{fill:#F0D5A8;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st112{fill:#FFDCD1;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st113{fill:#80DDFF;}
+	.st114{fill:#46B000;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st115{fill:#4ACFFF;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st116{fill:#ADC4D9;}
+	.st117{fill:#BDBEC0;stroke:#45413C;stroke-width:1.0064;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st118{fill:#FFFCE5;}
+	.st119{fill:#947746;}
+	.st120{fill:#525252;stroke:#45413C;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<symbol  id="New_Symbol_14" viewBox="-6.5 -6.5 13 13">
+	<path class="st0" d="M0-6c2.2,0,4.1,1.5,4.7,3.5c0,0,0,0,0,0C6.3-2.5,6.4,0,5,0v1c0,2.8-2.2,5-5,5c-2.8,0-5-2.2-5-5V0
+		c-1.4,0-1.3-2.5,0.2-2.5c0,0,0,0,0,0C-4.1-4.5-2.2-6,0-6z"/>
+	<g>
+		<circle class="st1" cx="-1.6" cy="-0.1" r="0.1"/>
+		<path class="st2" d="M-1.6,0.5c-0.3,0-0.6-0.3-0.6-0.6S-2-0.8-1.6-0.8C-1.3-0.8-1-0.5-1-0.1S-1.3,0.5-1.6,0.5L-1.6,0.5z"/>
+	</g>
+	<g>
+		<circle class="st1" cx="1.6" cy="-0.1" r="0.1"/>
+		<path class="st2" d="M1.6,0.5C1.3,0.5,1,0.2,1-0.1s0.3-0.6,0.6-0.6c0.3,0,0.6,0.3,0.6,0.6S2,0.5,1.6,0.5L1.6,0.5z"/>
+	</g>
+	<circle class="st3" cx="-3" cy="-1.5" r="0.5"/>
+	<circle class="st3" cx="3" cy="-1.5" r="0.5"/>
+	<path class="st4" d="M-1.2-3c0.8-0.5,1.7-0.5,2.5,0"/>
+</symbol>
+<g id="Bg">
+</g>
+<g id="Icons">
+	<g id="XMLID_1975_">
+		<path id="XMLID_507_" class="st41" d="M11.5,11.2l4,5.1l3-2.4l-4-5.1c-1.3-1.7-0.1-3.7-1.8-5.9c-1-1.3-1.7-1-2.6-0.3
+			C9,3.5,9,4.9,9,4.9S7.6,4.6,6.5,5.5C5.6,6.2,5.4,7,6.2,8.1C8.1,10.5,9.8,9.1,11.5,11.2z"/>
+		<path id="XMLID_506_" class="st17" d="M6.6,8.5C7.7,7.6,9,7.9,9,7.9s0-1.4,1.1-2.3c0.9-0.7,1.7-0.5,2.6,0.3
+			c0.4,0.4,0.8,0.8,1.1,1.2c-0.2-1.3,0-2.7-1.1-4.1c-1-1.3-1.7-1-2.6-0.3C9,3.5,9,4.9,9,4.9S7.6,4.6,6.5,5.5C5.6,6.2,5.4,7,6.2,8.1
+			C6.3,8.2,6.4,8.3,6.6,8.5z"/>
+		<path id="XMLID_505_" class="st10" d="M11.5,11.2l4,5.1l3-2.4l-4-5.1c-1.3-1.7-0.1-3.7-1.8-5.9c-1-1.3-1.7-1-2.6-0.3
+			C9,3.5,9,4.9,9,4.9S7.6,4.6,6.5,5.5C5.6,6.2,5.4,7,6.2,8.1C8.1,10.5,9.8,9.1,11.5,11.2z"/>
+		<ellipse id="XMLID_504_" class="st5" cx="25.8" cy="44.4" rx="12" ry="1.6"/>
+		<path id="XMLID_503_" class="st37" d="M20.8,39.3c4.1,5.2,11.6,6.1,16.8,2c5.2-4.1,6.1-11.6,2-16.8c-4.8-6.1-16.6-8.4-16.7-8.6
+			c-1.3-1.7-1.4-2.6-1.4-2.9c0-0.2,0-0.4-0.2-0.5c-0.4-0.6-1.2-0.8-1.9-0.6c-1,0.4-1.4,1.2-1.3,2c-0.6-0.2-1.3-0.1-1.8,0.3
+			c-0.5,0.4-0.8,1.1-0.7,1.7c-0.7-0.3-1.5-0.1-2.1,0.6c-0.6,0.7-0.6,1.6-0.1,2.2c0.1,0.1,0.3,0.3,0.5,0.3c0.4,0.1,1.2,0.4,2.5,2.1
+			C16.6,21.3,15.9,33.1,20.8,39.3z"/>
+		<path id="XMLID_502_" class="st37" d="M20.8,39.3c4.1,5.2,11.6,6.1,16.8,2c5.2-4.1,6.1-11.6,2-16.8c-4.8-6.1-16.6-8.4-16.7-8.6
+			c-1.3-1.7-1.4-2.6-1.4-2.9c0-0.2,0-0.4-0.2-0.5c-0.4-0.6-1.2-0.8-1.9-0.6c-1,0.4-1.4,1.2-1.3,2c-0.6-0.2-1.3-0.1-1.8,0.3
+			c-0.5,0.4-0.8,1.1-0.7,1.7c-0.7-0.3-1.5-0.1-2.1,0.6c-0.6,0.7-0.6,1.6-0.1,2.2c0.1,0.1,0.3,0.3,0.5,0.3c0.4,0.1,1.2,0.4,2.5,2.1
+			C16.6,21.3,15.9,33.1,20.8,39.3z"/>
+		<path id="XMLID_501_" class="st38" d="M13.8,19c0.3,0,0.9,0.3,1.7,1.1c0-0.5,0.3-1,0.7-1.3c0.5-0.4,1.2-0.5,1.8-0.3
+			c-0.1-0.8,0.4-1.7,1.3-2c0.7-0.3,1.5,0,1.9,0.6c0.1,0.1,0.2,0.3,0.2,0.5c0,0.4,0.1,1.3,1.4,2.9c0.2,0.2,11.9,2.6,16.7,8.6
+			c1.2,1.5,2,3.3,2.3,5.1c0.6-3.3-0.1-6.8-2.3-9.6c-4.8-6.1-16.6-8.4-16.7-8.6c-1.3-1.7-1.4-2.6-1.4-2.9c0-0.2,0-0.4-0.2-0.5
+			c-0.4-0.6-1.2-0.8-1.9-0.6c-1,0.4-1.4,1.2-1.3,2c-0.6-0.2-1.3-0.1-1.8,0.3c-0.5,0.4-0.8,1.1-0.7,1.7c-0.7-0.3-1.5-0.1-2.1,0.6
+			c-0.6,0.7-0.6,1.6-0.1,2.2C13.5,18.8,13.6,18.9,13.8,19z"/>
+		<path id="XMLID_500_" class="st10" d="M20.8,39.3c4.1,5.2,11.6,6.1,16.8,2c5.2-4.1,6.1-11.6,2-16.8c-4.8-6.1-16.6-8.4-16.7-8.6
+			c-1.3-1.7-1.4-2.6-1.4-2.9c0-0.2,0-0.4-0.2-0.5c-0.4-0.6-1.2-0.8-1.9-0.6c-1,0.4-1.4,1.2-1.3,2c-0.6-0.2-1.3-0.1-1.8,0.3
+			c-0.5,0.4-0.8,1.1-0.7,1.7c-0.7-0.3-1.5-0.1-2.1,0.6c-0.6,0.7-0.6,1.6-0.1,2.2c0.1,0.1,0.3,0.3,0.5,0.3c0.4,0.1,1.2,0.4,2.5,2.1
+			C16.6,21.3,15.9,33.1,20.8,39.3z"/>
+	</g>
+</g>
+</svg>
