@@ -19,13 +19,7 @@ import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
 import { makeUserRandomNickname } from '@utils/nickname';
 import { RedisService } from '@cache/redis.service';
 
-interface UserType {
-  userId: string;
-  userLat: number;
-  userLng: number;
-}
 import { SOCKET_RES } from '@socket/socket.response';
-import { CandidateType } from '@restaurant/restaurant';
 import { VoteRestaurantDto } from '@socket/dto/vote-restaurant.dto';
 import { VoteResultType } from '@socket/socket';
 

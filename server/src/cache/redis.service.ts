@@ -1,12 +1,22 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { MergedRestaurantType } from '@restaurant/restaurant';
+import { MergedRestaurantType, RestaurantIdType } from '@restaurant/restaurant';
 import { Cache } from 'cache-manager';
 
+type UserIdType = string;
+
 interface UserType {
-  userId: string;
+  userId: UserIdType;
   userLat: number;
   userLng: number;
   userName: string;
+}
+
+interface CandidateHashType {
+  [index: RestaurantIdType]: UserIdType[];
+}
+
+interface JoinListType {
+  [index: UserIdType]: UserType;
 }
 
 @Injectable()
@@ -47,7 +57,7 @@ export class RedisService {
 
     getCandidateList: async (roomCode: string) => {
       const candidateListKey = this.redisKey.candidateList(roomCode);
-      const candidateHash = this.cacheManager.get<{ [index: string]: string[] }>(candidateListKey);
+      const candidateHash = this.cacheManager.get<CandidateHashType>(candidateListKey);
       return candidateHash;
     },
 
@@ -57,9 +67,7 @@ export class RedisService {
       restaurantId: string
     ): Promise<boolean> => {
       const candidateListKey = this.redisKey.candidateList(roomCode);
-      const candidateHash = await this.cacheManager.get<{ [index: string]: string[] }>(
-        candidateListKey
-      );
+      const candidateHash = await this.cacheManager.get<CandidateHashType>(candidateListKey);
       const restaurantVoteList = candidateHash[restaurantId];
       if (!restaurantVoteList) {
         // 이후 throw로 예외처리 필요
@@ -80,9 +88,7 @@ export class RedisService {
       restaurantId: string
     ): Promise<boolean> => {
       const candidateListKey = this.redisKey.candidateList(roomCode);
-      const candidateHash = await this.cacheManager.get<{ [index: string]: string[] }>(
-        candidateListKey
-      );
+      const candidateHash = await this.cacheManager.get<CandidateHashType>(candidateListKey);
       const restaurantVoteList = candidateHash[restaurantId];
       if (!restaurantVoteList) {
         // 이후 throw로 예외처리 필요
@@ -106,14 +112,14 @@ export class RedisService {
 
     getJoinList: async (roomCode: string) => {
       const joinListKey = this.redisKey.joinList(roomCode);
-      const findJoinHash = await this.cacheManager.get<{ [index: string]: UserType }>(joinListKey);
+      const findJoinHash = await this.cacheManager.get<JoinListType>(joinListKey);
       return findJoinHash;
     },
 
     addUserToJoinList: async (roomCode: string, user: UserType) => {
       const { userId } = user;
       const joinListKey = this.redisKey.joinList(roomCode);
-      const findJoinHash = await this.cacheManager.get<{ [index: string]: UserType }>(joinListKey);
+      const findJoinHash = await this.cacheManager.get<JoinListType>(joinListKey);
       // 이미 입장한 상태일 때
       if (findJoinHash[userId]) {
         return;
@@ -125,7 +131,7 @@ export class RedisService {
 
     delUserToJoinList: async (roomCode: string, userId: string) => {
       const joinListKey = this.redisKey.joinList(roomCode);
-      const findJoinHash = await this.cacheManager.get<{ [index: string]: UserType }>(joinListKey);
+      const findJoinHash = await this.cacheManager.get<JoinListType>(joinListKey);
       if (!findJoinHash[userId]) {
         return;
       }
