@@ -69,15 +69,13 @@ const getIconUrlByCategory = (category: CATEGORY_TYPE) => {
   }
 };
 
-type userIdType = string;
-
 function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [mapRef, mapDivRef] = useNaverMaps();
 
-  const joinListMarkersRef = useRef<Map<userIdType, naver.maps.Marker>>(new Map());
-  const joinListInfoWindowsRef = useRef<Map<userIdType, naver.maps.InfoWindow>>(new Map());
+  const joinListMarkersRef = useRef<Map<UserIdType, naver.maps.Marker>>(new Map());
+  const joinListInfoWindowsRef = useRef<Map<UserIdType, naver.maps.InfoWindow>>(new Map());
 
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 

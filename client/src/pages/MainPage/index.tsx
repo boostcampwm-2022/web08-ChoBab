@@ -47,7 +47,7 @@ function MainPage() {
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
   const [myName, setMyName] = useState<string>('');
-  const [joinList, setJoinList] = useState<Map<userIdType, UserType>>(new Map());
+  const [joinList, setJoinList] = useState<Map<UserIdType, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
     lat: NAVER_LAT,
@@ -87,8 +87,8 @@ function MainPage() {
     updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
   };
 
-  const divideByUserId = (userList: UserType[]): Map<userIdType, UserType> => {
-    const tmp = new Map<userIdType, UserType>();
+  const divideByUserId = (userList: UserType[]): Map<UserIdType, UserType> => {
+    const tmp = new Map<UserIdType, UserType>();
 
     userList.forEach((userInfo) => {
       tmp.set(userInfo.userId, userInfo);
