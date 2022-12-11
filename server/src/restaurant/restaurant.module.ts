@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RestaurantCategory, RestaurantCategorySchema } from './restaurant.schema';
-import { RestaurantService } from './restaurant.service';
+import { RestaurantCategory, RestaurantCategorySchema } from '@restaurant/restaurant.schema';
+import { RestaurantService } from '@restaurant/restaurant.service';
 
 @Module({
   imports: [
