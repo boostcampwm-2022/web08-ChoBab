@@ -106,29 +106,32 @@ export class EventsGateway
     const { restaurantId } = voteRestaurantDto;
     const roomCode = client.roomCode;
 
-    const voteResult = await this.redisService.candidateList.likeCandidate(
-      roomCode,
-      client.sessionID,
-      restaurantId
-    );
-    if (!voteResult) {
+    try {
+      const voteResult = await this.redisService.candidateList.likeCandidate(
+        roomCode,
+        client.sessionID,
+        restaurantId
+      );
+      if (!voteResult) {
+        throw new Error();
+      }
+
+      client.emit('voteRestaurantResult', SOCKET_RES.VOTE_RESTAURANT_SUCCESS(restaurantId));
+
+      // 식당 투표 성공 시 - 클라이언트에게 사용자가 투표한 식당의 id 리스트 전송
+      this.getUserVoteRestaurantIdList(client);
+
+      const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
+
+      const voteCountResult = this.getCurrentVoteResult(candidateList);
+
+      // 모임방의 모든 사용자들에게 투표 현황 전송
+      this.server
+        .in(roomCode)
+        .emit('voteResultUpdate', SOCKET_RES.UPDATE_VOTE_RESULT(voteCountResult));
+    } catch (error) {
       client.emit('voteRestaurantResult', SOCKET_RES.VOTE_RESTAURANT_FAIL);
-      return;
     }
-
-    client.emit('voteRestaurantResult', SOCKET_RES.VOTE_RESTAURANT_SUCCESS(restaurantId));
-
-    // 식당 투표 성공 시 - 클라이언트에게 사용자가 투표한 식당의 id 리스트 전송
-    this.getUserVoteRestaurantIdList(client);
-
-    const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
-
-    const voteCountResult = this.getCurrentVoteResult(candidateList);
-
-    // 모임방의 모든 사용자들에게 투표 현황 전송
-    this.server
-      .in(roomCode)
-      .emit('voteResultUpdate', SOCKET_RES.UPDATE_VOTE_RESULT(voteCountResult));
   }
 
   // 식당 투표 취소
@@ -140,33 +143,36 @@ export class EventsGateway
     const { restaurantId } = voteRestaurantDto;
     const roomCode = client.roomCode;
 
-    const voteResult = await this.redisService.candidateList.unlikeCandidate(
-      roomCode,
-      client.sessionID,
-      restaurantId
-    );
+    try {
+      const voteResult = await this.redisService.candidateList.unlikeCandidate(
+        roomCode,
+        client.sessionID,
+        restaurantId
+      );
 
-    if (!voteResult) {
+      if (!voteResult) {
+        throw new Error();
+      }
+
+      client.emit(
+        'cancelVoteRestaurantResult',
+        SOCKET_RES.CANCEL_VOTE_RESTAURANT_SUCCESS(restaurantId)
+      );
+
+      // 식당 투표 취소 성공 시 - 클라이언트에게 사용자가 투표한 식당의 id 리스트 전송
+      this.getUserVoteRestaurantIdList(client);
+
+      const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
+
+      const voteCountResult = this.getCurrentVoteResult(candidateList);
+
+      // 모임방의 모든 사용자들에게 투표 현황 전송
+      this.server
+        .in(roomCode)
+        .emit('voteResultUpdate', SOCKET_RES.UPDATE_VOTE_RESULT(voteCountResult));
+    } catch (error) {
       client.emit('cancelVoteRestaurantResult', SOCKET_RES.CANCEL_VOTE_RESTAURANT_FAIL);
-      return;
     }
-
-    client.emit(
-      'cancelVoteRestaurantResult',
-      SOCKET_RES.CANCEL_VOTE_RESTAURANT_SUCCESS(restaurantId)
-    );
-
-    // 식당 투표 취소 성공 시 - 클라이언트에게 사용자가 투표한 식당의 id 리스트 전송
-    this.getUserVoteRestaurantIdList(client);
-
-    const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
-
-    const voteCountResult = this.getCurrentVoteResult(candidateList);
-
-    // 모임방의 모든 사용자들에게 투표 현황 전송
-    this.server
-      .in(roomCode)
-      .emit('voteResultUpdate', SOCKET_RES.UPDATE_VOTE_RESULT(voteCountResult));
   }
 
   // 현재 투표 현황 요청
