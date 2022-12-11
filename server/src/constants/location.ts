@@ -11,6 +11,6 @@ export const LOCATION_BOUNDARY = Object.freeze({
 
 export const MAX_RADIUS = 5000;
 
-export const DEFAULT_RADIUS = 2000;
+export const DEFAULT_RADIUS = 1000;
 
 export const MAX_DETAIL_SEARCH_RADIUS = 1000;

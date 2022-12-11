@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
 import { Room, RoomDocument } from '@room/room.schema';
 import { FilterQuery, Model } from 'mongoose';
-import { ONE_DAY_MILLISECOND } from '@constants/time';
+import { MONGO_TTL } from '@constants/time';
 
 @Injectable()
 export class TaskService {
@@ -19,8 +19,8 @@ export class TaskService {
     this.logger.debug('[Delete Room Cron] Called every hour');
     const now = new Date();
 
-    // 현재로 부터 1일 전 시간
-    const criteria = new Date(now.getTime() - ONE_DAY_MILLISECOND);
+    // 현재로 부터 6시간 전 시간
+    const criteria = new Date(now.getTime() - MONGO_TTL);
 
     // 기준 시각 이전에 생성된 방을 찾을 때 필요한 조건
     const condition: FilterQuery<Room> = {
