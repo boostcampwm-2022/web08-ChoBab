@@ -1,4 +1,4 @@
-import { failRes, successRes } from './index';
+import { failRes, successRes } from '@response/index';
 
 export const ROOM_RES = {
   SUCCESS_CREATE_ROOM: (roomCode: string) => {

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
-import { Room, RoomDocument, RoomDynamic, RoomDynamicDocument } from './room.schema';
+import { Room, RoomDocument, RoomDynamic, RoomDynamicDocument } from '@room/room.schema';
 import { Model } from 'mongoose';
 import { CustomException } from '@common/exceptions/custom.exception';
 import { isInKorea } from '@utils/location';
 import { RestaurantService } from '@restaurant/restaurant.service';
 import { LOCATION_EXCEPTION } from '@response/location';
-import { ROOM_EXCEPTION } from '@response/room';
+import { ROOM_EXCEPTION } from '@room/room.response';
 
 @Injectable()
 export class RoomService {
