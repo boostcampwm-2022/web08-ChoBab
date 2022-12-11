@@ -28,7 +28,7 @@ function Modal({ isOpen, setIsOpen, children }: ModalProps) {
     };
   }, []);
 
-  return <ModalLayout ref={modalRef}> {isOpen && <div>{children}</div>} </ModalLayout>;
+  return <ModalLayout ref={modalRef}> {isOpen && children} </ModalLayout>;
 }
 
 export default Modal;

@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'BM Hanna';
+  src: url('@assets/fonts/BMHANNAAir_ttf.ttf');
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'BM Hanna';
+  src: url('@assets/fonts/BMHANNAPro.ttf');
+  font-weight: 700;
+  font-display: block;
+}

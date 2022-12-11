@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { useSocket } from '@hooks/useSocket';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
@@ -16,15 +15,18 @@ import MainMap from '@components/MainMap';
 
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
+import { URL_PATH } from '@constants/url';
 
 import useCurrentLocation from '@hooks/useCurrentLocation';
 import RestaurantListLayer from '@components/RestaurantListLayer';
 import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
+import RestaurantCategory from '@components/RestaurantCategory';
 
+import { apiService } from '@apis/index';
 import {
   ButtonInnerTextBox,
   CandidateListButton,
-  CategoryToggle,
+  CategoryBox,
   Header,
   HeaderBox,
   MainPageLayout,
@@ -32,6 +34,7 @@ import {
 } from './styles';
 
 function MainPage() {
+  const navigate = useNavigate();
   const userLocation = useCurrentLocation();
   const { roomCode } = useParams<{ roomCode: string }>();
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
@@ -41,7 +44,6 @@ function MainPage() {
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const [candidateData, setCandidateData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
     lat: NAVER_LAT,
     lng: NAVER_LNG,
@@ -93,7 +95,7 @@ function MainPage() {
         console.log(data.message);
         return;
       }
-      const { lat, lng, userList, restaurantList, candidateList, userId, userName } = data.data;
+      const { lat, lng, userList, restaurantList, userId, userName } = data.data;
 
       const tmp = new Map<string, UserType>();
 
@@ -102,19 +104,11 @@ function MainPage() {
         tmp.set(userInfo.userId, userInfo);
       });
 
-      const nonZeroLikeRestaurantIds = Object.keys(candidateList).filter(
-        (resId) => candidateList[resId] > 0
-      );
-      const tmpCandidateList = restaurantList.filter((restaurant) =>
-        nonZeroLikeRestaurantIds.find((resId) => resId === restaurant.id)
-      );
-
       setJoinList(tmp);
 
       setMyId(userId);
       setMyName(userName);
       setRoomConnect(true);
-      setCandidateData(tmpCandidateList);
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
     });
@@ -124,25 +118,24 @@ function MainPage() {
 
   const initService = async () => {
     try {
+      if (!roomCode) {
+        throw new Error('입장하고자 하는 방의 코드가 존재하지 않습니다.');
+      }
       /**
        * connect 순서 매우 중요
        * 세션 객체 생성을 위해 rest api 가 먼저 호출되어야 한다.
        */
-      const {
-        data: {
-          data: { isRoomValid },
-        },
-      } = await axios.get<ResTemplateType<RoomValidType>>(`/api/room/valid?roomCode=${roomCode}`);
-
-      if (!isRoomValid) {
-        throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
-      }
+      const isRoomValid = await apiService.getRoomValid(roomCode);
 
       await connectSocket();
 
       connectRoom();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response.status === 500) {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+        return;
+      }
+      navigate(URL_PATH.INVALID_ROOM);
     }
   };
 
@@ -186,7 +179,10 @@ function MainPage() {
           <LinkShareButton />
         </Header>
       </HeaderBox>
-      <CategoryToggle />
+
+      <CategoryBox>
+        <RestaurantCategory />
+      </CategoryBox>
 
       {/* 식당 후보 목록 <-> 지도 화면 */}
       {/* 식당 후보 목록 <-- 전체 식당 목록 */}
@@ -204,7 +200,7 @@ function MainPage() {
       </MapOrListButton>
 
       {/* 식당 리스트 & 식당 상세정보 Full-Screen 모달 컴포넌트 */}
-      <RestaurantListLayer restaurantData={restaurantData} candidateData={candidateData} />
+      <RestaurantListLayer restaurantData={restaurantData} />
       <RestaurantDetailLayer />
     </MainPageLayout>
   );

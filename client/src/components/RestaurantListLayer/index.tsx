@@ -8,10 +8,9 @@ import { LayerBox } from './styles';
 
 interface PropsType {
   restaurantData: RestaurantType[];
-  candidateData: RestaurantType[];
 }
 
-function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
+function RestaurantListLayer({ restaurantData }: PropsType) {
   const { restaurantListLayerStatus } = useRestaurantListLayerStatusStore((state) => state);
 
   return (
@@ -23,6 +22,11 @@ function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
               ? palette.HEADER_HEIGHT_RATIO + palette.CATEGORY_HEIGHT_RATIO
               : palette.HEADER_HEIGHT_RATIO
           }
+          zIndex={
+            restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered
+              ? palette.RESTAURANT_FILTERED_LIST_LAYER_Z_INDEX
+              : palette.RESTAURANT_CANDIDATE_LIST_LAYER_Z_INDEX
+          }
           initial={{ opacity: 0, y: '100%' }}
           animate={{ opacity: 1, y: '0%' }}
           exit={{ opacity: 0, y: '100%' }}
@@ -33,7 +37,7 @@ function RestaurantListLayer({ restaurantData, candidateData }: PropsType) {
           {restaurantListLayerStatus === RESTAURANT_LIST_TYPES.filtered ? (
             <RestaurantFiltered restaurantData={restaurantData} />
           ) : (
-            <CandidateListModal candidateData={candidateData} />
+            <CandidateListModal restaurantData={restaurantData} />
           )}
         </LayerBox>
       )}

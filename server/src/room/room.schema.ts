@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { CandidateType, MergedRestaurantType as RestaurantType } from '@restaurant/restaurant';
 
 export type RoomDocument = Room & Document;
 

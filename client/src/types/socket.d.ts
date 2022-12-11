@@ -14,8 +14,7 @@ declare interface RestaurantType {
   lng: number;
   address: string;
   rating?: number;
-  photoKeyList?: string[];
-  priceLevel?: number;
+  photoUrlList?: string[];
 }
 
 declare interface ResTemplateType<T> {
@@ -27,8 +26,11 @@ declare interface RoomValidType {
   isRoomValid: boolean;
 }
 
-declare interface RoomDataType {
+declare interface RoomCodeType {
   roomCode: string;
+}
+
+declare interface RoomDataType extends RoomCodeType {
   lat: number;
   lng: number;
   userList: { [index: string]: UserType };
@@ -36,4 +38,15 @@ declare interface RoomDataType {
   candidateList: { [index: string]: number };
   userId: string;
   userName: string;
+}
+
+declare interface DrivingInfoType {
+  start: number[];
+  goal: number[];
+  distance: number;
+  duration: number;
+  tollFare: number;
+  taxiFare: number;
+  fuelPrice: number;
+  path: number[][];
 }
