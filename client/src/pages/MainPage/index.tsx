@@ -97,31 +97,6 @@ function MainPage() {
     return tmp;
   };
 
-  const initService = async () => {
-    try {
-      if (!roomCode) {
-        throw new Error('입장하고자 하는 방의 코드가 존재하지 않습니다.');
-      }
-
-      /**
-       * connect 순서 매우 중요
-       * 세션 객체 생성을 위해 rest api 가 먼저 호출되어야 한다.
-       */
-      const isRoomValid = await apiService.getRoomValid(roomCode);
-
-      if (!isRoomValid) {
-        throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
-      }
-    } catch (error: any) {
-      if (error.response.status === 500) {
-        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
-        return;
-      }
-
-      navigate(URL_PATH.INVALID_ROOM);
-    }
-  };
-
   const initSocket = () => {
     socketRef.current = io('/room');
 
@@ -156,9 +131,35 @@ function MainPage() {
     });
   };
 
+  const initService = async () => {
+    try {
+      if (!roomCode) {
+        throw new Error('입장하고자 하는 방의 코드가 존재하지 않습니다.');
+      }
+
+      /**
+       * connect 순서 매우 중요
+       * 세션 객체 생성을 위해 rest api 가 먼저 호출되어야 한다.
+       */
+      const isRoomValid = await apiService.getRoomValid(roomCode);
+
+      if (!isRoomValid) {
+        throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
+      }
+
+      initSocket();
+    } catch (error: any) {
+      if (error.response.status === 500) {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+        return;
+      }
+
+      navigate(URL_PATH.INVALID_ROOM);
+    }
+  };
+
   useEffect(() => {
     initService();
-    initSocket();
 
     return () => {
       const socket = socketRef.current;
