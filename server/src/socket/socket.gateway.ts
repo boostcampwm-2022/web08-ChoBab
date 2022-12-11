@@ -215,14 +215,27 @@ export class EventsGateway
             .map(([key, value]) => value.sessionID)
         : [];
 
-    // 방안에 같은 세션 접속자가 없을 때 퇴장 처리 (DB, Client 에서 모두 제거)
-    if (!roomSessionIDs.includes(sessionID)) {
-      await this.redisService.joinList.delUserToJoinList(roomCode, sessionID);
-
-      client.to(roomCode).emit('leave', sessionID);
+    // 방안에 같은 세션 접속자가 있으면 그대로 둠
+    if (roomSessionIDs.includes(sessionID)) {
+      return;
     }
 
-    console.log('disconnected');
+    try {
+      // joinList와 candidateList에서 사용자의 기록 모두 삭제 처리
+      await this.redisService.joinList.delUserToJoinList(roomCode, sessionID);
+      client.to(roomCode).emit('leave', sessionID);
+
+      const candidateList = await this.redisService.candidateList.getCandidateList(roomCode);
+      const voteCountResult = this.getCurrentVoteResult(candidateList);
+
+      // 모임방의 모든 사용자들에게 투표 현황 전송
+      this.server
+        .in(roomCode)
+        .emit('voteResultUpdate', SOCKET_RES.UPDATE_VOTE_RESULT(voteCountResult));
+      console.log('disconnected');
+    } catch (error) {
+      // 이미 나간 사용자라서 해당 부분에서 무슨 처리를 해줘야되는지 잘모르겠네요??
+    }
   }
 
   // 투표 현황 데이터 가공 함수

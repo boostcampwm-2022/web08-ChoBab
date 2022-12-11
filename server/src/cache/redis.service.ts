@@ -146,8 +146,23 @@ export class RedisService {
       if (!findJoinHash[userId]) {
         return;
       }
+      const candidateListKey = this.redisKey.candidateList(roomCode);
+      const candidateHash = await this.cacheManager.get<CandidateHashType>(candidateListKey);
+
+      // 내보낼 사용자의 투표를 모두 삭제
+      const userDeletedCandidateHash: CandidateHashType = Object.keys(candidateHash).reduce(
+        (result, restaurantId) => {
+          result[restaurantId] = candidateHash[restaurantId].filter((voter) => voter !== userId);
+          return result;
+        },
+        {}
+      );
+
       delete findJoinHash[userId];
-      await this.cacheManager.set(joinListKey, findJoinHash);
+      await Promise.all([
+        this.cacheManager.set(joinListKey, findJoinHash),
+        this.cacheManager.set(candidateListKey, userDeletedCandidateHash),
+      ]);
     },
 
     // 모임에 접속된 사용자의 위치 정보를 수정하고 성공 여부를 반환
