@@ -40,7 +40,9 @@ function MainPage() {
   const { roomCode } = useParams<{ roomCode: string }>();
 
   const socketRef = useRef<Socket | null>(null);
+
   const { setSocket } = useSocketStore((state) => state);
+  const { updateCurrentPosition } = useCurrentLocation();
 
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
@@ -129,6 +131,7 @@ function MainPage() {
 
     socket.on('connect', () => {
       socket.emit('connectRoom', { roomCode, userLat: NAVER_LAT, userLng: NAVER_LNG });
+      updateCurrentPosition();
     });
 
     socket.on('connect_error', () => {

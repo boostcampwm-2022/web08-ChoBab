@@ -1,22 +1,18 @@
-import { useState, useEffect } from 'react';
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { useUserLocationStore } from '@store/index';
 
 const useCurrentLocation = () => {
-  const [location, setLocation] = useState<LocationType | null>(null);
-  const { updateUserLocation } = useUserLocationStore();
+  const { userLocation, updateUserLocation } = useUserLocationStore();
 
   const handleSuccess = (position: GeolocationPosition) => {
-    setLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
     updateUserLocation(position.coords.latitude, position.coords.longitude);
   };
 
   const handleError = () => {
-    setLocation({ lat: NAVER_LAT, lng: NAVER_LNG });
     updateUserLocation(NAVER_LAT, NAVER_LNG);
   };
 
-  useEffect(() => {
+  const updateCurrentPosition = () => {
     // 위치 사용 불가 장치인 경우
     if (!('geolocation' in navigator)) {
       handleError();
@@ -24,9 +20,9 @@ const useCurrentLocation = () => {
     }
 
     navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
-  }, []);
+  };
 
-  return location;
+  return { userLocation, updateCurrentPosition };
 };
 
 export default useCurrentLocation;

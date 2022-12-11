@@ -83,10 +83,8 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
   const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
 
-  const userLocation = useCurrentLocation();
-
+  const { userLocation } = useCurrentLocation();
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
-
   const { socket } = useSocketStore((state) => state);
 
   const closeAllRestaurantMarkerInfoWindow = () => {
