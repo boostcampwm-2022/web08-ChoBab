@@ -3,7 +3,7 @@ import { CreateRoomDto } from '@room/dto/create-room.dto';
 import { ResTemplateType } from '@common/interceptors/template.interceptor';
 import { RoomService } from '@room/room.service';
 import { CustomException } from '@common/exceptions/custom.exception';
-import { ROOM_EXCEPTION, ROOM_RES } from '@response/room';
+import { ROOM_EXCEPTION, ROOM_RES } from '@room/room.response';
 
 @Controller('room')
 export class RoomController {

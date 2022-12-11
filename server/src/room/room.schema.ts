@@ -1,16 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { CandidateType, MergedRestaurantType as RestaurantType } from '@restaurant/restaurant';
 
 export type RoomDocument = Room & Document;
-export type RoomDynamicDocument = RoomDynamic & Document;
-
-interface UserType {
-  userId: string;
-  userLat: number;
-  userLng: number;
-  userName: string;
-}
 
 @Schema()
 export class Room {
@@ -30,20 +21,4 @@ export class Room {
   lat: number;
 }
 
-@Schema()
-export class RoomDynamic {
-  @Prop({ required: true, unique: true })
-  roomCode: string;
-
-  @Prop({ required: true, default: [] })
-  userList: [UserType];
-
-  @Prop({ required: true, default: [] })
-  restaurantList: [RestaurantType];
-
-  @Prop({ required: true, default: [] })
-  candidateList: [CandidateType];
-}
-
 export const RoomSchema = SchemaFactory.createForClass(Room);
-export const RoomDynamicSchema = SchemaFactory.createForClass(RoomDynamic);
