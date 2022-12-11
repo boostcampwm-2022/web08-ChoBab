@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Socket } from 'socket.io-client';
-import { useSocket } from '@hooks/useSocket';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { io, Socket } from 'socket.io-client';
+import { useSocketStore } from '@store/socket';
 import { useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
@@ -23,6 +23,7 @@ import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
 import RestaurantCategory from '@components/RestaurantCategory';
 
 import { apiService } from '@apis/index';
+
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -35,11 +36,16 @@ import {
 
 function MainPage() {
   const navigate = useNavigate();
-  const userLocation = useCurrentLocation();
-  const { roomCode } = useParams<{ roomCode: string }>();
-  const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
-  const [socketRef, connectSocket, disconnectSocket] = useSocket();
 
+  const { roomCode } = useParams<{ roomCode: string }>();
+
+  const userLocation = useCurrentLocation();
+
+  const socketRef = useRef<Socket | null>(null);
+  const { setSocket } = useSocketStore((state) => state);
+
+  // isRoomConnect를 제외한 값들은 상태이어야 할까?
+  const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
@@ -82,53 +88,21 @@ function MainPage() {
     updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
   };
 
-  const connectRoom = () => {
-    const clientSocket = socketRef.current;
-    const { lat: userLat, lng: userLng } = userLocation;
-
-    if (!(clientSocket instanceof Socket)) {
-      throw new Error();
-    }
-
-    clientSocket.on('connectResult', (data: ResTemplateType<RoomDataType>) => {
-      if (!data.data) {
-        console.log(data.message);
-        return;
-      }
-      const { lat, lng, userList, restaurantList, userId, userName } = data.data;
-
-      const tmp = new Map<string, UserType>();
-
-      userList.forEach((userInfo) => {
-        tmp.set(userInfo.userId, userInfo);
-      });
-
-      setJoinList(tmp);
-
-      setMyId(userId);
-      setMyName(userName);
-      setRoomConnect(true);
-      setRestaurantData(restaurantList);
-      setRoomLocation({ ...roomLocation, ...{ lat, lng } });
-    });
-
-    clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
-  };
-
   const initService = async () => {
     try {
       if (!roomCode) {
         throw new Error('입장하고자 하는 방의 코드가 존재하지 않습니다.');
       }
+
       /**
        * connect 순서 매우 중요
        * 세션 객체 생성을 위해 rest api 가 먼저 호출되어야 한다.
        */
       const isRoomValid = await apiService.getRoomValid(roomCode);
 
-      await connectSocket();
-
-      connectRoom();
+      if (!isRoomValid) {
+        throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
+      }
     } catch (error: any) {
       if (error.response.status === 500) {
         navigate(URL_PATH.INTERNAL_SERVER_ERROR);
@@ -138,6 +112,61 @@ function MainPage() {
     }
   };
 
+  const initSocket = () => {
+    socketRef.current = io('/room');
+
+    const socket = socketRef.current;
+
+    setSocket(socket);
+
+    socket.on('connect', () => {
+      console.log('connected!');
+      socket.emit('connectRoom', { roomCode }); // joinRoom 으로 바꿨으면 한다.
+    });
+
+    socket.on('connect_error', () => {
+      navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+    });
+
+    socket.on('connectResult', (data: ResTemplateType<RoomDataType>) => {
+      if (!data.data) {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+        return;
+      }
+
+      const { lat, lng, userList, restaurantList, userId, userName } = data.data;
+
+      const tmp = new Map<string, UserType>();
+
+      userList.forEach((userInfo) => {
+        tmp.set(userInfo.userId, userInfo);
+      });
+
+      setJoinList(tmp);
+      setMyId(userId);
+      setMyName(userName);
+      setRoomConnect(true);
+      setRestaurantData(restaurantList);
+      setRoomLocation({ ...roomLocation, ...{ lat, lng } });
+    });
+  };
+
+  useEffect(() => {
+    initService();
+    initSocket();
+
+    return () => {
+      const socket = socketRef.current;
+
+      if (!(socket instanceof Socket)) {
+        return;
+      }
+
+      socket.close();
+    };
+  }, []);
+
+  /*
   useEffect(() => {
     // userLocation 의 초기값을 {lat:null, lng:null} 로 지정.
     // 따라서 사용자의 위치 정보의 로딩이 끝나기 전까지(위치 정보 불러오기 성공 혹은 실패) 해당 if 문을 통해 initService가 작동하지 않게 됨.
@@ -160,6 +189,7 @@ function MainPage() {
       disconnectSocket();
     };
   }, [userLocation]);
+  */
 
   return !isRoomConnect ? (
     <div>loading...</div>
