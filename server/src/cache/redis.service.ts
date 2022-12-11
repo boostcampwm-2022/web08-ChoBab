@@ -149,5 +149,26 @@ export class RedisService {
       delete findJoinHash[userId];
       await this.cacheManager.set(joinListKey, findJoinHash);
     },
+
+    // 모임에 접속된 사용자의 위치 정보를 수정하고 성공 여부를 반환
+    updateUserLocationDataToJoinList: async (
+      roomCode: string,
+      userId: string,
+      newPosition: { userLat: number; userLng: number }
+    ) => {
+      const joinListKey = this.redisKey.joinList(roomCode);
+      const findJoinHash = await this.cacheManager.get<JoinListType>(joinListKey);
+
+      // 접속자 리스트에 수정하려는 사용자가 존재하지 않을 때
+      if (!findJoinHash[userId]) {
+        return false;
+      }
+
+      const { userLat, userLng } = newPosition;
+      findJoinHash[userId] = { ...findJoinHash[userId], userLat, userLng };
+
+      await this.cacheManager.set(joinListKey, findJoinHash);
+      return true;
+    },
   };
 }
