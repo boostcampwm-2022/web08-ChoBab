@@ -14,6 +14,8 @@ export const CATEGORY_HEIGHT_RATIO = 6;
 
 // z-index
 
+export const MAP_CONTROLLER_Z_INDEX = 4;
+
 export const RESTAURANT_FILTERED_LIST_LAYER_Z_INDEX = 5;
 
 export const CATEGORY_Z_INDEX = 6;
