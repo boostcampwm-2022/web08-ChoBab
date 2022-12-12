@@ -9,6 +9,7 @@ interface UserType {
   userLat: number;
   userLng: number;
   userName: string;
+  isOnline: boolean;
 }
 
 interface CandidateHashType {
@@ -124,21 +125,32 @@ export class RedisService {
       return findJoinHash;
     },
 
+    getUserInfo: async (roomCode: string, userId: string) => {
+      const joinListKey = this.redisKey.joinList(roomCode);
+      const findJoinHash = await this.cacheManager.get<JoinListType>(joinListKey);
+      return findJoinHash[userId];
+    },
+
+    setUserOnline: async (roomCode: string, userId: string) => {
+      const joinListKey = this.redisKey.joinList(roomCode);
+      const findJoinHash = await this.cacheManager.get<JoinListType>(joinListKey);
+      findJoinHash[userId] = { ...findJoinHash[userId], isOnline: true };
+      await this.cacheManager.set(joinListKey, findJoinHash);
+    },
+
     // 사용자가 모임에 참여하는 로직
     addUserToJoinList: async (roomCode: string, user: UserType) => {
       const { userId } = user;
+
       const joinListKey = this.redisKey.joinList(roomCode);
       const findJoinHash = await this.cacheManager.get<JoinListType>(joinListKey);
-      // 이미 입장한 상태일 때
-      if (findJoinHash[userId]) {
-        return;
-      }
+
       const addUserData = {};
       addUserData[userId] = user;
       await this.cacheManager.set(joinListKey, { ...findJoinHash, ...addUserData });
     },
 
-    // 사용자를 모임에서 내보내는 로직
+    // 사용자를 모임에서 내보내는 로직 => offline 처리하는 함수로 내부로직 변경
     delUserToJoinList: async (roomCode: string, userId: string) => {
       const joinListKey = this.redisKey.joinList(roomCode);
       const findJoinHash = await this.cacheManager.get<JoinListType>(joinListKey);
@@ -146,7 +158,7 @@ export class RedisService {
       if (!findJoinHash[userId]) {
         return;
       }
-      delete findJoinHash[userId];
+      findJoinHash[userId] = { ...findJoinHash[userId], isOnline: false };
       await this.cacheManager.set(joinListKey, findJoinHash);
     },
 
