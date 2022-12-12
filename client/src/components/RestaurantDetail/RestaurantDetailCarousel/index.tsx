@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import RestaurantDefaultImg from '@assets/images/restaurant-default.png';
+import RestaurantDefaultImg from '@assets/images/restaurant-default.jpg';
 import { ImageCarousel, Image, ImageBox } from './styles';
 
 interface PropsType {

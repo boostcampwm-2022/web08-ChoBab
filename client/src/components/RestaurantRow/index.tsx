@@ -2,7 +2,7 @@ import { ReactComponent as StarIcon } from '@assets/images/star-icon.svg';
 import * as palette from '@styles/Variables';
 import { useMeetLocationStore } from '@store/index';
 import { getDistance } from 'geolib';
-import RestaurantDefaultImg from '@assets/images/restaurant-default.png';
+import RestaurantDefaultImg from '@assets/images/restaurant-default.jpg';
 import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import RestaurantVoteButton from '@components/RestaurantVoteButton';
 import { distanceToDisplay } from '@utils/distance';
