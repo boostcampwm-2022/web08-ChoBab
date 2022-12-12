@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 interface LoadingSpinnerPropsType {
-  type: string; // normal, map
+  size: string;
 }
 
 export const LoadingContentsLayout = styled.div`
@@ -14,7 +14,7 @@ export const LoadingContentsLayout = styled.div`
 `;
 
 export const LoadingSpinnerBox = styled.div<LoadingSpinnerPropsType>`
-  margin-top: ${({ type }) => (type === 'normal' ? '25vh' : '5vh')};
+  margin-top: ${({ size }) => (size === 'large' ? '25vh' : '5vh')};
 `;
 
 export const LoadingMessageParagraph = styled.p`
