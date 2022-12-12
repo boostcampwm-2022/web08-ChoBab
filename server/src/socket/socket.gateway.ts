@@ -31,7 +31,7 @@ export class EventsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
 {
   @WebSocketServer()
-  server: Server; // 'room' namespace server instance
+  server: Server;
 
   constructor(
     @InjectModel(Room.name) private roomModel: Model<RoomDocument>,
@@ -65,12 +65,17 @@ export class EventsGateway
 
     try {
       const { lat, lng } = await this.roomModel.findOne({ roomCode });
+
       const restaurantList = await this.redisService.restaurantList.getRestaurantListForRoom(
         roomCode
       );
+
       const { sessionID: userId } = client.request;
+
       const user = { userId, userLat, userLng, userName: makeUserRandomNickname() };
+
       await this.redisService.joinList.addUserToJoinList(roomCode, user);
+
       const newUserList = await this.redisService.joinList.getJoinList(roomCode);
 
       client.emit(
@@ -86,7 +91,7 @@ export class EventsGateway
         )
       );
 
-      client.to(roomCode).emit('join', user);
+      client.to(roomCode).emit('join', SOCKET_RES.JOIN_USER(user));
     } catch (error) {
       client.emit('connectResult', SOCKET_RES.CONNECT_FAIL);
     }
@@ -115,7 +120,12 @@ export class EventsGateway
     });
 
     // 모든 사용자에게 업데이트 된 위치를 알림
-    this.server.in(roomCode).emit('changeUserLocation', { userId: sessionID, userLat, userLng });
+    this.server
+      .in(roomCode)
+      .emit(
+        'changeUserLocation',
+        SOCKET_RES.CHANGED_USER_LOCATION({ userId: sessionID, userLat, userLng })
+      );
   }
 
   // 식당 투표
@@ -238,7 +248,7 @@ export class EventsGateway
 
     // 방안에 같은 세션 접속자가 없을 때 퇴장 처리 (DB, Client 에서 모두 제거)
     if (!roomSessionIDs.includes(sessionID)) {
-      client.to(roomCode).emit('leave', sessionID);
+      client.to(roomCode).emit('leave', SOCKET_RES.LEAVE_USER(sessionID));
     }
 
     console.log('disconnected');
@@ -247,6 +257,7 @@ export class EventsGateway
   // 투표 현황 데이터 가공 함수
   private getCurrentVoteResult = (candidateList: { [index: string]: string[] }) => {
     const voteResult: VoteResultType[] = [];
+
     Object.keys(candidateList).forEach((restaurantId) => {
       if (!candidateList[restaurantId].length) {
         return;

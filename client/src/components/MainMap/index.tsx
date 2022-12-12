@@ -403,8 +403,12 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       return;
     }
 
-    socket.on('changeUserLocation', (data) => {
-      const { userId, userLat, userLng } = data;
+    socket.on('changeUserLocation', (response: ResTemplateType<UserType>) => {
+      if (!response.data) {
+        return;
+      }
+
+      const { userId, userLat, userLng } = response.data;
 
       const marker = joinListMarkersRef.current.get(userId);
       marker?.setPosition(new naver.maps.LatLng(userLat, userLng));

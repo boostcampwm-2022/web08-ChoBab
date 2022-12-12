@@ -115,13 +115,13 @@ function MainPage() {
       navigate(URL_PATH.INTERNAL_SERVER_ERROR);
     });
 
-    socket.on('connectResult', (data: ResTemplateType<RoomDataType>) => {
-      if (!data.data) {
+    socket.on('connectResult', (response: ResTemplateType<RoomDataType>) => {
+      if (!response.data) {
         navigate(URL_PATH.INTERNAL_SERVER_ERROR);
         return;
       }
 
-      const { lat, lng, userList, restaurantList, userId, userName } = data.data;
+      const { lat, lng, userList, restaurantList, userId, userName } = response.data;
 
       setMyId(userId);
       setMyName(userName);
