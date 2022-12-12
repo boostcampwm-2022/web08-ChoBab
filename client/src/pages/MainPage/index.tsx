@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import { useSocketStore } from '@store/socket';
-import { useRestaurantListLayerStatusStore } from '@store/index';
+import { useMeetLocationStore, useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
@@ -50,10 +50,7 @@ function MainPage() {
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<UserIdType, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
-    lat: NAVER_LAT,
-    lng: NAVER_LNG,
-  });
+  const { meetLocation, updateMeetLocation } = useMeetLocationStore();
 
   const { restaurantListLayerStatus, updateRestaurantListLayerStatus } =
     useRestaurantListLayerStatusStore((state) => state);
@@ -126,7 +123,7 @@ function MainPage() {
       setMyName(userName);
       setJoinList(convertArrayToMapByUserId(userList));
       setRestaurantData(restaurantList);
-      setRoomLocation({ ...roomLocation, ...{ lat, lng } });
+      updateMeetLocation(lat, lng);
 
       setRoomConnect(true);
 
@@ -176,11 +173,11 @@ function MainPage() {
     };
   }, []);
 
-  return !isRoomConnect ? (
+  return !isRoomConnect || !meetLocation ? (
     <LoadingScreen size="large" message="모임방 입장 중..." />
   ) : (
     <MainPageLayout>
-      <MainMap restaurantData={restaurantData} roomLocation={roomLocation} joinList={joinList} />
+      <MainMap restaurantData={restaurantData} roomLocation={meetLocation} joinList={joinList} />
       <HeaderBox>
         <Header>
           <ActiveUserInfo
