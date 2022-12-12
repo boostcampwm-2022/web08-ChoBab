@@ -7,6 +7,7 @@ import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import RestaurantVoteButton from '@components/RestaurantVoteButton';
 import { distanceToDisplay } from '@utils/distance';
 
+import { useEffect, useState } from 'react';
 import {
   RestaurantRowBox,
   DistanceBox,
@@ -27,12 +28,18 @@ interface PropsType {
 
 function RestaurantRow({ restaurant, restaurantListType, likeCnt }: PropsType) {
   const { id, name, category, lat, lng, rating, photoUrlList } = restaurant;
-
-  const {
-    meetLocation: { lat: roomLat, lng: roomLng },
-  } = useMeetLocationStore();
-
-  const straightDistance = getDistance({ lat, lng }, { lat: roomLat, lng: roomLng });
+  const { meetLocation } = useMeetLocationStore();
+  const [straightDistance, setStraightDistance] = useState<number | null>(null);
+  useEffect(() => {
+    if (!meetLocation) {
+      return;
+    }
+    if (straightDistance) {
+      return;
+    }
+    const { lat: roomLat, lng: roomLng } = meetLocation;
+    setStraightDistance(getDistance({ lat, lng }, { lat: roomLat, lng: roomLng }));
+  }, [meetLocation]);
 
   const thumbnailSrc = photoUrlList && photoUrlList[0] ? photoUrlList[0] : '';
 
@@ -54,7 +61,9 @@ function RestaurantRow({ restaurant, restaurantListType, likeCnt }: PropsType) {
           <StarIcon width="15px" fill={rating ? palette.PRIMARY : 'gray'} />
           {rating || '-'}
         </RatingBox>
-        <DistanceBox>모임 위치에서 {distanceToDisplay(straightDistance)}</DistanceBox>
+        <DistanceBox>
+          모임 위치에서 {straightDistance ? distanceToDisplay(straightDistance) : ''}
+        </DistanceBox>
       </InfoBox>
       <RestaurantVoteButton id={id} restaurantListType={restaurantListType} likeCnt={likeCnt} />
     </RestaurantRowBox>
