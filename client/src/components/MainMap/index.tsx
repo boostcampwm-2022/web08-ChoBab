@@ -9,7 +9,6 @@ import chickenImageSrc from '@assets/images/chicken.svg';
 import hamburgerImageSrc from '@assets/images/hamburger.svg';
 import hotdogImageSrc from '@assets/images/hotdog.svg';
 import userImageSrc from '@assets/images/user.svg';
-import flagImageSrc from '@assets/images/flag.svg';
 
 import { ReactComponent as GpsIcon } from '@assets/images/gps.svg';
 import { ReactComponent as PointCircleIcon } from '@assets/images/point-circle.svg';
@@ -366,6 +365,15 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     if (!mapRef.current) {
       return;
     }
+
+    const boundaryCircle = new naver.maps.Circle({
+      map: mapRef.current,
+      radius: 1000,
+      center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
+      strokeWeight: 1,
+      strokeStyle: 'dash',
+      strokeColor: 'gray',
+    });
 
     const initListener = onInit(mapRef.current);
     const clickListener = onClick(mapRef.current);
