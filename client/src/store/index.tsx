@@ -4,18 +4,18 @@ import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { CATEGORY_TYPE } from '@constants/category';
 
 interface UserLocationStoreType {
-  userLocation: { lat: number; lng: number };
+  userLocation: LocationType | null;
   updateUserLocation: (lat: number, lng: number) => void;
 }
 
 export const useUserLocationStore = create<UserLocationStoreType>((set) => ({
-  userLocation: { lat: NAVER_LAT, lng: NAVER_LNG },
+  userLocation: null,
   updateUserLocation: (lat: number, lng: number) =>
     set((state) => ({ ...state, userLocation: { lat, lng } })),
 }));
 
 interface MeetLocationStoreType {
-  meetLocation: { lat: number; lng: number };
+  meetLocation: LocationType;
   updateMeetLocation: (lat: number, lng: number) => void;
 }
 
