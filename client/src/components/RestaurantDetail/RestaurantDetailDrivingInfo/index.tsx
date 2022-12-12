@@ -6,6 +6,8 @@ import { distanceToDisplay } from '@utils/distance';
 import { msToTimeDisplay } from '@utils/time';
 import { ERROR_REASON } from '@constants/error';
 import { apiService } from '@apis/index';
+import { useToast } from '@hooks/useToast';
+import { TOAST_DURATION_TIME } from '@constants/toast';
 import { DrivingInfoBox, MapBox } from './styles';
 
 interface PropsType {
@@ -15,6 +17,7 @@ interface PropsType {
 function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
   const navigate = useNavigate();
   const { userLocation } = useUserLocationStore();
+  const { fireToast } = useToast();
   const [drivingInfo, setDrivingInfo] = useState<DrivingInfoType>();
 
   const mapRef = useRef<HTMLDivElement>(null);
@@ -41,7 +44,6 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
       if (error.response.status === 500) {
         throw new Error(ERROR_REASON.INTERNAL_SERVER_ERROR);
       }
-      console.log(error.response.data.message ?? '길찾기 정보를 불러오는데 실패했습니다.');
       return {} as DrivingInfoType;
     }
   };
@@ -73,6 +75,11 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
     const { path } = await getDrivingInfo(userPos, restaurantPos);
 
     if (!path) {
+      fireToast({
+        content: '길찾기 정보 요청에 실패했습니다.',
+        duration: TOAST_DURATION_TIME,
+        bottom: 80,
+      });
       return;
     }
 
