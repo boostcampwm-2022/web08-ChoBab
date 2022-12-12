@@ -60,15 +60,39 @@ export const ModalLayout = styled.div`
 export const ModalBox = styled.div`
   margin: auto;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 50%;
   height: 20%;
-  background-color: ${palette.PRIMARY};;
-  border: 1px solid ${palette.BORDER};
+  background-color: white;
+  border-radius: 15px;
+  gap: 5px;
+`;
+
+export const ModalInput = styled.input`
+  width: 85%;
+  height: 40px;
+  border: 2px solid gray;
   border-radius: 5px;
+  padding: 0 10px;
+`;
+
+export const ModalInputError = styled.div`
+  width: 85%;
+  height: 12px;
+  color: red;
+  font-size: 12px;
+  display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-export const InputButton = styled.button`
-  
-`
+export const ModalInputButton = styled.button`
+  background: black;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-weight: bolder;
+  color: white;
+`;
