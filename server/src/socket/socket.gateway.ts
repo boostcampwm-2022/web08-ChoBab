@@ -72,9 +72,14 @@ export class EventsGateway
 
       const { sessionID: userId } = client.request;
 
-      const user = { userId, userLat, userLng, userName: makeUserRandomNickname() };
+      let user = await this.redisService.joinList.getUserInfo(roomCode, userId);
 
-      await this.redisService.joinList.addUserToJoinList(roomCode, user);
+      if (!user) {
+        user = { userId, userLat, userLng, userName: makeUserRandomNickname(), isOnline: true };
+        await this.redisService.joinList.addUserToJoinList(roomCode, user);
+      } else {
+        await this.redisService.joinList.setUserOnline(roomCode, userId);
+      }
 
       const newUserList = await this.redisService.joinList.getJoinList(roomCode);
 
@@ -91,7 +96,7 @@ export class EventsGateway
         )
       );
 
-      client.to(roomCode).emit('join', SOCKET_RES.JOIN_USER(user));
+      client.to(roomCode).emit('join', SOCKET_RES.JOIN_USER({ ...user, isOnline: true }));
     } catch (error) {
       client.emit('connectResult', SOCKET_RES.CONNECT_FAIL);
     }
@@ -248,6 +253,8 @@ export class EventsGateway
 
     // 방안에 같은 세션 접속자가 없을 때 퇴장 처리 (DB, Client 에서 모두 제거)
     if (!roomSessionIDs.includes(sessionID)) {
+      this.redisService.joinList.delUserToJoinList(roomCode, sessionID);
+
       client.to(roomCode).emit('leave', SOCKET_RES.LEAVE_USER(sessionID));
     }
 
