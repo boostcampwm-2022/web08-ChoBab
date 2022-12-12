@@ -34,7 +34,7 @@ function Modal() {
 
           // 입력된 값이 없을 경우
           if (!inputRef.current.value) {
-            setInputError('공백 문자는 입력할 수 없습니다!');
+            setInputError('입력은 공백일 수 없습니다!');
             return;
           }
 
