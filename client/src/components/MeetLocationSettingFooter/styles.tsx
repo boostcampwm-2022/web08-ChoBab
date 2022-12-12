@@ -61,6 +61,7 @@ export const StartButton = styled.button`
 
 export const AddressBox = styled.div`
   width: 55%;
+  height: 2rem;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
