@@ -32,7 +32,7 @@ function VirtualizedRestaurantList({ filteredRestaurantList }: PropsType) {
   const getItemSize = (index: any) => {
     // console.log(itemRef.current.offsetWidth);
     // 여기서 아이템 행 높이를 받아오는 법?
-    return 180;
+    return 160;
   };
 
   // 필터 조건이 변경돼 필터링 데이터가 바뀌는 경우

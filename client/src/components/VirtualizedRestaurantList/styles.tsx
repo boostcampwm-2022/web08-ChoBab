@@ -11,4 +11,5 @@ export const RestaurantFilteredItem = styled.li`
   &:last-child {
     padding-bottom: 0;
   }
+  margin: 10% 5%;
 `;
