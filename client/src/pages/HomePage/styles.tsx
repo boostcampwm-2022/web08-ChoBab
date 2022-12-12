@@ -62,13 +62,11 @@ export const ModalBox = styled.div`
   display: flex;
   width: 50%;
   height: 20%;
-  background-color: ${palette.PRIMARY};;
+  background-color: ${palette.PRIMARY};
   border: 1px solid ${palette.BORDER};
   border-radius: 5px;
   justify-content: center;
   align-items: center;
 `;
 
-export const InputButton = styled.button`
-  
-`
+export const InputButton = styled.button``;
