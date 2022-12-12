@@ -46,10 +46,14 @@ export const InfoBox = styled.div`
 `;
 
 export const NameBox = styled.div`
-  width: 100%;
+  width: 80%;
   font-weight: 700;
   height: 15%;
   font-size: 1rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
 `;
 
 export const CategoryBox = styled.div`
