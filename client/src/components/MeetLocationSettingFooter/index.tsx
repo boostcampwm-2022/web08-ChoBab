@@ -50,6 +50,9 @@ function MeetLocationSettingFooter() {
 
   // 모임 위치(전역 상태) 변경 시 주소 업데이트
   useEffect(() => {
+    if (!meetLocation) {
+      return;
+    }
     updateAddress(meetLocation.lat, meetLocation.lng);
   }, [meetLocation]);
 
@@ -91,6 +94,9 @@ function MeetLocationSettingFooter() {
   };
 
   const initRoom = async () => {
+    if (!meetLocation) {
+      return;
+    }
     const { lat, lng } = meetLocation;
     setCreateRoomLoading(true);
     try {

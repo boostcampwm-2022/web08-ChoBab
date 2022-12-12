@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ReactComponent as MarkerImage } from '@assets/images/marker.svg';
+import { ReactComponent as FlagIcon } from '@assets/images/flag.svg';
 import { useMeetLocationStore } from '@store/index';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 import { MapBox, MarkerBox } from './styles';
@@ -64,6 +64,9 @@ function MeetLocationSettingMap({ userLocation }: PropsType) {
     if (!mapRef.current) {
       return;
     }
+    if (!meetLocation) {
+      return;
+    }
 
     mapRef.current.setCenter({ x: meetLocation.lng, y: meetLocation.lat });
   }, [meetLocation]);
@@ -71,7 +74,7 @@ function MeetLocationSettingMap({ userLocation }: PropsType) {
   return (
     <MapBox ref={mapDivRef}>
       <MarkerBox>
-        <MarkerImage />
+        <FlagIcon />
       </MarkerBox>
     </MapBox>
   );

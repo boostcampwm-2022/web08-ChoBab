@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import { useSocketStore } from '@store/socket';
-import { useRestaurantListLayerStatusStore } from '@store/index';
+import { useMeetLocationStore, useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
@@ -43,17 +43,14 @@ function MainPage() {
   const socketRef = useRef<Socket | null>(null);
 
   const { setSocket } = useSocketStore((state) => state);
-  const { updateCurrentPosition } = useCurrentLocation();
+  const { getCurrentLocation } = useCurrentLocation();
 
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<UserIdType, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
-    lat: NAVER_LAT,
-    lng: NAVER_LNG,
-  });
+  const { meetLocation, updateMeetLocation } = useMeetLocationStore();
 
   const { restaurantListLayerStatus, updateRestaurantListLayerStatus } =
     useRestaurantListLayerStatusStore((state) => state);
@@ -108,14 +105,13 @@ function MainPage() {
 
     socket.on('connect', () => {
       socket.emit('connectRoom', { roomCode, userLat: NAVER_LAT, userLng: NAVER_LNG });
-      updateCurrentPosition();
     });
 
     socket.on('connect_error', () => {
       navigate(URL_PATH.INTERNAL_SERVER_ERROR);
     });
 
-    socket.on('connectResult', (response: ResTemplateType<RoomDataType>) => {
+    socket.on('connectResult', async (response: ResTemplateType<RoomDataType>) => {
       if (!response.data) {
         navigate(URL_PATH.INTERNAL_SERVER_ERROR);
         return;
@@ -127,9 +123,12 @@ function MainPage() {
       setMyName(userName);
       setJoinList(convertArrayToMapByUserId(userList));
       setRestaurantData(restaurantList);
-      setRoomLocation({ ...roomLocation, ...{ lat, lng } });
+      updateMeetLocation(lat, lng);
 
       setRoomConnect(true);
+
+      const userLocation: LocationType = await getCurrentLocation();
+      socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
     });
   };
 
@@ -174,11 +173,11 @@ function MainPage() {
     };
   }, []);
 
-  return !isRoomConnect ? (
+  return !isRoomConnect || !meetLocation ? (
     <LoadingScreen size="large" message="모임방 입장 중..." />
   ) : (
     <MainPageLayout>
-      <MainMap restaurantData={restaurantData} roomLocation={roomLocation} joinList={joinList} />
+      <MainMap restaurantData={restaurantData} roomLocation={meetLocation} joinList={joinList} />
       <HeaderBox>
         <Header>
           <ActiveUserInfo
