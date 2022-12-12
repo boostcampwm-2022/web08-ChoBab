@@ -3,13 +3,8 @@ import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal
 import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { CATEGORY_TYPE } from '@constants/category';
 
-interface LatLngType {
-  lat: number;
-  lng: number;
-}
-
 interface UserLocationStoreType {
-  userLocation: LatLngType | null;
+  userLocation: LocationType | null;
   updateUserLocation: (lat: number, lng: number) => void;
 }
 
@@ -20,7 +15,7 @@ export const useUserLocationStore = create<UserLocationStoreType>((set) => ({
 }));
 
 interface MeetLocationStoreType {
-  meetLocation: LatLngType;
+  meetLocation: LocationType;
   updateMeetLocation: (lat: number, lng: number) => void;
 }
 
