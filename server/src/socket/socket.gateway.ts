@@ -303,11 +303,6 @@ export class EventsGateway
 
     // 방안에 같은 세션 접속자가 없을 때 퇴장 처리 (DB, Client 에서 모두 제거)
     if (!roomSessionIDs.includes(sessionID)) {
-      await this.roomDynamicModel.updateOne(
-        { roomCode: roomCode },
-        { $pull: { userList: { userId: sessionID } } }
-      );
-
       client.to(roomCode).emit('leave', sessionID);
     }
 
