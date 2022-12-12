@@ -1,4 +1,4 @@
-name: Lint + Build Check
+name: Lint + Test + Build Check
 
 on:
   pull_request:
@@ -51,10 +51,13 @@ jobs:
         if: ${{steps.client-cache.outputs.cache-hit != 'true'}}
         run: npm ci
 
-      - name: Run Client Lint Test
-        run: npm run lint
+      - name: Run Client Lint
+        run: npm run lint --if-present
 
-      - name: Run Client Build Test
+      - name: Run Client Test
+        run: npm run test --if-present
+
+      - name: Run Client Build
         run: npm run build --if-present
 
   server:
@@ -86,8 +89,11 @@ jobs:
         if: ${{steps.server-cache.outputs.cache-hit != 'true'}}
         run: npm ci
 
-      - name: Run Server Lint Test
-        run: npm run lint
+      - name: Run Server Lint
+        run: npm run lint --if-present
 
-      - name: Run Server Build Test
+      - name: Run Server Test
+        run: npm run test --if-present
+
+      - name: Run Server Build
         run: npm run build --if-present
