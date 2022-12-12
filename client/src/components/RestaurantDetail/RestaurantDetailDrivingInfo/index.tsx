@@ -96,8 +96,8 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
       strokeWeight: 5, // 선 두께
     });
 
-    // 지도 중심을 경로의 중심으로 설정
-    map.setCenter(polyline.getBounds().getCenter());
+    // 지도의 범위를 경로의 범위로 설정
+    map.fitBounds(polyline.getBounds());
   }, []);
 
   useEffect(() => {
