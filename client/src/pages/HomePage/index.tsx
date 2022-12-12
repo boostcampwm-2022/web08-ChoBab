@@ -29,11 +29,16 @@ function Modal() {
           if (!inputRef.current) {
             return;
           }
+          // 공백 제거
           inputRef.current.value = inputRef.current.value.replace(/^\s+|\s+$/gm, '');
+
+          // 입력된 값이 없을 경우
           if (!inputRef.current.value) {
             setInputError('공백 문자는 입력할 수 없습니다!');
             return;
           }
+
+          // url 이동
           document.location.href = inputRef.current.value;
         }}
       >
