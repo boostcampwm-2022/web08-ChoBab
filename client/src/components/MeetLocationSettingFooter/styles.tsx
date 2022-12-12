@@ -58,3 +58,14 @@ export const StartButton = styled.button`
   border: none;
   border-radius: 4px;
 `;
+
+export const AddressBox = styled.div`
+  width: 55%;
+  height: 2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+`
