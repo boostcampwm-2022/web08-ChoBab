@@ -1,4 +1,4 @@
-name: Build Check
+name: Lint + Build Check
 
 on:
   pull_request:
@@ -27,6 +27,10 @@ jobs:
     needs: changes
     if : ${{ needs.changes.outputs.client == 'true' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node.js(v16.18.1)
@@ -38,23 +42,30 @@ jobs:
         id: client-cache
         uses: actions/cache@v3
         with:
-          path: client/node_modules
+          path: node_modules
           key: npm-packages-client-${{hashFiles('**/package-lock.json')}}
           restore-keys: |
             npm-packages-client-
 
-      - name: Install client dependencies
+      - name: Install Client dependencies
         if: ${{steps.client-cache.outputs.cache-hit != 'true'}}
-        run: cd client && npm ci
+        run: npm ci
 
-      - name: Run client build
-        run: cd client && npm run build --if-present
+      - name: Run Client Lint Test
+        run: npm run lint
+
+      - name: Run Client Build Test
+        run: npm run build --if-present
 
   server:
     # server 폴더에 변화가 있는 경우 Job이 실행됨
     needs: changes
     if : ${{ needs.changes.outputs.server == 'true' }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node.js(v16.18.1)
@@ -66,14 +77,17 @@ jobs:
         id: server-cache
         uses: actions/cache@v3
         with:
-          path: server/node_modules
+          path: node_modules
           key: npm-packages-server-${{hashFiles('**/package-lock.json')}}
           restore-keys: |
             npm-packages-server-
 
       - name: Install Server dependencies
         if: ${{steps.server-cache.outputs.cache-hit != 'true'}}
-        run: cd server && npm ci
+        run: npm ci
 
-      - name: Run Server build
-        run: cd server && npm run build --if-present
+      - name: Run Server Lint Test
+        run: npm run lint
+
+      - name: Run Server Build Test
+        run: npm run build --if-present
