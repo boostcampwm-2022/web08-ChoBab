@@ -11,7 +11,7 @@ import { useMeetLocationStore } from '@store/index';
 function InitRoomPage() {
   const [isGPSReady, setGPSReady] = useState<boolean>(false);
   const { userLocation, updateCurrentPosition } = useCurrentLocation();
-  const { updateMeetLocation } = useMeetLocationStore((state) => state);
+  const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
 
   useEffect(() => {
     if (!isGPSReady) {
@@ -41,7 +41,7 @@ function InitRoomPage() {
     updateCurrentPosition();
   }, []);
 
-  return !isGPSReady ? (
+  return !meetLocation ? (
     <LoadingScreen size="large" message="위치 받아오는 중..." />
   ) : (
     <InitRoomPageLayout>

@@ -15,12 +15,12 @@ export const useUserLocationStore = create<UserLocationStoreType>((set) => ({
 }));
 
 interface MeetLocationStoreType {
-  meetLocation: LocationType;
+  meetLocation: LocationType | null;
   updateMeetLocation: (lat: number, lng: number) => void;
 }
 
 export const useMeetLocationStore = create<MeetLocationStoreType>((set) => ({
-  meetLocation: { lat: NAVER_LAT, lng: NAVER_LNG },
+  meetLocation: null,
   updateMeetLocation: (lat, lng) => set(() => ({ meetLocation: { lat, lng } })),
 }));
 
