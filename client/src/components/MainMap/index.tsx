@@ -314,8 +314,10 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       markerClustering.setMarkers(markers);
     });
 
+    // map.getCenter() 와 무슨 차이지?
+    // map.getCenter() 로 받아온 코드는 갱신이 되질 않는다.
     // 갱신을 위해 map 좌표를 제자리로 이동
-    setMapLocation(map.getCenter());
+    setMapLocation(map.getBounds().getCenter());
   };
 
   const onInit = (map: naver.maps.Map): naver.maps.MapEventListener => {
