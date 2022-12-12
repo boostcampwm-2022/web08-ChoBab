@@ -175,7 +175,7 @@ function MainPage() {
   }, []);
 
   return !isRoomConnect ? (
-    <LoadingScreen type="normal" message="모임방 입장 중..." />
+    <LoadingScreen size="large" message="모임방 입장 중..." />
   ) : (
     <MainPageLayout>
       <MainMap restaurantData={restaurantData} roomLocation={roomLocation} joinList={joinList} />

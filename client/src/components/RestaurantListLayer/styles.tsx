@@ -15,7 +15,7 @@ export const LayerBox = styled(motion.div)<LayerStylePropsType>`
   z-index: ${({ zIndex }) => zIndex};
   background-color: white;
 
-  overflow-y: overlay;
+  /* overflow-y: overlay; */
   &::-webkit-scrollbar {
     width: 8px;
     background-color: transparent;
