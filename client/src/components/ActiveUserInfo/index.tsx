@@ -49,11 +49,7 @@ function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: Prop
 
       setJoinList((prev) => {
         const newMap = new Map(prev);
-
-        if (!newMap.has(userId) && myId !== userId) {
-          newMap.set(userId, userInfo);
-        }
-
+        newMap.set(userId, userInfo);
         return newMap;
       });
     });
@@ -71,15 +67,22 @@ function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: Prop
 
       setJoinList((prev) => {
         const newMap = new Map(prev);
+        const userInfo = newMap.get(userId);
 
-        if (newMap.has(userId)) {
-          newMap.delete(userId);
+        if (!userInfo) {
+          return newMap;
         }
+
+        userInfo.isOnline = false;
+        newMap.set(userId, userInfo);
 
         return newMap;
       });
     });
   }, []);
+
+  const onlineUserList = [...joinList].filter(([userId, userInfo]) => userInfo.isOnline);
+  const offlineUserList = [...joinList].filter(([userId, userInfo]) => !userInfo.isOnline);
 
   return (
     <ActiveUserInfoLayout>
@@ -95,9 +98,25 @@ function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: Prop
       </ListToggleButton>
       <Modal isOpen={isListOpen} setIsOpen={setListOpen}>
         <ActiveUserInfoBox>
-          <p>접속자 총 {joinList.size}명</p>
           <ActiveUserInfoList>
-            {[...joinList].map(([userId, userInfo]) => {
+            <li>
+              <p>접속자 총 {onlineUserList.length}명</p>
+            </li>
+            {onlineUserList.map(([userId, userInfo]) => {
+              return (
+                <ActiveUserInfoItem key={userId}>
+                  <ActiveUserIconBox style={{ backgroundColor: `${stc(userInfo.userId)}` }} />
+                  <p>
+                    {userInfo.userName}
+                    {myId === userId && ' (나)'}
+                  </p>
+                </ActiveUserInfoItem>
+              );
+            })}
+            <li>
+              <p>오프라인 {offlineUserList.length}명</p>
+            </li>
+            {offlineUserList.map(([userId, userInfo]) => {
               return (
                 <ActiveUserInfoItem key={userId}>
                   <ActiveUserIconBox style={{ backgroundColor: `${stc(userInfo.userId)}` }} />

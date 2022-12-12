@@ -6,6 +6,7 @@ interface UserType {
   userLat: number;
   userLng: number;
   userName?: string;
+  isOnline?: boolean; // 변경필요..
 }
 
 const dataTemplate = (message: string, data?: unknown) => {

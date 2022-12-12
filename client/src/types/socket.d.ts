@@ -3,6 +3,7 @@ declare interface UserType {
   userLat: number;
   userLng: number;
   userName?: string;
+  isOnline: boolean;
 }
 
 declare interface RestaurantType {

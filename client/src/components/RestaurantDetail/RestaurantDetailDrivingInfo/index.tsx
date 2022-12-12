@@ -8,27 +8,23 @@ import { ERROR_REASON } from '@constants/error';
 import { apiService } from '@apis/index';
 import { DrivingInfoBox, MapBox } from './styles';
 
-interface PositionType {
-  lat: number;
-  lng: number;
-}
-
 interface PropsType {
-  restaurantPos: PositionType;
+  restaurantPos: LocationType;
 }
 
 function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
   const navigate = useNavigate();
   const { userLocation } = useUserLocationStore();
-  const userPos: PositionType = userLocation;
   const [drivingInfo, setDrivingInfo] = useState<DrivingInfoType>();
 
   const mapRef = useRef<HTMLDivElement>(null);
 
+  const userPos: LocationType | null = userLocation;
+
   // 길찾기 API 호출
   const getDrivingInfo = async (
-    startPos: PositionType,
-    goalPos: PositionType
+    startPos: LocationType,
+    goalPos: LocationType
   ): Promise<DrivingInfoType> => {
     const { lat: startLat, lng: startLng } = startPos;
     const { lat: goalLat, lng: goalLng } = goalPos;
@@ -51,7 +47,7 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
   };
 
   const mapSetting = useCallback(async () => {
-    if (!mapRef.current) {
+    if (!mapRef.current || !userPos) {
       return;
     }
 
