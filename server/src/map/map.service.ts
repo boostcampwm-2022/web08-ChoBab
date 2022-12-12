@@ -74,9 +74,9 @@ export class MapService {
    * 길찾기 요청에 대한 summary 정보를 필요한 부분만 사용하고 필요한 형태로 가공
    */
   private summaryDataProcessing(summary: SummaryType) {
-    const { distance, duration, tollFare, taxiFare, fuelPrice } = summary;
+    const { distance, duration, bbox, tollFare, taxiFare, fuelPrice } = summary;
     const start = summary.start.location;
     const goal = summary.goal.location;
-    return { start, goal, distance, duration, tollFare, taxiFare, fuelPrice };
+    return { start, goal, distance, duration, bbox, tollFare, taxiFare, fuelPrice };
   }
 }
