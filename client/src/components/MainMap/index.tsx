@@ -11,14 +11,18 @@ import hotdogImageSrc from '@assets/images/hotdog.svg';
 import userImageSrc from '@assets/images/user.svg';
 
 import { useSelectedCategoryStore } from '@store/index';
+import { useSocketStore } from '@store/socket';
 
 import { CATEGORY_TYPE } from '@constants/category';
 import LoadingScreen from '@components/LoadingScreen';
 import { useNaverMaps } from '@hooks/useNaverMaps';
+import useCurrentLocation from '@hooks/useCurrentLocation';
 
 import classes from '@styles/marker.module.css';
 
 import '@utils/MarkerClustering.js';
+
+import { Socket } from 'socket.io-client';
 
 import { MapLayout, MapLoadingBox, MapBox } from './styles';
 
@@ -63,21 +67,21 @@ const getIconUrlByCategory = (category: CATEGORY_TYPE) => {
   }
 };
 
-type userIdType = string;
-
 function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [mapRef, mapDivRef] = useNaverMaps();
 
-  const joinListMarkersRef = useRef<Map<userIdType, naver.maps.Marker>>(new Map());
-  const joinListInfoWindowsRef = useRef<Map<userIdType, naver.maps.InfoWindow>>(new Map());
+  const joinListMarkersRef = useRef<Map<UserIdType, naver.maps.Marker>>(new Map());
+  const joinListInfoWindowsRef = useRef<Map<UserIdType, naver.maps.InfoWindow>>(new Map());
 
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
 
   const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
 
+  const { userLocation } = useCurrentLocation();
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
+  const { socket } = useSocketStore((state) => state);
 
   const closeAllRestaurantMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
@@ -383,6 +387,33 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
     mapRef.current.setCenter({ x: roomLocation.lng, y: roomLocation.lat });
   }, [roomLocation]);
+
+  // geolocation으로 사용자 위치 불러와질 경우 모든 사용자에게 알림.
+  useEffect(() => {
+    if (!(socket instanceof Socket) || !userLocation) {
+      return;
+    }
+
+    socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
+  }, [userLocation]);
+
+  // 사용자의 위치 변경이 있을 경우 반영하는 소켓 이벤트
+  useEffect(() => {
+    if (!(socket instanceof Socket)) {
+      return;
+    }
+
+    socket.on('changeUserLocation', (response: ResTemplateType<UserType>) => {
+      if (!response.data) {
+        return;
+      }
+
+      const { userId, userLat, userLng } = response.data;
+
+      const marker = joinListMarkersRef.current.get(userId);
+      marker?.setPosition(new naver.maps.LatLng(userLat, userLng));
+    });
+  }, []);
 
   return (
     <MapLayout>

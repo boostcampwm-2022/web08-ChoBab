@@ -10,25 +10,28 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Room, RoomDocument } from '@room/room.schema';
 import { Model } from 'mongoose';
 import { Server, Socket } from 'socket.io';
-import { sessionMiddleware } from '@utils/session';
 import { NextFunction, Request, Response } from 'express';
-import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
+
+import { Room, RoomDocument } from '@room/room.schema';
 import { makeUserRandomNickname } from '@utils/nickname';
+import { sessionMiddleware } from '@utils/session';
+
 import { RedisService } from '@cache/redis.service';
 
+import { VoteResultType } from '@socket/socket';
 import { SOCKET_RES } from '@socket/socket.response';
 import { VoteRestaurantDto } from '@socket/dto/vote-restaurant.dto';
-import { VoteResultType } from '@socket/socket';
+import { ConnectRoomDto } from '@socket/dto/connect-room.dto';
+import { UserLocationDto } from './dto/user-location.dto';
 
 @WebSocketGateway({ namespace: 'room' })
 export class EventsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
 {
   @WebSocketServer()
-  server: Server; // 'room' namespace server instance
+  server: Server;
 
   constructor(
     @InjectModel(Room.name) private roomModel: Model<RoomDocument>,
@@ -62,12 +65,17 @@ export class EventsGateway
 
     try {
       const { lat, lng } = await this.roomModel.findOne({ roomCode });
+
       const restaurantList = await this.redisService.restaurantList.getRestaurantListForRoom(
         roomCode
       );
+
       const { sessionID: userId } = client.request;
+
       const user = { userId, userLat, userLng, userName: makeUserRandomNickname() };
+
       await this.redisService.joinList.addUserToJoinList(roomCode, user);
+
       const newUserList = await this.redisService.joinList.getJoinList(roomCode);
 
       client.emit(
@@ -83,7 +91,7 @@ export class EventsGateway
         )
       );
 
-      client.to(roomCode).emit('join', user); // 자신을 제외하네?
+      client.to(roomCode).emit('join', SOCKET_RES.JOIN_USER(user));
     } catch (error) {
       client.emit('connectResult', SOCKET_RES.CONNECT_FAIL);
     }
@@ -95,6 +103,29 @@ export class EventsGateway
 
   handleConnection() {
     console.log('connected');
+  }
+
+  @SubscribeMessage('changeMyLocation')
+  async handleMyLoc(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() userLocationDto: UserLocationDto
+  ) {
+    const { sessionID, roomCode } = client;
+    const { userLat, userLng } = userLocationDto;
+
+    // 유저 정보 업데이트
+    await this.redisService.joinList.updateUserLocationDataToJoinList(roomCode, sessionID, {
+      userLat,
+      userLng,
+    });
+
+    // 모든 사용자에게 업데이트 된 위치를 알림
+    this.server
+      .in(roomCode)
+      .emit(
+        'changeUserLocation',
+        SOCKET_RES.CHANGED_USER_LOCATION({ userId: sessionID, userLat, userLng })
+      );
   }
 
   // 식당 투표
@@ -217,9 +248,7 @@ export class EventsGateway
 
     // 방안에 같은 세션 접속자가 없을 때 퇴장 처리 (DB, Client 에서 모두 제거)
     if (!roomSessionIDs.includes(sessionID)) {
-      await this.redisService.joinList.delUserToJoinList(roomCode, sessionID);
-
-      client.to(roomCode).emit('leave', sessionID);
+      client.to(roomCode).emit('leave', SOCKET_RES.LEAVE_USER(sessionID));
     }
 
     console.log('disconnected');
@@ -228,6 +257,7 @@ export class EventsGateway
   // 투표 현황 데이터 가공 함수
   private getCurrentVoteResult = (candidateList: { [index: string]: string[] }) => {
     const voteResult: VoteResultType[] = [];
+
     Object.keys(candidateList).forEach((restaurantId) => {
       if (!candidateList[restaurantId].length) {
         return;

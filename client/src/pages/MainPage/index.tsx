@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Socket } from 'socket.io-client';
-import { useSocket } from '@hooks/useSocket';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { io, Socket } from 'socket.io-client';
+import { useSocketStore } from '@store/socket';
 import { useRestaurantListLayerStatusStore } from '@store/index';
 
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
@@ -24,6 +24,7 @@ import RestaurantCategory from '@components/RestaurantCategory';
 import LoadingScreen from '@components/LoadingScreen';
 
 import { apiService } from '@apis/index';
+
 import {
   ButtonInnerTextBox,
   CandidateListButton,
@@ -36,14 +37,18 @@ import {
 
 function MainPage() {
   const navigate = useNavigate();
-  const userLocation = useCurrentLocation();
-  const { roomCode } = useParams<{ roomCode: string }>();
-  const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
-  const [socketRef, connectSocket, disconnectSocket] = useSocket();
 
+  const { roomCode } = useParams<{ roomCode: string }>();
+
+  const socketRef = useRef<Socket | null>(null);
+
+  const { setSocket } = useSocketStore((state) => state);
+  const { updateCurrentPosition } = useCurrentLocation();
+
+  const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
   const [myName, setMyName] = useState<string>('');
-  const [joinList, setJoinList] = useState<Map<string, UserType>>(new Map());
+  const [joinList, setJoinList] = useState<Map<UserIdType, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
   const [roomLocation, setRoomLocation] = useState<{ lat: number; lng: number }>({
     lat: NAVER_LAT,
@@ -83,38 +88,49 @@ function MainPage() {
     updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
   };
 
-  const connectRoom = () => {
-    const clientSocket = socketRef.current;
-    const { lat: userLat, lng: userLng } = userLocation;
+  const convertArrayToMapByUserId = (userList: JoinListType): Map<UserIdType, UserType> => {
+    const joinUserList = new Map<UserIdType, UserType>();
 
-    if (!(clientSocket instanceof Socket)) {
-      throw new Error();
-    }
+    Object.keys(userList).forEach((userIdInRoom) => {
+      const userInfo = userList[userIdInRoom];
+      joinUserList.set(userInfo.userId, userInfo);
+    });
 
-    clientSocket.on('connectResult', (data: ResTemplateType<RoomDataType>) => {
-      if (!data.data) {
-        console.log(data.message);
+    return joinUserList;
+  };
+
+  const initSocket = () => {
+    socketRef.current = io('/room');
+
+    const socket = socketRef.current;
+
+    setSocket(socket);
+
+    socket.on('connect', () => {
+      socket.emit('connectRoom', { roomCode, userLat: NAVER_LAT, userLng: NAVER_LNG });
+      updateCurrentPosition();
+    });
+
+    socket.on('connect_error', () => {
+      navigate(URL_PATH.INTERNAL_SERVER_ERROR);
+    });
+
+    socket.on('connectResult', (response: ResTemplateType<RoomDataType>) => {
+      if (!response.data) {
+        navigate(URL_PATH.INTERNAL_SERVER_ERROR);
         return;
       }
-      const { lat, lng, userList, restaurantList, userId, userName } = data.data;
 
-      const joinUserList = new Map<string, UserType>();
-
-      Object.keys(userList).forEach((userIdInRoom) => {
-        const userInfo = userList[userIdInRoom];
-        joinUserList.set(userInfo.userId, userInfo);
-      });
-
-      setJoinList(joinUserList);
+      const { lat, lng, userList, restaurantList, userId, userName } = response.data;
 
       setMyId(userId);
       setMyName(userName);
-      setRoomConnect(true);
+      setJoinList(convertArrayToMapByUserId(userList));
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
-    });
 
-    clientSocket.emit('connectRoom', { roomCode, userLat, userLng });
+      setRoomConnect(true);
+    });
   };
 
   const initService = async () => {
@@ -122,46 +138,41 @@ function MainPage() {
       if (!roomCode) {
         throw new Error('입장하고자 하는 방의 코드가 존재하지 않습니다.');
       }
+
       /**
        * connect 순서 매우 중요
        * 세션 객체 생성을 위해 rest api 가 먼저 호출되어야 한다.
        */
       const isRoomValid = await apiService.getRoomValid(roomCode);
 
-      await connectSocket();
+      if (!isRoomValid) {
+        throw new Error('입장하고자 하는 방이 올바르지 않습니다.');
+      }
 
-      connectRoom();
+      initSocket();
     } catch (error: any) {
       if (error.response.status === 500) {
         navigate(URL_PATH.INTERNAL_SERVER_ERROR);
         return;
       }
+
       navigate(URL_PATH.INVALID_ROOM);
     }
   };
 
   useEffect(() => {
-    // userLocation 의 초기값을 {lat:null, lng:null} 로 지정.
-    // 따라서 사용자의 위치 정보의 로딩이 끝나기 전까지(위치 정보 불러오기 성공 혹은 실패) 해당 if 문을 통해 initService가 작동하지 않게 됨.
-    // userLocation으로 사용자의 위치 정보를 불러오는 과정이 비동기로 이루어지기 때문에 initService가 여러번 발생할 위험이 있었는데 이를 차단.
-    // PR: https://github.com/boostcampwm-2022/web08-ChoBab/pull/92
-    if (!userLocation.lat || !userLocation.lng) {
-      return;
-    }
-    if (!roomCode) {
-      return;
-    }
-    if (isRoomConnect) {
-      return;
-    }
-
     initService();
 
-    // eslint-disable-next-line consistent-return
     return () => {
-      disconnectSocket();
+      const socket = socketRef.current;
+
+      if (!(socket instanceof Socket)) {
+        return;
+      }
+
+      socket.close();
     };
-  }, [userLocation]);
+  }, []);
 
   return !isRoomConnect ? (
     <LoadingScreen size="large" message="모임방 입장 중..." />
