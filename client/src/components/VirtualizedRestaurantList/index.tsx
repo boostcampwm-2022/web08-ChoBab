@@ -51,7 +51,7 @@ function VirtualizedRestaurantList({ filteredRestaurantList }: PropsType) {
 
     return !isItemLoaded(index) ? (
       <div style={style} ref={itemRef}>
-        <LoadingScreen type="map" />
+        <LoadingScreen size={index === 0 ? 'large' : 'small'} />
       </div>
     ) : (
       <div style={style} ref={itemRef}>

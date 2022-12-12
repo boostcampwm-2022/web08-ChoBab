@@ -388,7 +388,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     <MapLayout>
       {loading && (
         <MapLoadingBox>
-          <LoadingScreen type="map" />
+          <LoadingScreen size="small" />
         </MapLoadingBox>
       )}
       <MapBox ref={mapDivRef} />
