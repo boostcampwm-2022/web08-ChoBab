@@ -10,15 +10,16 @@ import {
   ButtonBox,
   ModalLayout,
   ModalBox,
-  InputButton,
+  ModalInputButton,
+  ModalInput,
 } from './styles';
 
 function Modal() {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <ModalBox>
-      <input ref={inputRef} type="text" placeholder="모임 코드를 입력하세요." />
-      <InputButton
+      <ModalInput ref={inputRef} type="text" placeholder="모임방 url을 입력하세요." />
+      <ModalInputButton
         onClick={(e) => {
           e.preventDefault();
           if (!inputRef.current) {
@@ -28,7 +29,7 @@ function Modal() {
         }}
       >
         입장
-      </InputButton>
+      </ModalInputButton>
     </ModalBox>
   );
 }
