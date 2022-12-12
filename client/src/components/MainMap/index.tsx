@@ -350,6 +350,19 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     return onZoomChangedListener;
   };
 
+  const setMeetingBoundary = (map: naver.maps.Map): void => {
+    (() => {
+      return new naver.maps.Circle({
+        map,
+        radius: 1000,
+        center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
+        strokeWeight: 1,
+        strokeStyle: 'dash',
+        strokeColor: 'gray',
+      });
+    })();
+  };
+
   useEffect(() => {
     const restaurantListDividedByCategory = getRestaurantDividedByCategory();
     updateMarkerClusteringObjects(restaurantListDividedByCategory);
@@ -366,15 +379,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       return;
     }
 
-    const boundaryCircle = new naver.maps.Circle({
-      map: mapRef.current,
-      radius: 1000,
-      center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
-      strokeWeight: 1,
-      strokeStyle: 'dash',
-      strokeColor: 'gray',
-    });
-
+    setMeetingBoundary(mapRef.current);
     const initListener = onInit(mapRef.current);
     const clickListener = onClick(mapRef.current);
     const dragendListener = onDragend(mapRef.current);
@@ -400,7 +405,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     mapRef.current.setCenter({ x: roomLocation.lng, y: roomLocation.lat });
   }, [roomLocation]);
 
-  // geolocation으로 사용자 위치 불러와질 경우 모든 사용자에게 알림.
+  // 사용자의 위치정보가 갱신되었을 경우 모든 사용자에게 알리고 화면을 이동시킴.
   useEffect(() => {
     if (!(socket instanceof Socket) || !userLocation) {
       return;
