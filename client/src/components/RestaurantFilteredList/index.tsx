@@ -1,90 +1,51 @@
-import {
-  Component,
-  ComponentType,
-  CSSProperties,
-  Ref,
-  Key,
-  FunctionComponent,
-  ComponentClass,
-} from 'react';
+import { useState, useEffect } from 'react';
 
-import { VariableSizeList } from 'react-window';
-import {
-  useRestaurantDetailLayerStatusStore,
-  useSelectedRestaurantDataStore,
-  useSelectedCategoryStore,
-} from '@store/index';
-import RestaurantRow from '@components/RestaurantRow';
 import EmptyListPlaceholder from '@components/EmptyListPlaceholder';
-import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
+import VirtualizedRestaurantList from '@components/VirtualizedRestaurantList';
+
 import { CATEGORY_TYPE } from '@constants/category';
-import { RestaurantFilteredBox, RestaurantFilteredList, RestaurantFilteredItem } from './styles';
+import { useSelectedCategoryStore } from '@store/index';
+import { RestaurantFilteredBox } from './styles';
 
 interface PropsType {
   restaurantData: RestaurantType[];
 }
 
+// TODO: FilteredRestaurant가 아닌 이유가 있었는지?
 function RestaurantFiltered({ restaurantData }: PropsType) {
-  const { updateRestaurantDetailLayerStatus } = useRestaurantDetailLayerStatusStore(
-    (state) => state
-  );
+  // 필터된 식당 데이터
+  const [filteredRestaurantList, setFilteredRestaurantList] = useState<RestaurantType[]>([]); // state??
 
+  // 카테고리로 필터링
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
-
-  const { updateSelectedRestaurantData } = useSelectedRestaurantDataStore((state) => state);
-
   const isNotAnyFilter = () => {
     return selectedCategoryData.size === 0;
   };
 
-  const restaurantFilteredList = restaurantData
-    .filter(
-      (restaurant) =>
-        isNotAnyFilter() || selectedCategoryData.has(restaurant.category as CATEGORY_TYPE)
-    )
-    .slice(0, 20);
-
-  const getItemSize = (index: any) => {
-    // 아이템 행 높이 계산 필요
-    return 200;
-  };
-
-  // eslint-disable-next-line react/no-unstable-nested-components
-  function Row({ index, style }: { index: number; style: CSSProperties }) {
-    const restaurant = restaurantData[index];
-    return (
-      <div style={style}>
-        <RestaurantFilteredItem
-          onClick={() => {
-            updateRestaurantDetailLayerStatus(RESTAURANT_DETAIL_TYPES.show);
-            updateSelectedRestaurantData(restaurant);
-          }}
-          key={restaurant.id}
-        >
-          <RestaurantRow
-            restaurant={restaurant}
-            restaurantListType={RESTAURANT_LIST_TYPES.filtered}
-          />
-        </RestaurantFilteredItem>
-      </div>
+  useEffect(() => {
+    setFilteredRestaurantList(
+      restaurantData.filter(
+        (restaurant) =>
+          isNotAnyFilter() || selectedCategoryData.has(restaurant.category as CATEGORY_TYPE)
+      )
     );
-  }
+  }, []);
+
+  useEffect(() => {
+    setFilteredRestaurantList(
+      restaurantData.filter(
+        (restaurant) =>
+          isNotAnyFilter() || selectedCategoryData.has(restaurant.category as CATEGORY_TYPE)
+      )
+    );
+  }, [selectedCategoryData]);
 
   return (
     <RestaurantFilteredBox>
-      {!restaurantFilteredList.length ? (
+      {!filteredRestaurantList.length ? (
         <EmptyListPlaceholder />
       ) : (
-        <RestaurantFilteredList>
-          <VariableSizeList
-            height={400}
-            width={300}
-            itemCount={restaurantData.length}
-            itemSize={getItemSize}
-          >
-            {Row}
-          </VariableSizeList>
-        </RestaurantFilteredList>
+        <VirtualizedRestaurantList filteredRestaurantList={filteredRestaurantList} />
       )}
     </RestaurantFilteredBox>
   );
