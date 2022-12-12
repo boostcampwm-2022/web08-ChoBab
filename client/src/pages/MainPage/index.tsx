@@ -87,14 +87,8 @@ function MainPage() {
     updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
   };
 
-  const divideByUserId = (userList: UserType[]): Map<UserIdType, UserType> => {
-    const tmp = new Map<UserIdType, UserType>();
-
-    userList.forEach((userInfo) => {
-      tmp.set(userInfo.userId, userInfo);
-    });
-
-    return tmp;
+  const convertArrayToMapByUserId = (userList: UserType[]): Map<UserIdType, UserType> => {
+    return new Map<UserIdType, UserType>(userList.map((userInfo) => [userInfo.userId, userInfo]));
   };
 
   const initSocket = () => {
@@ -123,7 +117,7 @@ function MainPage() {
 
       setMyId(userId);
       setMyName(userName);
-      setJoinList(divideByUserId(userList));
+      setJoinList(convertArrayToMapByUserId(userList));
       setRestaurantData(restaurantList);
       setRoomLocation({ ...roomLocation, ...{ lat, lng } });
 
