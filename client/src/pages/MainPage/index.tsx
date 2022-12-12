@@ -43,7 +43,7 @@ function MainPage() {
   const socketRef = useRef<Socket | null>(null);
 
   const { setSocket } = useSocketStore((state) => state);
-  const { updateCurrentPosition } = useCurrentLocation();
+  const { getCurrentLocation } = useCurrentLocation();
 
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
@@ -105,14 +105,13 @@ function MainPage() {
 
     socket.on('connect', () => {
       socket.emit('connectRoom', { roomCode, userLat: NAVER_LAT, userLng: NAVER_LNG });
-      updateCurrentPosition();
     });
 
     socket.on('connect_error', () => {
       navigate(URL_PATH.INTERNAL_SERVER_ERROR);
     });
 
-    socket.on('connectResult', (response: ResTemplateType<RoomDataType>) => {
+    socket.on('connectResult', async (response: ResTemplateType<RoomDataType>) => {
       if (!response.data) {
         navigate(URL_PATH.INTERNAL_SERVER_ERROR);
         return;
@@ -127,6 +126,9 @@ function MainPage() {
       updateMeetLocation(lat, lng);
 
       setRoomConnect(true);
+
+      const userLocation: LocationType = await getCurrentLocation();
+      socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
     });
   };
 

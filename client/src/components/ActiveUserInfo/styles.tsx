@@ -34,11 +34,14 @@ export const ActiveUserInfoBox = styled.div`
   }
 `;
 
-export const ActiveUserInfoList = styled.ul``;
+export const ActiveUserInfoList = styled.ul`
+  li {
+    list-style: none;
+  }
+`;
 
 export const ActiveUserInfoItem = styled.li`
   display: flex;
-  list-style: none;
   align-items: center;
   margin: 10px 0;
 `;

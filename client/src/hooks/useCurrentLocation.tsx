@@ -22,7 +22,20 @@ const useCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
   };
 
-  return { userLocation, updateCurrentPosition };
+  const getCurrentLocation = () => {
+    return new Promise<LocationType>((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position: GeolocationPosition) => {
+          resolve({ lat: position.coords.latitude, lng: position.coords.longitude });
+        },
+        () => {
+          reject();
+        }
+      );
+    });
+  };
+
+  return { userLocation, updateCurrentPosition, getCurrentLocation };
 };
 
 export default useCurrentLocation;
