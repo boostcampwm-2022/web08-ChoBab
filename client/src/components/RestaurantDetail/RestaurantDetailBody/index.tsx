@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import * as palette from '@styles/Variables';
-import { ReactComponent as MarkerIcon } from '@assets/images/marker.svg';
+import { ReactComponent as FlagIcon } from '@assets/images/flag.svg';
 import { ReactComponent as PhoneIcon } from '@assets/images/phone-icon.svg';
 import RestaurantDetailDrivingInfo from '@components/RestaurantDetail/RestaurantDetailDrivingInfo';
 import {
@@ -86,7 +86,7 @@ export function RestaurantDetailBody({ id, address, lat, lng, phone }: PropsType
         <ModalBodyContent>
           <AddressBox>
             <IconBox>
-              <MarkerIcon />
+              <FlagIcon />
             </IconBox>
             <p>{address}</p>
           </AddressBox>

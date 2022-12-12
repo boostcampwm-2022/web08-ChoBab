@@ -10,10 +10,15 @@ import hamburgerImageSrc from '@assets/images/hamburger.svg';
 import hotdogImageSrc from '@assets/images/hotdog.svg';
 import userImageSrc from '@assets/images/user.svg';
 
+import { ReactComponent as GpsIcon } from '@assets/images/gps.svg';
+import { ReactComponent as PointCircleIcon } from '@assets/images/point-circle.svg';
+
 import { useSelectedCategoryStore } from '@store/index';
 import { useSocketStore } from '@store/socket';
 
 import { CATEGORY_TYPE } from '@constants/category';
+import { DEFAULT_ZOOM } from '@constants/map';
+
 import LoadingScreen from '@components/LoadingScreen';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 import useCurrentLocation from '@hooks/useCurrentLocation';
@@ -24,7 +29,7 @@ import '@utils/MarkerClustering.js';
 
 import { Socket } from 'socket.io-client';
 
-import { MapLayout, MapLoadingBox, MapBox } from './styles';
+import { MapControlBox, MapLayout, MapLoadingBox, MapBox } from './styles';
 
 interface RestaurantType {
   id: string;
@@ -79,9 +84,46 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
   const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
 
-  const { userLocation } = useCurrentLocation();
+  const { userLocation, updateCurrentPosition } = useCurrentLocation();
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
   const { socket } = useSocketStore((state) => state);
+
+  const setMapLocation = (location: LocationType | naver.maps.Coord) => {
+    const map = mapRef.current;
+
+    if (!map) {
+      return;
+    }
+
+    map.setCenter(location);
+    map.setZoom(DEFAULT_ZOOM);
+  };
+
+  const handleSetMapLocation = (location: LocationType | naver.maps.Coord): (() => void) => {
+    return () => {
+      const map = mapRef.current;
+
+      if (!map) {
+        return;
+      }
+
+      map.setCenter(location);
+      map.setZoom(DEFAULT_ZOOM);
+    };
+  };
+
+  const setMeetingBoundary = (map: naver.maps.Map): void => {
+    (() => {
+      return new naver.maps.Circle({
+        map,
+        radius: 1000,
+        center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
+        strokeWeight: 1,
+        strokeStyle: 'dash',
+        strokeColor: 'gray',
+      });
+    })();
+  };
 
   const closeAllRestaurantMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
@@ -280,7 +322,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     });
 
     // 갱신을 위해 map 좌표를 제자리로 이동
-    map.setCenter(map.getBounds().getCenter());
+    setMapLocation(map.getCenter());
   };
 
   const onInit = (map: naver.maps.Map): naver.maps.MapEventListener => {
@@ -363,6 +405,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       return;
     }
 
+    setMeetingBoundary(mapRef.current);
     const initListener = onInit(mapRef.current);
     const clickListener = onClick(mapRef.current);
     const dragendListener = onDragend(mapRef.current);
@@ -381,18 +424,16 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
   // 모임 위치(props) 변경 시 지도 화면 이동
   useEffect(() => {
-    if (!mapRef.current) {
-      return;
-    }
-
-    mapRef.current.setCenter({ x: roomLocation.lng, y: roomLocation.lat });
+    setMapLocation(roomLocation);
   }, [roomLocation]);
 
-  // geolocation으로 사용자 위치 불러와질 경우 모든 사용자에게 알림.
+  // 사용자의 위치정보가 갱신되었을 경우 모든 사용자에게 알리고 화면을 이동시킴.
   useEffect(() => {
     if (!(socket instanceof Socket) || !userLocation) {
       return;
     }
+
+    setMapLocation(userLocation);
 
     socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
   }, [userLocation]);
@@ -423,6 +464,19 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         </MapLoadingBox>
       )}
       <MapBox ref={mapDivRef} />
+      <MapControlBox>
+        <button type="button" onClick={handleSetMapLocation(roomLocation)}>
+          <PointCircleIcon />
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            updateCurrentPosition();
+          }}
+        >
+          <GpsIcon />
+        </button>
+      </MapControlBox>
     </MapLayout>
   );
 }
