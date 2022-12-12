@@ -17,6 +17,8 @@ import { useSelectedCategoryStore } from '@store/index';
 import { useSocketStore } from '@store/socket';
 
 import { CATEGORY_TYPE } from '@constants/category';
+import { DEFAULT_ZOOM } from '@constants/map';
+
 import LoadingScreen from '@components/LoadingScreen';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 import useCurrentLocation from '@hooks/useCurrentLocation';
@@ -94,6 +96,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     }
 
     map.setCenter(location);
+    map.setZoom(DEFAULT_ZOOM);
   };
 
   const handleSetMapLocation = (location: LocationType | naver.maps.Coord): (() => void) => {
@@ -105,6 +108,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       }
 
       map.setCenter(location);
+      map.setZoom(DEFAULT_ZOOM);
     };
   };
 
