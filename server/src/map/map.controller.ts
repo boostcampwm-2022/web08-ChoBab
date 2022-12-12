@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { GetDrivingQueryDto } from '@map/dto/get-driving-query.dto';
 import { MapService } from '@map/map.service';
-import { MAP_RES } from '@response/map';
+import { MAP_RES } from '@map/map.response';
 
 @Controller('map')
 export class MapController {

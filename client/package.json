@@ -15,6 +15,7 @@
     "geolib": "^3.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-loader-spinner": "^5.3.4",
     "react-router-dom": "^6.4.3",
     "socket.io-client": "^4.5.3",
     "string-to-color": "^2.2.2",
@@ -49,8 +50,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   }
 }

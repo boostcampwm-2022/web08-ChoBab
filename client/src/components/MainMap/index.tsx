@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import stc from 'string-to-color';
 
 import riceImageSrc from '@assets/images/rice.svg';
 import sushiImageSrc from '@assets/images/sushi.svg';
@@ -8,15 +9,12 @@ import chickenImageSrc from '@assets/images/chicken.svg';
 import hamburgerImageSrc from '@assets/images/hamburger.svg';
 import hotdogImageSrc from '@assets/images/hotdog.svg';
 import userImageSrc from '@assets/images/user.svg';
-import { ReactComponent as LoadingSpinner } from '@assets/images/loading-spinner.svg';
 
 import { useSelectedCategoryStore } from '@store/index';
 import { useSocketStore } from '@store/socket';
 
 import { CATEGORY_TYPE } from '@constants/category';
-
-import stc from 'string-to-color';
-
+import LoadingScreen from '@components/LoadingScreen';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 import useCurrentLocation from '@hooks/useCurrentLocation';
 
@@ -417,7 +415,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     <MapLayout>
       {loading && (
         <MapLoadingBox>
-          <LoadingSpinner />
+          <LoadingScreen type="map" />
         </MapLoadingBox>
       )}
       <MapBox ref={mapDivRef} />

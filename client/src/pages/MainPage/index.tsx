@@ -21,6 +21,7 @@ import useCurrentLocation from '@hooks/useCurrentLocation';
 import RestaurantListLayer from '@components/RestaurantListLayer';
 import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
 import RestaurantCategory from '@components/RestaurantCategory';
+import LoadingScreen from '@components/LoadingScreen';
 
 import { apiService } from '@apis/index';
 
@@ -87,8 +88,15 @@ function MainPage() {
     updateRestaurantListLayerStatus(RESTAURANT_LIST_TYPES.hidden);
   };
 
-  const convertArrayToMapByUserId = (userList: UserType[]): Map<UserIdType, UserType> => {
-    return new Map<UserIdType, UserType>(userList.map((userInfo) => [userInfo.userId, userInfo]));
+  const convertArrayToMapByUserId = (userList: JoinListType): Map<UserIdType, UserType> => {
+    const joinUserList = new Map<UserIdType, UserType>();
+
+    Object.keys(userList).forEach((userIdInRoom) => {
+      const userInfo = userList[userIdInRoom];
+      joinUserList.set(userInfo.userId, userInfo);
+    });
+
+    return joinUserList;
   };
 
   const initSocket = () => {
@@ -167,7 +175,7 @@ function MainPage() {
   }, []);
 
   return !isRoomConnect ? (
-    <div>loading...</div>
+    <LoadingScreen type="normal" message="모임방 입장 중..." />
   ) : (
     <MainPageLayout>
       <MainMap restaurantData={restaurantData} roomLocation={roomLocation} joinList={joinList} />
