@@ -28,15 +28,6 @@ function RestaurantFiltered({ restaurantData }: PropsType) {
           isNotAnyFilter() || selectedCategoryData.has(restaurant.category as CATEGORY_TYPE)
       )
     );
-  }, []);
-
-  useEffect(() => {
-    setFilteredRestaurantList(
-      restaurantData.filter(
-        (restaurant) =>
-          isNotAnyFilter() || selectedCategoryData.has(restaurant.category as CATEGORY_TYPE)
-      )
-    );
   }, [selectedCategoryData]);
 
   return (
