@@ -4,11 +4,7 @@ import { useMeetLocationStore } from '@store/index';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 import { MapBox, MarkerBox } from './styles';
 
-interface PropsType {
-  userLocation: LocationType | null;
-}
-
-function MeetLocationSettingMap({ userLocation }: PropsType) {
+function MeetLocationSettingMap() {
   const [mapRef, mapDivRef] = useNaverMaps();
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
 
@@ -50,14 +46,6 @@ function MeetLocationSettingMap({ userLocation }: PropsType) {
       naver.maps.Event.removeListener(zoomChangedListener);
     };
   }, []);
-
-  useEffect(() => {
-    if (!mapRef.current || !userLocation) {
-      return;
-    }
-
-    updateMeetLocation(userLocation.lat, userLocation.lng);
-  }, [userLocation]);
 
   // 모임 위치(전역 상태) 변경 시 지도 화면 이동
   useEffect(() => {
