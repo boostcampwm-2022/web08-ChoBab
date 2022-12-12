@@ -5,7 +5,6 @@ interface StartOrGoalType {
 export interface SummaryType {
   start: StartOrGoalType; // 출발지
   goal: StartOrGoalType; // 도착지
-  bbox: number[][]; // 전체 경로 경계 영역(eft bottom point, right top point)
   distance: number; // 총 거리
   duration: number; // 소요 시간(millisecond)
   tollFare: number; // 통행 요금(톨게이트)
@@ -30,7 +29,6 @@ export interface NaverDrivingResType {
 export interface DrivingInfoType {
   start: number[];
   goal: number[];
-  bbox: number[][];
   distance: number;
   duration: number;
   tollFare: number;
