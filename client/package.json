@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint \"{src,test}/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@vitejs/plugin-react": "^2.2.0",
