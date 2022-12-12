@@ -3,26 +3,35 @@ import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { URL_PATH } from '@constants/url';
 import {
-  HomePageLayout,
-  HomePageBox,
   Button,
-  FooterBox,
   ButtonBox,
-  ModalLayout,
+  FooterBox,
+  HomePageBox,
+  HomePageLayout,
   ModalBox,
-  ModalInputButton,
   ModalInput,
+  ModalInputButton,
+  ModalInputError,
+  ModalLayout,
 } from './styles';
 
 function Modal() {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [inputError, setInputError] = useState<string>('');
+
   return (
     <ModalBox>
       <ModalInput ref={inputRef} type="text" placeholder="모임방 url을 입력하세요." />
+      <ModalInputError>{inputError}</ModalInputError>
       <ModalInputButton
         onClick={(e) => {
           e.preventDefault();
           if (!inputRef.current) {
+            return;
+          }
+          inputRef.current.value = inputRef.current.value.replace(/^\s+|\s+$/gm, '');
+          if (!inputRef.current.value) {
+            setInputError('공백 문자는 입력할 수 없습니다!');
             return;
           }
           document.location.href = inputRef.current.value;

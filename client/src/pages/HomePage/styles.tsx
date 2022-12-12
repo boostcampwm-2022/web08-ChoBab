@@ -67,7 +67,7 @@ export const ModalBox = styled.div`
   height: 20%;
   background-color: white;
   border-radius: 15px;
-  gap: 10px;
+  gap: 5px;
 `;
 
 export const ModalInput = styled.input`
@@ -76,6 +76,16 @@ export const ModalInput = styled.input`
   border: 2px solid gray;
   border-radius: 5px;
   padding: 0 10px;
+`;
+
+export const ModalInputError = styled.div`
+  width: 85%;
+  height: 12px;
+  color: red;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const ModalInputButton = styled.button`
