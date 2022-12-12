@@ -16,6 +16,8 @@ export const useNaverMaps = (): [
     mapRef.current = new naver.maps.Map(mapDivRef.current, {
       center: new naver.maps.LatLng(NAVER_LAT, NAVER_LNG),
       zoom: 16,
+      // 7로 잡아도 대한민국 전역을 커버 가능
+      minZoom:7,
     });
   }, []);
 
