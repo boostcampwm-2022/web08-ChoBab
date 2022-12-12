@@ -9,32 +9,15 @@ import useCurrentLocation from '@hooks/useCurrentLocation';
 import { useMeetLocationStore } from '@store/index';
 
 function InitRoomPage() {
-  const [isGPSReady, setGPSReady] = useState<boolean>(false);
   const { userLocation, updateCurrentPosition } = useCurrentLocation();
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
 
   useEffect(() => {
-    if (!isGPSReady) {
-      return;
-    }
-
     if (!userLocation) {
       return;
     }
 
     updateMeetLocation(userLocation.lat, userLocation.lng);
-  }, [isGPSReady]);
-
-  useEffect(() => {
-    if (isGPSReady) {
-      return;
-    }
-
-    if (!userLocation) {
-      return;
-    }
-
-    setGPSReady(true);
   }, [userLocation]);
 
   useEffect(() => {

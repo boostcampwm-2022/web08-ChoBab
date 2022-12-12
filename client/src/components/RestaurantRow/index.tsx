@@ -8,6 +8,7 @@ import RestaurantVoteButton from '@components/RestaurantVoteButton';
 import { distanceToDisplay } from '@utils/distance';
 
 import { useEffect, useState } from 'react';
+import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import {
   RestaurantRowBox,
   DistanceBox,
@@ -29,17 +30,9 @@ interface PropsType {
 function RestaurantRow({ restaurant, restaurantListType, likeCnt }: PropsType) {
   const { id, name, category, lat, lng, rating, photoUrlList } = restaurant;
   const { meetLocation } = useMeetLocationStore();
-  const [straightDistance, setStraightDistance] = useState<number | null>(null);
-  useEffect(() => {
-    if (!meetLocation) {
-      return;
-    }
-    if (straightDistance) {
-      return;
-    }
-    const { lat: roomLat, lng: roomLng } = meetLocation;
-    setStraightDistance(getDistance({ lat, lng }, { lat: roomLat, lng: roomLng }));
-  }, [meetLocation]);
+  // 렌더링 순서 때문에 as 로 타입 지정을 직접 해주어도 괜찮겠다고 판단
+  const { lat: roomLat, lng: roomLng } = meetLocation as LocationType;
+  const straightDistance = getDistance({ lat, lng }, { lat: roomLat, lng: roomLng });
 
   const thumbnailSrc = photoUrlList && photoUrlList[0] ? photoUrlList[0] : '';
 
