@@ -64,6 +64,9 @@ function MeetLocationSettingMap({ userLocation }: PropsType) {
     if (!mapRef.current) {
       return;
     }
+    if (!meetLocation) {
+      return;
+    }
 
     mapRef.current.setCenter({ x: meetLocation.lng, y: meetLocation.lat });
   }, [meetLocation]);
