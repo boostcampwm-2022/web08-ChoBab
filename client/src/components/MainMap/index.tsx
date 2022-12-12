@@ -99,19 +99,6 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     map.setZoom(DEFAULT_ZOOM);
   };
 
-  const handleSetMapLocation = (location: LocationType | naver.maps.Coord): (() => void) => {
-    return () => {
-      const map = mapRef.current;
-
-      if (!map) {
-        return;
-      }
-
-      map.setCenter(location);
-      map.setZoom(DEFAULT_ZOOM);
-    };
-  };
-
   const setMeetingBoundary = (map: naver.maps.Map): void => {
     (() => {
       return new naver.maps.Circle({
@@ -131,28 +118,30 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     });
   };
 
-  const updateExitUserMarker = () => {
-    joinListMarkersRef.current.forEach((marker, userId, thisMap) => {
-      if (joinList.has(userId)) {
-        return;
-      }
-
-      marker.setMap(null);
-
-      thisMap.delete(userId);
+  const closeAllUserMarkerInfoWindow = () => {
+    joinListInfoWindowsRef.current.forEach((infoWindow) => {
+      infoWindow.close();
     });
   };
 
-  const updateExitUserInfoWindow = () => {
-    joinListInfoWindowsRef.current.forEach((infoWindow, userId, thisMap) => {
-      if (joinList.has(userId)) {
+  const updateUserMarker = () => {
+    joinListMarkersRef.current.forEach((marker, userId) => {
+      const userInfo = joinList.get(userId);
+
+      if (!userInfo) {
         return;
       }
 
-      infoWindow.setMap(null);
-
-      thisMap.delete(userId);
+      if (userInfo.isOnline) {
+        marker.setMap(mapRef.current);
+      } else {
+        marker.setMap(null);
+      }
     });
+  };
+
+  const updateUserInfoWindow = () => {
+    closeAllUserMarkerInfoWindow();
   };
 
   const updateJoinUserMarkerAndInfoWindow = () => {
@@ -163,7 +152,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     }
 
     joinList.forEach((user, userId) => {
-      const { userLat, userLng, userName } = user;
+      const { userLat, userLng, userName, isOnline } = user;
 
       if (joinListMarkersRef.current.has(userId)) {
         return;
@@ -201,6 +190,10 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       naver.maps.Event.addListener(marker, 'click', () => {
         infoWindow.open(map, marker);
       });
+
+      if (!isOnline) {
+        marker.setMap(null);
+      }
     });
   };
 
@@ -345,6 +338,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       }
 
       closeAllRestaurantMarkerInfoWindow();
+      closeAllUserMarkerInfoWindow();
     });
     return onDragendListener;
   };
@@ -356,6 +350,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       }
 
       closeAllRestaurantMarkerInfoWindow();
+      closeAllUserMarkerInfoWindow();
     });
 
     return onClickListener;
@@ -395,8 +390,8 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   }, [selectedCategoryData]);
 
   useEffect(() => {
-    updateExitUserMarker();
-    updateExitUserInfoWindow();
+    updateUserMarker();
+    updateUserInfoWindow();
     updateJoinUserMarkerAndInfoWindow();
   }, [joinList]);
 
@@ -465,7 +460,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       )}
       <MapBox ref={mapDivRef} />
       <MapControlBox>
-        <button type="button" onClick={handleSetMapLocation(roomLocation)}>
+        <button type="button" onClick={() => setMapLocation(roomLocation)}>
           <PointCircleIcon />
         </button>
         <button
