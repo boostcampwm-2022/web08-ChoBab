@@ -86,6 +86,41 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
   const { socket } = useSocketStore((state) => state);
 
+  const setMapLocation = (location: LocationType | naver.maps.Coord) => {
+    const map = mapRef.current;
+
+    if (!map) {
+      return;
+    }
+
+    map.setCenter(location);
+  };
+
+  const handleSetMapLocation = (location: LocationType | naver.maps.Coord): (() => void) => {
+    return () => {
+      const map = mapRef.current;
+
+      if (!map) {
+        return;
+      }
+
+      map.setCenter(location);
+    };
+  };
+
+  const setMeetingBoundary = (map: naver.maps.Map): void => {
+    (() => {
+      return new naver.maps.Circle({
+        map,
+        radius: 1000,
+        center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
+        strokeWeight: 1,
+        strokeStyle: 'dash',
+        strokeColor: 'gray',
+      });
+    })();
+  };
+
   const closeAllRestaurantMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
       infoWindow.close();
@@ -283,7 +318,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     });
 
     // 갱신을 위해 map 좌표를 제자리로 이동
-    map.setCenter(map.getBounds().getCenter());
+    setMapLocation(map.getCenter());
   };
 
   const onInit = (map: naver.maps.Map): naver.maps.MapEventListener => {
@@ -350,19 +385,6 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     return onZoomChangedListener;
   };
 
-  const setMeetingBoundary = (map: naver.maps.Map): void => {
-    (() => {
-      return new naver.maps.Circle({
-        map,
-        radius: 1000,
-        center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
-        strokeWeight: 1,
-        strokeStyle: 'dash',
-        strokeColor: 'gray',
-      });
-    })();
-  };
-
   useEffect(() => {
     const restaurantListDividedByCategory = getRestaurantDividedByCategory();
     updateMarkerClusteringObjects(restaurantListDividedByCategory);
@@ -398,11 +420,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
   // 모임 위치(props) 변경 시 지도 화면 이동
   useEffect(() => {
-    if (!mapRef.current) {
-      return;
-    }
-
-    mapRef.current.setCenter({ x: roomLocation.lng, y: roomLocation.lat });
+    setMapLocation(roomLocation);
   }, [roomLocation]);
 
   // 사용자의 위치정보가 갱신되었을 경우 모든 사용자에게 알리고 화면을 이동시킴.
@@ -411,7 +429,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       return;
     }
 
-    mapRef.current?.setCenter(userLocation);
+    setMapLocation(userLocation);
 
     socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
   }, [userLocation]);
@@ -443,18 +461,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       )}
       <MapBox ref={mapDivRef} />
       <MapControlBox>
-        <button
-          type="button"
-          onClick={() => {
-            const map = mapRef.current;
-
-            if (!map) {
-              return;
-            }
-
-            map.setCenter(roomLocation);
-          }}
-        >
+        <button type="button" onClick={handleSetMapLocation(roomLocation)}>
           <PointCircleIcon />
         </button>
         <button
