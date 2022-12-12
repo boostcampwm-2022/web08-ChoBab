@@ -71,13 +71,18 @@ function VirtualizedRestaurantList({ filteredRestaurantList }: PropsType) {
     );
   }
 
-  const loadNextPage = (startIndex: number) => {
+  const loadMoreItems = (startIndex: number) => {
+    if (isNextPageLoading) {
+      return;
+    }
+
     // 현재 스크롤 시 axios 요청을 안보내기 때문에, 의도적으로 delay time 걸음
     // 초기 로딩 시엔 delay time을 200ms로 짧게 설정
     const delayTime = startIndex === 0 ? 200 : 1000;
 
     setIsNextPageLoading(true);
 
+    // eslint-disable-next-line consistent-return
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         setIsNextPageLoading(false);
@@ -87,9 +92,6 @@ function VirtualizedRestaurantList({ filteredRestaurantList }: PropsType) {
       }, delayTime);
     });
   };
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage;
 
   return (
     <AutoSizer>
