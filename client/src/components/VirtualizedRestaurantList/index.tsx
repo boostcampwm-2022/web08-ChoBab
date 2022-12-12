@@ -30,8 +30,8 @@ function VirtualizedRestaurantList({ filteredRestaurantList }: PropsType) {
   const isItemLoaded = (index: number) => !hasNextPage || index < items.length;
 
   const getItemSize = (index: any) => {
-    // console.log(itemRef.current.offsetWidth);
-    // 여기서 아이템 행 높이를 받아오는 법?
+    // console.log(itemRef.current.offsetHeight);
+    // TODO: 아이템 행 높이를 받아와서 반환해야함
     return 160;
   };
 
@@ -77,10 +77,6 @@ function VirtualizedRestaurantList({ filteredRestaurantList }: PropsType) {
     const delayTime = startIndex === 0 ? 200 : 1000;
 
     setIsNextPageLoading(true);
-    // console.log(startIndex);
-    // console.log(delayTime);
-    // console.log(items.length);
-    // console.log(filteredRestaurantList.length); //45 개
 
     return new Promise<void>((resolve) => {
       setTimeout(() => {

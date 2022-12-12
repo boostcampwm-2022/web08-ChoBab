@@ -11,10 +11,9 @@ interface PropsType {
   restaurantData: RestaurantType[];
 }
 
-// TODO: FilteredRestaurant가 아닌 이유가 있었는지?
 function RestaurantFiltered({ restaurantData }: PropsType) {
   // 필터된 식당 데이터
-  const [filteredRestaurantList, setFilteredRestaurantList] = useState<RestaurantType[]>([]); // state??
+  const [filteredRestaurantList, setFilteredRestaurantList] = useState<RestaurantType[]>([]);
 
   // 카테고리로 필터링
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
