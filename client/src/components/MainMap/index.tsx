@@ -9,6 +9,10 @@ import chickenImageSrc from '@assets/images/chicken.svg';
 import hamburgerImageSrc from '@assets/images/hamburger.svg';
 import hotdogImageSrc from '@assets/images/hotdog.svg';
 import userImageSrc from '@assets/images/user.svg';
+import flagImageSrc from '@assets/images/flag.svg';
+
+import { ReactComponent as GpsIcon } from '@assets/images/gps.svg';
+import { ReactComponent as PointCircleIcon } from '@assets/images/point-circle.svg';
 
 import { useSelectedCategoryStore } from '@store/index';
 import { useSocketStore } from '@store/socket';
@@ -24,7 +28,7 @@ import '@utils/MarkerClustering.js';
 
 import { Socket } from 'socket.io-client';
 
-import { MapLayout, MapLoadingBox, MapBox } from './styles';
+import { MapControlBox, MapLayout, MapLoadingBox, MapBox } from './styles';
 
 interface RestaurantType {
   id: string;
@@ -79,7 +83,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
   const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
 
-  const { userLocation } = useCurrentLocation();
+  const { userLocation, updateCurrentPosition } = useCurrentLocation();
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
   const { socket } = useSocketStore((state) => state);
 
@@ -394,6 +398,8 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       return;
     }
 
+    mapRef.current?.setCenter(userLocation);
+
     socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
   }, [userLocation]);
 
@@ -423,6 +429,30 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         </MapLoadingBox>
       )}
       <MapBox ref={mapDivRef} />
+      <MapControlBox>
+        <button
+          type="button"
+          onClick={() => {
+            const map = mapRef.current;
+
+            if (!map) {
+              return;
+            }
+
+            map.setCenter(roomLocation);
+          }}
+        >
+          <PointCircleIcon />
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            updateCurrentPosition();
+          }}
+        >
+          <GpsIcon />
+        </button>
+      </MapControlBox>
     </MapLayout>
   );
 }
