@@ -3,18 +3,18 @@ import { Oval } from 'react-loader-spinner';
 import { LoadingContentsLayout, LoadingSpinnerBox, LoadingMessageParagraph } from './styles';
 
 interface PropType {
-  type: string; // normal(페이지에서 쓰이는 로더), map(지도 안에서 쓰이는 로더)
+  size: string; // 스피너 크기 - large, small
   // eslint-disable-next-line react/require-default-props
   message?: string;
 }
 
-function LoadingScreen({ type, message }: PropType) {
+function LoadingScreen({ size, message }: PropType) {
   return (
     <LoadingContentsLayout>
-      <LoadingSpinnerBox type={type}>
+      <LoadingSpinnerBox size={size}>
         <Oval
-          height={type === 'normal' ? 100 : 50}
-          width={type === 'normal' ? 100 : 50}
+          height={size === 'large' ? 100 : 50}
+          width={size === 'large' ? 100 : 50}
           color="#949494"
           wrapperStyle={{}}
           wrapperClass=""

@@ -42,7 +42,7 @@ function InitRoomPage() {
   }, []);
 
   return !isGPSReady ? (
-    <LoadingScreen type="normal" message="위치 받아오는 중..." />
+    <LoadingScreen size="large" message="위치 받아오는 중..." />
   ) : (
     <InitRoomPageLayout>
       <MeetLocationSettingMap userLocation={userLocation} />
