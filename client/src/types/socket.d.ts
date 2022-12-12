@@ -2,7 +2,7 @@ declare interface UserType {
   userId: string;
   userLat: number;
   userLng: number;
-  userName: string;
+  userName?: string;
 }
 
 declare interface RestaurantType {
@@ -49,4 +49,10 @@ declare interface DrivingInfoType {
   taxiFare: number;
   fuelPrice: number;
   path: number[][];
+}
+
+declare type UserIdType = string;
+
+declare interface JoinListType {
+  [index: UserIdType]: UserType;
 }

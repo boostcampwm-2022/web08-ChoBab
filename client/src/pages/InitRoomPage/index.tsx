@@ -10,26 +10,36 @@ import { useMeetLocationStore } from '@store/index';
 
 function InitRoomPage() {
   const [isGPSReady, setGPSReady] = useState<boolean>(false);
-  const userLocation = useCurrentLocation();
+  const { userLocation, updateCurrentPosition } = useCurrentLocation();
   const { updateMeetLocation } = useMeetLocationStore((state) => state);
-  useEffect(() => {
-    if (isGPSReady) {
-      return;
-    }
-    if (!userLocation.lat || !userLocation.lng) {
-      return;
-    }
-    setGPSReady(true);
-  }, [userLocation]);
+
   useEffect(() => {
     if (!isGPSReady) {
       return;
     }
-    if (!userLocation.lat || !userLocation.lng) {
+
+    if (!userLocation) {
       return;
     }
+
     updateMeetLocation(userLocation.lat, userLocation.lng);
   }, [isGPSReady]);
+
+  useEffect(() => {
+    if (isGPSReady) {
+      return;
+    }
+
+    if (!userLocation) {
+      return;
+    }
+
+    setGPSReady(true);
+  }, [userLocation]);
+
+  useEffect(() => {
+    updateCurrentPosition();
+  }, []);
 
   return !isGPSReady ? (
     <LoadingScreen type="normal" message="위치 받아오는 중..." />

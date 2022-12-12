@@ -4,12 +4,11 @@ import { useMeetLocationStore } from '@store/index';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 import { MapBox, MarkerBox } from './styles';
 
-interface LocationType {
-  lat: number | null;
-  lng: number | null;
+interface PropsType {
+  userLocation: LocationType | null;
 }
 
-function MeetLocationSettingMap({ userLocation }: { userLocation: LocationType }) {
+function MeetLocationSettingMap({ userLocation }: PropsType) {
   const [mapRef, mapDivRef] = useNaverMaps();
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
 
@@ -53,10 +52,7 @@ function MeetLocationSettingMap({ userLocation }: { userLocation: LocationType }
   }, []);
 
   useEffect(() => {
-    if (!mapRef.current) {
-      return;
-    }
-    if (!userLocation.lat || !userLocation.lng) {
+    if (!mapRef.current || !userLocation) {
       return;
     }
 
