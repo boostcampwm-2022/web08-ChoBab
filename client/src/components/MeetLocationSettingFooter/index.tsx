@@ -13,7 +13,7 @@ import { useToast } from '@hooks/useToast';
 
 import { apiService } from '@apis/index';
 import { URL_PATH } from '@constants/url';
-import { FooterBox, GuideTextBox, SearchBarBox, StartButton } from './styles';
+import { AddressBox, FooterBox, GuideTextBox, SearchBarBox, StartButton } from './styles';
 
 function MeetLocationSettingFooter() {
   const [address, setAddress] = useState<string>(NAVER_ADDRESS);
@@ -121,7 +121,7 @@ function MeetLocationSettingFooter() {
         </button>
       </SearchBarBox>
 
-      <div>{address}</div>
+      <AddressBox>{address}</AddressBox>
 
       <StartButton
         title="시작하기"
