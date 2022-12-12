@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import RestaurantDefaultImg from '@assets/images/restaurant-default.png';
 import { ImageCarousel, Image, ImageBox } from './styles';
 
 interface PropsType {
@@ -15,8 +16,8 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
   const THROTTLINGTIME = 1500;
   return (
     <ImageCarousel
-    // 모바일 슬라이드 이벤트 대응을 위함
-    // 최소 슬라이드 거리를 추가하여 이를 넘지 않을 시에는 이벤트 발생  x
+      // 모바일 슬라이드 이벤트 대응을 위함
+      // 최소 슬라이드 거리를 추가하여 이를 넘지 않을 시에는 이벤트 발생  x
       onTouchStart={(e) => {
         touchPosition.current.start = e.changedTouches[0].clientX;
       }}
@@ -33,7 +34,6 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
           setVisibleImageIdx(visibleImageIdx > 0 ? visibleImageIdx - 1 : visibleImageIdx);
         }
       }}
-
       // 데스크탑 스크롤 이벤트를 대응하기 위함
       // 쓰로틀링을 추가하여 스크롤 시 여러번 이벤트가 발생하는 것을 방지
       onWheel={(e) => {
@@ -55,7 +55,10 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
     >
       <ImageBox style={{ marginLeft: `-${visibleImageIdx * 100}%` }}>
         {imageUrlList.map((imageUrl) => (
-          <Image key={imageUrl} style={{ backgroundImage: `url(${imageUrl})` }} />
+          <Image
+            key={imageUrl}
+            style={{ backgroundImage: `url(${imageUrl}), url(${RestaurantDefaultImg})` }}
+          />
         ))}
       </ImageBox>
       <p>{imageCount ? `${visibleImageIdx + 1}/${imageCount}` : `0/0`}</p>
