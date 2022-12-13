@@ -1,17 +1,16 @@
 import create from 'zustand';
 import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
-import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { CATEGORY_TYPE } from '@constants/category';
 
 interface UserLocationStoreType {
   userLocation: LocationType | null;
-  updateUserLocation: (lat: number, lng: number) => void;
+  updateUserLocation: (location: LocationType | null) => void;
 }
 
 export const useUserLocationStore = create<UserLocationStoreType>((set) => ({
   userLocation: null,
-  updateUserLocation: (lat: number, lng: number) =>
-    set((state) => ({ ...state, userLocation: { lat, lng } })),
+  updateUserLocation: (location: LocationType | null) =>
+    set((state) => ({ ...state, userLocation: location })),
 }));
 
 interface MeetLocationStoreType {
