@@ -88,7 +88,7 @@ function MeetLocationSettingFooter() {
 
         // 첫번째 검색 결과로 처리
         const firstSearchResult = items[0];
-        updateMeetLocation(+firstSearchResult.y, +firstSearchResult.x);
+        updateMeetLocation({ lat: +firstSearchResult.y, lng: +firstSearchResult.x });
       }
     );
   };

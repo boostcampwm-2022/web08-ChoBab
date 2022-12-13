@@ -13,7 +13,7 @@ import userImageSrc from '@assets/images/user.svg';
 import { ReactComponent as GpsIcon } from '@assets/images/gps.svg';
 import { ReactComponent as PointCircleIcon } from '@assets/images/point-circle.svg';
 
-import { useSelectedCategoryStore } from '@store/index';
+import { useMeetLocationStore, useSelectedCategoryStore } from '@store/index';
 import { useSocketStore } from '@store/socket';
 
 import { CATEGORY_TYPE } from '@constants/category';
@@ -41,14 +41,8 @@ interface RestaurantType {
   address: string;
 }
 
-interface RoomLocationType {
-  lat: number;
-  lng: number;
-}
-
 interface PropsType {
   restaurantData: RestaurantType[];
-  roomLocation: RoomLocationType;
   joinList: Map<string, UserType>;
 }
 
@@ -72,7 +66,7 @@ const getIconUrlByCategory = (category: CATEGORY_TYPE) => {
   }
 };
 
-function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
+function MainMap({ restaurantData, joinList }: PropsType) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [mapRef, mapDivRef] = useNaverMaps();
@@ -84,14 +78,15 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
 
   const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
 
-  const { userLocation, updateCurrentPosition } = useCurrentLocation();
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
   const { socket } = useSocketStore((state) => state);
+  const { userLocation, updateUserLocation, getCurrentLocation } = useCurrentLocation();
+  const { meetLocation } = useMeetLocationStore();
 
-  const setMapLocation = (location: LocationType | naver.maps.Coord) => {
+  const setMapLocation = (location: LocationType | naver.maps.Coord | null) => {
     const map = mapRef.current;
 
-    if (!map) {
+    if (!map || !location) {
       return;
     }
 
@@ -100,11 +95,15 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   };
 
   const setMeetingBoundary = (map: naver.maps.Map): void => {
+    if (!meetLocation) {
+      return;
+    }
+
     (() => {
       return new naver.maps.Circle({
         map,
         radius: 1000,
-        center: new naver.maps.LatLng(roomLocation.lat, roomLocation.lng),
+        center: new naver.maps.LatLng(meetLocation.lat, meetLocation.lng),
         strokeWeight: 1,
         strokeStyle: 'dash',
         strokeColor: 'gray',
@@ -419,21 +418,10 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     };
   }, []);
 
-  // 모임 위치(props) 변경 시 지도 화면 이동
+  // 모임 위치 설정 시 지도 화면 이동
   useEffect(() => {
-    setMapLocation(roomLocation);
-  }, [roomLocation]);
-
-  // 사용자의 위치정보가 갱신되었을 경우 모든 사용자에게 알리고 화면을 이동시킴.
-  useEffect(() => {
-    if (!(socket instanceof Socket) || !userLocation) {
-      return;
-    }
-
-    setMapLocation(userLocation);
-
-    socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
-  }, [userLocation]);
+    setMapLocation(meetLocation);
+  }, [meetLocation]);
 
   // 사용자의 위치 변경이 있을 경우 반영하는 소켓 이벤트
   useEffect(() => {
@@ -462,13 +450,25 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       )}
       <MapBox ref={mapDivRef} />
       <MapControlBox>
-        <button type="button" onClick={() => setMapLocation(roomLocation)}>
+        <button type="button" onClick={() => setMapLocation(meetLocation)}>
           <PointCircleIcon />
         </button>
         <button
           type="button"
-          onClick={() => {
-            updateCurrentPosition();
+          onClick={async () => {
+            /**
+             * MainPage로 이동 될 부분이라
+             * 함수로 따로 분리하지 않았습니다.
+             */
+            if (!(socket instanceof Socket)) {
+              return;
+            }
+
+            const location = await getCurrentLocation();
+            socket.emit('changeMyLocation', { userLat: location.lat, userLng: location.lng });
+            updateUserLocation(location);
+
+            setMapLocation(userLocation);
           }}
         >
           <GpsIcon />
