@@ -14,6 +14,7 @@ import {
   useSelectedCategoryStore,
   useMeetLocationStore,
   useSelectedRestaurantDataStore,
+  useSelectedRestaurantPreviewDataStore,
   useMapStore,
 } from '@store/index';
 import { useSocketStore } from '@store/socket';
@@ -81,6 +82,9 @@ function MainMap({ restaurantData, joinList }: PropsType) {
   const { socket } = useSocketStore((state) => state);
   const { updateMap } = useMapStore((state) => state);
   const { meetLocation } = useMeetLocationStore((state) => state);
+  const { updateSelectedRestaurantPreviewData } = useSelectedRestaurantPreviewDataStore(
+    (state) => state
+  );
   const { updateSelectedRestaurantData } = useSelectedRestaurantDataStore((state) => state);
 
   const setMapLocation = (location: LocationType | naver.maps.Coord | null) => {
@@ -309,6 +313,7 @@ function MainMap({ restaurantData, joinList }: PropsType) {
           infoWindow.open(map, marker);
 
           updateSelectedRestaurantData(restaurant);
+          updateSelectedRestaurantPreviewData(restaurant);
 
           map.setCenter(marker.getPosition());
 
@@ -346,7 +351,8 @@ function MainMap({ restaurantData, joinList }: PropsType) {
 
       closeAllRestaurantMarkerInfoWindow();
       closeAllUserMarkerInfoWindow();
-      updateSelectedRestaurantData(null);
+
+      updateSelectedRestaurantPreviewData(null);
     });
     return onDragendListener;
   };

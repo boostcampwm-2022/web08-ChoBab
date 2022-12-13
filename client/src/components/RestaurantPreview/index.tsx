@@ -1,7 +1,10 @@
 import { useEffect, useRef } from 'react';
 import RestaurantRow from '@components/RestaurantRow';
 import { AnimatePresence } from 'framer-motion';
-import { useRestaurantDetailLayerStatusStore, useSelectedRestaurantDataStore } from '@store/index';
+import {
+  useRestaurantDetailLayerStatusStore,
+  useSelectedRestaurantPreviewDataStore,
+} from '@store/index';
 import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
 import { RestaurantPreviewBox, RestaurantPreviewLayout } from './styles';
 
@@ -11,9 +14,8 @@ function RestaurantPreview() {
   const { updateRestaurantDetailLayerStatus } = useRestaurantDetailLayerStatusStore(
     (state) => state
   );
-  const { selectedRestaurantData, updateSelectedRestaurantData } = useSelectedRestaurantDataStore(
-    (state) => state
-  );
+  const { selectedRestaurantPreviewData, updateSelectedRestaurantPreviewData } =
+    useSelectedRestaurantPreviewDataStore((state) => state);
 
   useEffect(() => {
     const modalCloseWindowEvent = (e: Event) => {
@@ -23,7 +25,7 @@ function RestaurantPreview() {
         return;
       }
 
-      updateSelectedRestaurantData(null);
+      updateSelectedRestaurantPreviewData(null);
     };
 
     window.addEventListener('click', modalCloseWindowEvent);
@@ -35,7 +37,7 @@ function RestaurantPreview() {
 
   return (
     <RestaurantPreviewLayout ref={modalRef}>
-      {selectedRestaurantData && (
+      {selectedRestaurantPreviewData && (
         <AnimatePresence>
           <RestaurantPreviewBox
             initial={{ opacity: 0, y: '100%' }}
@@ -49,7 +51,7 @@ function RestaurantPreview() {
             }}
           >
             <RestaurantRow
-              restaurant={selectedRestaurantData}
+              restaurant={selectedRestaurantPreviewData}
               restaurantListType={RESTAURANT_LIST_TYPES.filtered}
             />
           </RestaurantPreviewBox>
