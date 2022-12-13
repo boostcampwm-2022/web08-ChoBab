@@ -2,10 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import { useSocketStore } from '@store/socket';
-import { useMeetLocationStore, useRestaurantListLayerStatusStore, useMapStore } from '@store/index';
+import { useMeetLocationStore, useRestaurantListLayerStatusStore } from '@store/index';
 
-import { ReactComponent as GpsIcon } from '@assets/images/gps.svg';
-import { ReactComponent as PointCircleIcon } from '@assets/images/point-circle.svg';
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
 import { ReactComponent as MapIcon } from '@assets/images/map-icon.svg';
@@ -25,11 +23,11 @@ import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
 import RestaurantCategory from '@components/RestaurantCategory';
 import LoadingScreen from '@components/LoadingScreen';
 import RestaurantPreview from '@components/RestaurantPreview';
+import MapController from '@components/MapController';
 
 import { apiService } from '@apis/index';
 
 import {
-  MapControlBox,
   ButtonInnerTextBox,
   CandidateListButton,
   CategoryBox,
@@ -49,9 +47,8 @@ function MainPage() {
   const socketRef = useRef<Socket | null>(null);
 
   const { setSocket } = useSocketStore((state) => state);
-  const { map } = useMapStore((state) => state);
   const { getCurrentLocation, updateUserLocation } = useCurrentLocation();
-  const { meetLocation, updateMeetLocation } = useMeetLocationStore();
+  const { updateMeetLocation } = useMeetLocationStore();
 
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
@@ -220,42 +217,8 @@ function MainPage() {
             </ButtonInnerTextBox>
           </MapOrListButton>
 
-          <MapControlBox>
-            <button
-              type="button"
-              onClick={() => {
-                if (!map || !meetLocation) {
-                  return;
-                }
-
-                map.setCenter(meetLocation);
-              }}
-            >
-              <PointCircleIcon />
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                const socket = socketRef.current;
-
-                if (!(socket instanceof Socket)) {
-                  return;
-                }
-
-                const location = await getCurrentLocation();
-                socket.emit('changeMyLocation', { userLat: location.lat, userLng: location.lng });
-                updateUserLocation(location);
-
-                if (!map) {
-                  return;
-                }
-
-                map.setCenter(location);
-              }}
-            >
-              <GpsIcon />
-            </button>
-          </MapControlBox>
+          {/* 지도 컨트롤러 */}
+          <MapController />
         </ControllerBox>
 
         <RestaurantPreview />
