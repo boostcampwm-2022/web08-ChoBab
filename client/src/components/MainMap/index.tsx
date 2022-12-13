@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import stc from 'string-to-color';
 
 import riceImageSrc from '@assets/images/rice.svg';
 import sushiImageSrc from '@assets/images/sushi.svg';
@@ -8,19 +9,26 @@ import chickenImageSrc from '@assets/images/chicken.svg';
 import hamburgerImageSrc from '@assets/images/hamburger.svg';
 import hotdogImageSrc from '@assets/images/hotdog.svg';
 import userImageSrc from '@assets/images/user.svg';
-import { ReactComponent as LoadingSpinner } from '@assets/images/loading-spinner.svg';
 
-import { useSelectedCategoryStore } from '@store/index';
+import {
+  useSelectedCategoryStore,
+  useMeetLocationStore,
+  useSelectedRestaurantDataStore,
+  useMapStore,
+} from '@store/index';
+import { useSocketStore } from '@store/socket';
 
 import { CATEGORY_TYPE } from '@constants/category';
+import { DEFAULT_ZOOM } from '@constants/map';
 
-import stc from 'string-to-color';
-
+import LoadingScreen from '@components/LoadingScreen';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 
 import classes from '@styles/marker.module.css';
 
 import '@utils/MarkerClustering.js';
+
+import { Socket } from 'socket.io-client';
 
 import { MapLayout, MapLoadingBox, MapBox } from './styles';
 
@@ -34,14 +42,8 @@ interface RestaurantType {
   address: string;
 }
 
-interface RoomLocationType {
-  lat: number;
-  lng: number;
-}
-
 interface PropsType {
   restaurantData: RestaurantType[];
-  roomLocation: RoomLocationType;
   joinList: Map<string, UserType>;
 }
 
@@ -65,21 +67,49 @@ const getIconUrlByCategory = (category: CATEGORY_TYPE) => {
   }
 };
 
-type userIdType = string;
-
-function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
+function MainMap({ restaurantData, joinList }: PropsType) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [mapRef, mapDivRef] = useNaverMaps();
 
-  const joinListMarkersRef = useRef<Map<userIdType, naver.maps.Marker>>(new Map());
-  const joinListInfoWindowsRef = useRef<Map<userIdType, naver.maps.InfoWindow>>(new Map());
-
+  const joinListMarkersRef = useRef<Map<UserIdType, naver.maps.Marker>>(new Map());
+  const joinListInfoWindowsRef = useRef<Map<UserIdType, naver.maps.InfoWindow>>(new Map());
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
-
   const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
 
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
+  const { socket } = useSocketStore((state) => state);
+  const { updateMap } = useMapStore((state) => state);
+  const { meetLocation } = useMeetLocationStore((state) => state);
+  const { updateSelectedRestaurantData } = useSelectedRestaurantDataStore((state) => state);
+
+  const setMapLocation = (location: LocationType | naver.maps.Coord | null) => {
+    const map = mapRef.current;
+
+    if (!map || !location) {
+      return;
+    }
+
+    map.setCenter(location);
+    map.setZoom(DEFAULT_ZOOM);
+  };
+
+  const setMeetingBoundary = (map: naver.maps.Map): void => {
+    if (!meetLocation) {
+      return;
+    }
+
+    (() => {
+      return new naver.maps.Circle({
+        map,
+        radius: 1000,
+        center: new naver.maps.LatLng(meetLocation.lat, meetLocation.lng),
+        strokeWeight: 1,
+        strokeStyle: 'dash',
+        strokeColor: 'gray',
+      });
+    })();
+  };
 
   const closeAllRestaurantMarkerInfoWindow = () => {
     infoWindowsRef.current.forEach((infoWindow) => {
@@ -87,28 +117,30 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     });
   };
 
-  const updateExitUserMarker = () => {
-    joinListMarkersRef.current.forEach((marker, userId, thisMap) => {
-      if (joinList.has(userId)) {
-        return;
-      }
-
-      marker.setMap(null);
-
-      thisMap.delete(userId);
+  const closeAllUserMarkerInfoWindow = () => {
+    joinListInfoWindowsRef.current.forEach((infoWindow) => {
+      infoWindow.close();
     });
   };
 
-  const updateExitUserInfoWindow = () => {
-    joinListInfoWindowsRef.current.forEach((infoWindow, userId, thisMap) => {
-      if (joinList.has(userId)) {
+  const updateUserMarker = () => {
+    joinListMarkersRef.current.forEach((marker, userId) => {
+      const userInfo = joinList.get(userId);
+
+      if (!userInfo) {
         return;
       }
 
-      infoWindow.setMap(null);
-
-      thisMap.delete(userId);
+      if (userInfo.isOnline) {
+        marker.setMap(mapRef.current);
+      } else {
+        marker.setMap(null);
+      }
     });
+  };
+
+  const updateUserInfoWindow = () => {
+    closeAllUserMarkerInfoWindow();
   };
 
   const updateJoinUserMarkerAndInfoWindow = () => {
@@ -119,7 +151,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     }
 
     joinList.forEach((user, userId) => {
-      const { userLat, userLng, userName } = user;
+      const { userLat, userLng, userName, isOnline } = user;
 
       if (joinListMarkersRef.current.has(userId)) {
         return;
@@ -157,6 +189,10 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       naver.maps.Event.addListener(marker, 'click', () => {
         infoWindow.open(map, marker);
       });
+
+      if (!isOnline) {
+        marker.setMap(null);
+      }
     });
   };
 
@@ -269,16 +305,24 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
         infoWindowsRef.current.push(infoWindow);
 
         // 마커 클릭 이벤트 등록
-        naver.maps.Event.addListener(marker, 'click', () => {
+        naver.maps.Event.addListener(marker, 'click', (event) => {
           infoWindow.open(map, marker);
+
+          updateSelectedRestaurantData(restaurant);
+
+          map.setCenter(marker.getPosition());
+
+          event.pointerEvent.stop();
         });
       });
 
       markerClustering.setMarkers(markers);
     });
 
+    // map.getCenter() 와 무슨 차이지?
+    // map.getCenter() 로 받아온 코드는 갱신이 되질 않는다.
     // 갱신을 위해 map 좌표를 제자리로 이동
-    map.setCenter(map.getBounds().getCenter());
+    setMapLocation(map.getBounds().getCenter());
   };
 
   const onInit = (map: naver.maps.Map): naver.maps.MapEventListener => {
@@ -301,6 +345,8 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       }
 
       closeAllRestaurantMarkerInfoWindow();
+      closeAllUserMarkerInfoWindow();
+      updateSelectedRestaurantData(null);
     });
     return onDragendListener;
   };
@@ -312,6 +358,7 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       }
 
       closeAllRestaurantMarkerInfoWindow();
+      closeAllUserMarkerInfoWindow();
     });
 
     return onClickListener;
@@ -351,8 +398,8 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
   }, [selectedCategoryData]);
 
   useEffect(() => {
-    updateExitUserMarker();
-    updateExitUserInfoWindow();
+    updateUserMarker();
+    updateUserInfoWindow();
     updateJoinUserMarkerAndInfoWindow();
   }, [joinList]);
 
@@ -361,6 +408,8 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
       return;
     }
 
+    updateMap(mapRef.current);
+    setMeetingBoundary(mapRef.current);
     const initListener = onInit(mapRef.current);
     const clickListener = onClick(mapRef.current);
     const dragendListener = onDragend(mapRef.current);
@@ -377,20 +426,34 @@ function MainMap({ restaurantData, roomLocation, joinList }: PropsType) {
     };
   }, []);
 
-  // 모임 위치(props) 변경 시 지도 화면 이동
+  // 모임 위치 설정 시 지도 화면 이동
   useEffect(() => {
-    if (!mapRef.current) {
+    setMapLocation(meetLocation);
+  }, [meetLocation]);
+
+  // 사용자의 위치 변경이 있을 경우 반영하는 소켓 이벤트
+  useEffect(() => {
+    if (!(socket instanceof Socket)) {
       return;
     }
 
-    mapRef.current.setCenter({ x: roomLocation.lng, y: roomLocation.lat });
-  }, [roomLocation]);
+    socket.on('changeUserLocation', (response: ResTemplateType<UserType>) => {
+      if (!response.data) {
+        return;
+      }
+
+      const { userId, userLat, userLng } = response.data;
+
+      const marker = joinListMarkersRef.current.get(userId);
+      marker?.setPosition(new naver.maps.LatLng(userLat, userLng));
+    });
+  }, []);
 
   return (
     <MapLayout>
       {loading && (
         <MapLoadingBox>
-          <LoadingSpinner />
+          <LoadingScreen size="small" />
         </MapLoadingBox>
       )}
       <MapBox ref={mapDivRef} />

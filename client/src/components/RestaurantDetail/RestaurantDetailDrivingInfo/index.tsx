@@ -6,29 +6,28 @@ import { distanceToDisplay } from '@utils/distance';
 import { msToTimeDisplay } from '@utils/time';
 import { ERROR_REASON } from '@constants/error';
 import { apiService } from '@apis/index';
+import { useToast } from '@hooks/useToast';
+import { TOAST_DURATION_TIME } from '@constants/toast';
 import { DrivingInfoBox, MapBox } from './styles';
 
-interface PositionType {
-  lat: number;
-  lng: number;
-}
-
 interface PropsType {
-  restaurantPos: PositionType;
+  restaurantPos: LocationType;
 }
 
 function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
   const navigate = useNavigate();
   const { userLocation } = useUserLocationStore();
-  const userPos: PositionType = userLocation;
+  const { fireToast } = useToast();
   const [drivingInfo, setDrivingInfo] = useState<DrivingInfoType>();
 
   const mapRef = useRef<HTMLDivElement>(null);
 
+  const userPos: LocationType | null = userLocation;
+
   // 길찾기 API 호출
   const getDrivingInfo = async (
-    startPos: PositionType,
-    goalPos: PositionType
+    startPos: LocationType,
+    goalPos: LocationType
   ): Promise<DrivingInfoType> => {
     const { lat: startLat, lng: startLng } = startPos;
     const { lat: goalLat, lng: goalLng } = goalPos;
@@ -45,13 +44,12 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
       if (error.response.status === 500) {
         throw new Error(ERROR_REASON.INTERNAL_SERVER_ERROR);
       }
-      console.log(error.response.data.message ?? '길찾기 정보를 불러오는데 실패했습니다.');
       return {} as DrivingInfoType;
     }
   };
 
   const mapSetting = useCallback(async () => {
-    if (!mapRef.current) {
+    if (!mapRef.current || !userPos) {
       return;
     }
 
@@ -77,6 +75,11 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
     const { path } = await getDrivingInfo(userPos, restaurantPos);
 
     if (!path) {
+      fireToast({
+        content: '길찾기 정보 요청에 실패했습니다.',
+        duration: TOAST_DURATION_TIME,
+        bottom: 80,
+      });
       return;
     }
 
@@ -93,8 +96,8 @@ function RestaurantDetailDrivingInfo({ restaurantPos }: PropsType) {
       strokeWeight: 5, // 선 두께
     });
 
-    // 지도 중심을 경로의 중심으로 설정
-    map.setCenter(polyline.getBounds().getCenter());
+    // 지도의 범위를 경로의 범위로 설정
+    map.fitBounds(polyline.getBounds());
   }, []);
 
   useEffect(() => {

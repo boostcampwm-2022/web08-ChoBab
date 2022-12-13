@@ -8,8 +8,7 @@ export const RestaurantRowBox = styled(motion.div)`
   background-color: white;
   box-sizing: border-box;
   border-radius: 10px;
-  border: 0.1px solid ${palette.BORDER};
-  box-shadow: 0 0 3px 3px ${palette.BORDER};
+  box-shadow: 0 0 3px 2px ${palette.BORDER};
   flex: none;
   display: flex;
   flex-direction: row;
@@ -46,10 +45,14 @@ export const InfoBox = styled.div`
 `;
 
 export const NameBox = styled.div`
-  width: 100%;
+  width: 80%;
   font-weight: 700;
   height: 15%;
   font-size: 1rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
 `;
 
 export const CategoryBox = styled.div`

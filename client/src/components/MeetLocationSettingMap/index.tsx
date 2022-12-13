@@ -1,25 +1,20 @@
 import { useEffect } from 'react';
-import { ReactComponent as MarkerImage } from '@assets/images/marker.svg';
+import { ReactComponent as FlagIcon } from '@assets/images/flag.svg';
 import { useMeetLocationStore } from '@store/index';
 import { useNaverMaps } from '@hooks/useNaverMaps';
 import { MapBox, MarkerBox } from './styles';
 
-interface LocationType {
-  lat: number | null;
-  lng: number | null;
-}
-
-function MeetLocationSettingMap({ userLocation }: { userLocation: LocationType }) {
+function MeetLocationSettingMap() {
   const [mapRef, mapDivRef] = useNaverMaps();
   const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
 
   // dragEnd 이벤트 핸들러 생성
   const onDragEnd = (map: naver.maps.Map): naver.maps.MapEventListener => {
     const dragEndListener = naver.maps.Event.addListener(map, 'dragend', () => {
-      const lng = map.getCenter().x;
       const lat = map.getCenter().y;
+      const lng = map.getCenter().x;
 
-      updateMeetLocation(lat, lng);
+      updateMeetLocation({ lat, lng });
     });
 
     return dragEndListener;
@@ -28,10 +23,10 @@ function MeetLocationSettingMap({ userLocation }: { userLocation: LocationType }
   // zoom_changed 이벤트 핸들러 생성
   const onZoomChanged = (map: naver.maps.Map): naver.maps.MapEventListener => {
     const zoomChangedListener = naver.maps.Event.addListener(map, 'zoom_changed', () => {
-      const lng = map.getCenter().x;
       const lat = map.getCenter().y;
+      const lng = map.getCenter().x;
 
-      updateMeetLocation(lat, lng);
+      updateMeetLocation({ lat, lng });
     });
 
     return zoomChangedListener;
@@ -52,20 +47,12 @@ function MeetLocationSettingMap({ userLocation }: { userLocation: LocationType }
     };
   }, []);
 
-  useEffect(() => {
-    if (!mapRef.current) {
-      return;
-    }
-    if (!userLocation.lat || !userLocation.lng) {
-      return;
-    }
-
-    updateMeetLocation(userLocation.lat, userLocation.lng);
-  }, [userLocation]);
-
   // 모임 위치(전역 상태) 변경 시 지도 화면 이동
   useEffect(() => {
     if (!mapRef.current) {
+      return;
+    }
+    if (!meetLocation) {
       return;
     }
 
@@ -75,7 +62,7 @@ function MeetLocationSettingMap({ userLocation }: { userLocation: LocationType }
   return (
     <MapBox ref={mapDivRef}>
       <MarkerBox>
-        <MarkerImage />
+        <FlagIcon />
       </MarkerBox>
     </MapBox>
   );

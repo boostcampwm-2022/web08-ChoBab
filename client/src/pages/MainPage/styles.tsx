@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import * as palette from '@styles/Variables';
 
 export const MainPageLayout = styled.div`
-  background-color: blue;
   width: 100%;
   height: 100%;
   display: flex;
@@ -16,7 +15,6 @@ export const MapBox = styled.div`
   height: 100%;
   z-index: 1;
   position: absolute;
-  background-color: white;
   &:focus-visible {
     outline: none;
   }
@@ -55,8 +53,9 @@ export const CategoryBox = styled.div`
 export const CandidateListButton = styled.button`
   background-color: ${palette.PRIMARY};
   position: absolute;
-  z-index: ${palette.CONTROLER_Z_INDEX};
+  z-index: ${palette.CONTROLLER_Z_INDEX};
   margin-bottom: 10px;
+  left: calc(50% - 55px / 2);
   bottom: 0px;
   width: 55px;
   height: 55px;
@@ -72,7 +71,7 @@ export const CandidateListButton = styled.button`
 export const MapOrListButton = styled.button`
   background-color: white;
   position: absolute;
-  z-index: ${palette.CONTROLER_Z_INDEX};
+  z-index: ${palette.CONTROLLER_Z_INDEX};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -95,4 +94,17 @@ export const MapOrListButton = styled.button`
 export const ButtonInnerTextBox = styled.div`
   font-size: 14px;
   font-weight: 500;
+`;
+
+export const FooterBox = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ControllerBox = styled.div`
+  position: relative;
 `;

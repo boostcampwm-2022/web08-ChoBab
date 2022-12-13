@@ -1,30 +1,37 @@
 import create from 'zustand';
 import { RESTAURANT_LIST_TYPES, RESTAURANT_DETAIL_TYPES } from '@constants/modal';
-import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import { CATEGORY_TYPE } from '@constants/category';
 
+/**
+ * <유저의 현재 위치정보를 관리하는 저장소>
+ */
 interface UserLocationStoreType {
-  userLocation: { lat: number; lng: number };
-  updateUserLocation: (lat: number, lng: number) => void;
+  userLocation: LocationType | null;
+  updateUserLocation: (location: LocationType | null) => void;
 }
 
 export const useUserLocationStore = create<UserLocationStoreType>((set) => ({
-  userLocation: { lat: NAVER_LAT, lng: NAVER_LNG },
-  updateUserLocation: (lat: number, lng: number) =>
-    set((state) => ({ ...state, userLocation: { lat, lng } })),
+  userLocation: null,
+  updateUserLocation: (location: LocationType | null) =>
+    set((state) => ({ ...state, userLocation: location })),
 }));
 
+/**
+ * <방의 모임 장소 위치를 관리하는 저장소>
+ */
 interface MeetLocationStoreType {
-  meetLocation: { lat: number; lng: number };
-  updateMeetLocation: (lat: number, lng: number) => void;
+  meetLocation: LocationType | null;
+  updateMeetLocation: (location: LocationType | null) => void;
 }
 
 export const useMeetLocationStore = create<MeetLocationStoreType>((set) => ({
-  meetLocation: { lat: NAVER_LAT, lng: NAVER_LNG },
-  updateMeetLocation: (lat, lng) => set(() => ({ meetLocation: { lat, lng } })),
+  meetLocation: null,
+  updateMeetLocation: (location: LocationType | null) => set(() => ({ meetLocation: location })),
 }));
 
-// 식당 목록 레이어(RestaurantListLayer)의 화면 상태를 관리하는 전역 저장소
+/**
+ * <식당 목록 레이어(RestaurantListLayer)의 화면 상태를 관리하는 저장소>
+ */
 interface RestaurantListLayerStatusStore {
   restaurantListLayerStatus: RESTAURANT_LIST_TYPES;
   updateRestaurantListLayerStatus: (restaurantListType: RESTAURANT_LIST_TYPES) => void;
@@ -36,7 +43,9 @@ export const useRestaurantListLayerStatusStore = create<RestaurantListLayerStatu
     set(() => ({ restaurantListLayerStatus: restaurantListType })),
 }));
 
-// 식당 상세정보 레이어(RestaurantDetailLayer)의 화면 상태를 관리하는 전역 저장소
+/**
+ * <식당 상세정보 레이어(RestaurantDetailLayer)의 화면 상태를 관리하는 저장소>
+ */
 interface RestaurantDetailLayerStatusStore {
   restaurantDetailLayerStatus: RESTAURANT_DETAIL_TYPES;
   updateRestaurantDetailLayerStatus: (restaurantDetailType: RESTAURANT_DETAIL_TYPES) => void;
@@ -50,7 +59,9 @@ export const useRestaurantDetailLayerStatusStore = create<RestaurantDetailLayerS
   })
 );
 
-// 선택된 식당 정보를 저장하는 전역 저장소
+/**
+ * <선택된 식당 정보를 저장하는 저장소>
+ */
 interface SelectedRestaurantDataStore {
   selectedRestaurantData: RestaurantType | null;
   updateSelectedRestaurantData: (restaurantType: RestaurantType | null) => void;
@@ -63,10 +74,9 @@ export const useSelectedRestaurantDataStore = create<SelectedRestaurantDataStore
 }));
 
 /**
- * 카테고리 선택정보를 저장하는 전역 저장소
- * selectedCategoryData 값이
- * 1) 비어있으면 : 전체선택을 의미
- * 2) 비어있지 않으면 : 저장된 CATEGORY_TYPE이 현재 선택된 카테고리 타입
+ * <카테고리 선택정보를 저장하는 전역 저장소>
+ * Set이 비어있으면 전체선택을 의미하고,
+ * 비어있지 않으면 들어있는 값은 필터링 할 카테고리들을 의미한다.
  */
 interface SelectedCategoryDataStore {
   selectedCategoryData: Set<CATEGORY_TYPE>;
@@ -79,10 +89,14 @@ export const useSelectedCategoryStore = create<SelectedCategoryDataStore>((set) 
     set(() => ({ selectedCategoryData: categoryData })),
 }));
 
+/**
+ * <Toast 알림 모달의 상태를 관리하는 저장소>
+ * bottom: 아래에서 몇 px 띄울건지 지정
+ */
 interface ToastStoreType {
   isOpen: boolean;
   content: string;
-  bottom: number; // 아래에서 몇 px 띄울건지 지정
+  bottom: number;
   duration: number;
   updateIsOpen: (isOpen: boolean) => void;
   updateToast: (content: string, bottom?: number, duration?: number) => void;
@@ -95,4 +109,17 @@ export const useToastStore = create<ToastStoreType>((set) => ({
   duration: 2000,
   updateIsOpen: (isOpen) => set(() => ({ isOpen })),
   updateToast: (content, bottom, duration) => set(() => ({ content, bottom, duration })),
+}));
+
+/**
+ * <지도 Ref의 값을 공유하는 저장소>
+ */
+interface MapStoreType {
+  map: naver.maps.Map | null;
+  updateMap: (map: naver.maps.Map | null) => void;
+}
+
+export const useMapStore = create<MapStoreType>((set) => ({
+  map: null,
+  updateMap: (map: naver.maps.Map | null) => set(() => ({ map })),
 }));

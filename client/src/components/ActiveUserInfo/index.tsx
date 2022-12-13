@@ -24,13 +24,17 @@ function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: Prop
   const [isListOpen, setListOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const clientSocket = socketRef.current;
+    const socket = socketRef.current;
 
-    if (!clientSocket) {
+    if (!socket) {
       return;
     }
 
-    clientSocket.on('join', (data: UserType) => {
+    socket.on('join', (response: ResTemplateType<UserType>) => {
+      if (!response.data) {
+        return;
+      }
+
       /**
        * 멘토님이 조언해주신 부분
        * 내 정보(myId)가 초기화되지 않았을 때 요청 튕기기
@@ -39,37 +43,46 @@ function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: Prop
         return;
       }
 
-      const { userId } = data;
+      const userInfo = response.data;
+
+      const { userId } = userInfo;
 
       setJoinList((prev) => {
         const newMap = new Map(prev);
-
-        if (!newMap.has(userId) && myId !== userId) {
-          newMap.set(userId, data);
-        }
-
+        newMap.set(userId, userInfo);
         return newMap;
       });
     });
 
-    clientSocket.on('leave', (data: string) => {
-      const userId = data;
+    socket.on('leave', (response: ResTemplateType<string>) => {
+      if (!response.data) {
+        return;
+      }
 
       if (!myId) {
         return;
       }
 
+      const userId = response.data;
+
       setJoinList((prev) => {
         const newMap = new Map(prev);
+        const userInfo = newMap.get(userId);
 
-        if (newMap.has(userId)) {
-          newMap.delete(userId);
+        if (!userInfo) {
+          return newMap;
         }
+
+        userInfo.isOnline = false;
+        newMap.set(userId, userInfo);
 
         return newMap;
       });
     });
   }, []);
+
+  const onlineUserList = [...joinList].filter(([userId, userInfo]) => userInfo.isOnline);
+  const offlineUserList = [...joinList].filter(([userId, userInfo]) => !userInfo.isOnline);
 
   return (
     <ActiveUserInfoLayout>
@@ -85,9 +98,25 @@ function ActiveUserInfo({ myId, myName, socketRef, joinList, setJoinList }: Prop
       </ListToggleButton>
       <Modal isOpen={isListOpen} setIsOpen={setListOpen}>
         <ActiveUserInfoBox>
-          <p>접속자 총 {joinList.size}명</p>
           <ActiveUserInfoList>
-            {[...joinList].map(([userId, userInfo]) => {
+            <li>
+              <p>접속자 총 {onlineUserList.length}명</p>
+            </li>
+            {onlineUserList.map(([userId, userInfo]) => {
+              return (
+                <ActiveUserInfoItem key={userId}>
+                  <ActiveUserIconBox style={{ backgroundColor: `${stc(userInfo.userId)}` }} />
+                  <p>
+                    {userInfo.userName}
+                    {myId === userId && ' (나)'}
+                  </p>
+                </ActiveUserInfoItem>
+              );
+            })}
+            <li>
+              <p>오프라인 {offlineUserList.length}명</p>
+            </li>
+            {offlineUserList.map(([userId, userInfo]) => {
               return (
                 <ActiveUserInfoItem key={userId}>
                   <ActiveUserIconBox style={{ backgroundColor: `${stc(userInfo.userId)}` }} />

@@ -13,7 +13,7 @@ import { useToast } from '@hooks/useToast';
 
 import { apiService } from '@apis/index';
 import { URL_PATH } from '@constants/url';
-import { FooterBox, GuideTextBox, SearchBarBox, StartButton } from './styles';
+import { AddressBox, FooterBox, GuideTextBox, SearchBarBox, StartButton } from './styles';
 
 function MeetLocationSettingFooter() {
   const [address, setAddress] = useState<string>(NAVER_ADDRESS);
@@ -50,6 +50,9 @@ function MeetLocationSettingFooter() {
 
   // 모임 위치(전역 상태) 변경 시 주소 업데이트
   useEffect(() => {
+    if (!meetLocation) {
+      return;
+    }
     updateAddress(meetLocation.lat, meetLocation.lng);
   }, [meetLocation]);
 
@@ -85,12 +88,15 @@ function MeetLocationSettingFooter() {
 
         // 첫번째 검색 결과로 처리
         const firstSearchResult = items[0];
-        updateMeetLocation(+firstSearchResult.y, +firstSearchResult.x);
+        updateMeetLocation({ lat: +firstSearchResult.y, lng: +firstSearchResult.x });
       }
     );
   };
 
   const initRoom = async () => {
+    if (!meetLocation) {
+      return;
+    }
     const { lat, lng } = meetLocation;
     setCreateRoomLoading(true);
     try {
@@ -121,7 +127,7 @@ function MeetLocationSettingFooter() {
         </button>
       </SearchBarBox>
 
-      <div>{address}</div>
+      <AddressBox>{address}</AddressBox>
 
       <StartButton
         title="시작하기"

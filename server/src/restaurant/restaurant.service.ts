@@ -7,13 +7,13 @@ import {
   OriginRestaurantType,
   PreprocessedRestaurantType,
   RestaurantApiResultType,
-} from './restaurant';
+} from '@restaurant/restaurant';
 import { RESTAURANT_CATEGORY } from '@constants/restaurant';
 import { MAX_RADIUS } from '@constants/location';
 import { LOCATION_EXCEPTION } from '@response/location';
 import { RESTAURANT_LIST_API_URL } from '@constants/api';
 import { InjectModel } from '@nestjs/mongoose';
-import { RestaurantCategory, RestaurantCategoryDocument } from './restaurant.schema';
+import { RestaurantCategory, RestaurantCategoryDocument } from '@restaurant/restaurant.schema';
 import { Model } from 'mongoose';
 import { getRandomNum, getRandomRating } from '@utils/random';
 

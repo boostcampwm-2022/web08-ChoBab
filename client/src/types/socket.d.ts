@@ -2,7 +2,8 @@ declare interface UserType {
   userId: string;
   userLat: number;
   userLng: number;
-  userName: string;
+  userName?: string;
+  isOnline: boolean;
 }
 
 declare interface RestaurantType {
@@ -33,9 +34,9 @@ declare interface RoomCodeType {
 declare interface RoomDataType extends RoomCodeType {
   lat: number;
   lng: number;
-  userList: UserType[];
+  userList: { [index: string]: UserType };
   restaurantList: RestaurantType[];
-  candidateList: RestaurantType[];
+  candidateList: { [index: string]: number };
   userId: string;
   userName: string;
 }
@@ -49,4 +50,10 @@ declare interface DrivingInfoType {
   taxiFare: number;
   fuelPrice: number;
   path: number[][];
+}
+
+declare type UserIdType = string;
+
+declare interface JoinListType {
+  [index: UserIdType]: UserType;
 }
