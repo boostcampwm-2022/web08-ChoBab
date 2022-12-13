@@ -14,8 +14,8 @@ function InitRoomPage() {
   const [isGPSReady, setGPSReady] = useState<boolean>(false);
 
   const setUserLocation = async () => {
-    const location: LocationType = await getCurrentLocation();
-    updateMeetLocation(location.lat, location.lng);
+    const location = await getCurrentLocation();
+    updateMeetLocation(location);
     setGPSReady(true);
   };
 

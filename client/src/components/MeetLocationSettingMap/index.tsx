@@ -11,10 +11,10 @@ function MeetLocationSettingMap() {
   // dragEnd 이벤트 핸들러 생성
   const onDragEnd = (map: naver.maps.Map): naver.maps.MapEventListener => {
     const dragEndListener = naver.maps.Event.addListener(map, 'dragend', () => {
-      const lng = map.getCenter().x;
       const lat = map.getCenter().y;
+      const lng = map.getCenter().x;
 
-      updateMeetLocation(lat, lng);
+      updateMeetLocation({ lat, lng });
     });
 
     return dragEndListener;
@@ -23,10 +23,10 @@ function MeetLocationSettingMap() {
   // zoom_changed 이벤트 핸들러 생성
   const onZoomChanged = (map: naver.maps.Map): naver.maps.MapEventListener => {
     const zoomChangedListener = naver.maps.Event.addListener(map, 'zoom_changed', () => {
-      const lng = map.getCenter().x;
       const lat = map.getCenter().y;
+      const lng = map.getCenter().x;
 
-      updateMeetLocation(lat, lng);
+      updateMeetLocation({ lat, lng });
     });
 
     return zoomChangedListener;

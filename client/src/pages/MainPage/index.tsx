@@ -123,12 +123,13 @@ function MainPage() {
       setMyName(userName);
       setJoinList(convertArrayToMapByUserId(userList));
       setRestaurantData(restaurantList);
-      updateMeetLocation(lat, lng);
+      updateMeetLocation({ lat, lng });
 
       setRoomConnect(true);
 
-      const userLocation: LocationType = await getCurrentLocation();
-      socket.emit('changeMyLocation', { userLat: userLocation.lat, userLng: userLocation.lng });
+      const location = await getCurrentLocation();
+      socket.emit('changeMyLocation', { userLat: location.lat, userLng: location.lng });
+      updateUserLocation(location);
     });
   };
 
@@ -170,16 +171,14 @@ function MainPage() {
       }
 
       socket.close();
-
-      updateUserLocation(null);
     };
   }, []);
 
-  return !isRoomConnect || !meetLocation ? (
+  return !isRoomConnect ? (
     <LoadingScreen size="large" message="모임방 입장 중..." />
   ) : (
     <MainPageLayout>
-      <MainMap restaurantData={restaurantData} roomLocation={meetLocation} joinList={joinList} />
+      <MainMap restaurantData={restaurantData} joinList={joinList} />
       <HeaderBox>
         <Header>
           <ActiveUserInfo
