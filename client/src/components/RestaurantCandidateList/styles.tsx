@@ -5,6 +5,7 @@ export const CandidateListModalLayout = styled.div`
   height: 100%;
   padding: 10% 5%;
   background-color: white;
+  overflow-y: scroll;
 `;
 
 export const CandidateListModalBox = styled.div`
