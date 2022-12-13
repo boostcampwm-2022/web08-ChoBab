@@ -19,6 +19,10 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
   }
 
+  button {
+    cursor: pointer;
+  }
+
   * {
     font-family: 'BM Hanna';
     margin: 0;

@@ -5,11 +5,11 @@ const useCurrentLocation = () => {
   const { userLocation, updateUserLocation } = useUserLocationStore();
 
   const handleSuccess = (position: GeolocationPosition) => {
-    updateUserLocation(position.coords.latitude, position.coords.longitude);
+    updateUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
   };
 
   const handleError = () => {
-    updateUserLocation(NAVER_LAT, NAVER_LNG);
+    updateUserLocation({ lat: NAVER_LAT, lng: NAVER_LNG });
   };
 
   const updateCurrentPosition = () => {
@@ -35,7 +35,7 @@ const useCurrentLocation = () => {
     });
   };
 
-  return { userLocation, updateCurrentPosition, getCurrentLocation };
+  return { userLocation, updateCurrentPosition, updateUserLocation, getCurrentLocation };
 };
 
 export default useCurrentLocation;

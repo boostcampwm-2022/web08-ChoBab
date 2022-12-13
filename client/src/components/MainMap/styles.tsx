@@ -35,7 +35,7 @@ export const MapControlBox = styled.div`
   left: 0;
   bottom: 0;
   margin: 0 0 18px 8px;
-  z-index: ${palette.CONTROLER_Z_INDEX};
+  z-index: ${palette.MAP_CONTROLLER_Z_INDEX};
   gap: 10px;
   display: flex;
   flex-direction: column;
