@@ -9,26 +9,25 @@ import useCurrentLocation from '@hooks/useCurrentLocation';
 import { useMeetLocationStore } from '@store/index';
 
 function InitRoomPage() {
-  const { userLocation, updateCurrentPosition } = useCurrentLocation();
-  const { meetLocation, updateMeetLocation } = useMeetLocationStore((state) => state);
+  const { getCurrentLocation } = useCurrentLocation();
+  const { updateMeetLocation } = useMeetLocationStore((state) => state);
+  const [isGPSReady, setGPSReady] = useState<boolean>(false);
+
+  const setUserLocation = async () => {
+    const location: LocationType = await getCurrentLocation();
+    updateMeetLocation(location.lat, location.lng);
+    setGPSReady(true);
+  };
 
   useEffect(() => {
-    if (!userLocation) {
-      return;
-    }
-
-    updateMeetLocation(userLocation.lat, userLocation.lng);
-  }, [userLocation]);
-
-  useEffect(() => {
-    updateCurrentPosition();
+    setUserLocation();
   }, []);
 
-  return !meetLocation ? (
+  return !isGPSReady ? (
     <LoadingScreen size="large" message="위치 받아오는 중..." />
   ) : (
     <InitRoomPageLayout>
-      <MeetLocationSettingMap userLocation={userLocation} />
+      <MeetLocationSettingMap />
       <MeetLocationSettingFooter />
     </InitRoomPageLayout>
   );
