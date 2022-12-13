@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import * as palette from '@styles/Variables';
 
 export const MainPageLayout = styled.div`
-  background-color: blue;
   width: 100%;
   height: 100%;
   display: flex;
@@ -16,7 +15,6 @@ export const MapBox = styled.div`
   height: 100%;
   z-index: 1;
   position: absolute;
-  background-color: white;
   &:focus-visible {
     outline: none;
   }
