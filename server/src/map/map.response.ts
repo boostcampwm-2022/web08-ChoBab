@@ -1,15 +1,5 @@
 import { failRes, successRes } from '@response/index';
-
-interface DrivingInfoType {
-  start: number[];
-  goal: number[];
-  distance: number;
-  duration: number;
-  tollFare: number;
-  taxiFare: number;
-  fuelPrice: number;
-  path: number[][];
-}
+import { DrivingInfoType } from '@map/map';
 
 export const MAP_RES = {
   SUCCESS_GET_DRIVING_INFO: (data: DrivingInfoType) => {

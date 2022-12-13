@@ -25,3 +25,14 @@ export interface NaverDrivingResType {
   code: number; // 응답 결과 코드
   route: RouteType; // 응답 결과
 }
+
+export interface DrivingInfoType {
+  start: number[];
+  goal: number[];
+  distance: number;
+  duration: number;
+  tollFare: number;
+  taxiFare: number;
+  fuelPrice: number;
+  path: number[][];
+}
