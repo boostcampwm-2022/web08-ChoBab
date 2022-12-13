@@ -45,6 +45,7 @@ function MapController() {
           updateUserLocation(location);
 
           map.setCenter(location);
+          map.setZoom(DEFAULT_ZOOM);
         }}
       >
         <GpsIcon />

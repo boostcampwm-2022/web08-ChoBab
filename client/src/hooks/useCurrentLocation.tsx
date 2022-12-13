@@ -22,14 +22,14 @@ const useCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
   };
 
-  const getCurrentLocation = () => {
-    return new Promise<LocationType>((resolve, reject) => {
+  const getCurrentLocation = (): Promise<LocationType> => {
+    return new Promise<LocationType>((resolve) => {
       navigator.geolocation.getCurrentPosition(
         (position: GeolocationPosition) => {
           resolve({ lat: position.coords.latitude, lng: position.coords.longitude });
         },
         () => {
-          reject();
+          resolve({ lat: NAVER_LAT, lng: NAVER_LNG });
         }
       );
     });
