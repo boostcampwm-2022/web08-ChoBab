@@ -56,12 +56,12 @@ function RestaurantVoteButton({
       return;
     }
 
-    socket.on('userVoteRestaurantIdList', (result: VoteRestaurantListType) => {
+    const handleUserVoteRestaurantIdList = (result: VoteRestaurantListType) => {
       votedRestaurantListRef.current = result.data.voteRestaurantIdList;
       setIsVoted(votedRestaurantListRef.current.includes(restaurantId));
-    });
+    }
 
-    socket.on('cancelVoteRestaurantResult', (result: VoteResultType) => {
+    const handleCancelVoteRestaurantResult = (result: VoteResultType) => {
       if (restaurantId !== result.data?.restaurantId) {
         return;
       }
@@ -76,9 +76,9 @@ function RestaurantVoteButton({
         return;
       }
       setIsVoted(false);
-    });
+    }
 
-    socket.on('voteRestaurantResult', (result: VoteResultType) => {
+    const handleVoteRestaurantResult = (result: VoteResultType) => {
       if (restaurantId !== result.data?.restaurantId) {
         return;
       }
@@ -93,9 +93,20 @@ function RestaurantVoteButton({
         return;
       }
       setIsVoted(true);
-    });
+    }
+
+    socket.on('userVoteRestaurantIdList', handleUserVoteRestaurantIdList);
+    socket.on('cancelVoteRestaurantResult', handleCancelVoteRestaurantResult);
+    socket.on('voteRestaurantResult', handleVoteRestaurantResult);
 
     setVotedRestaurantList();
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      socket.removeListener('userVoteRestaurantIdList', handleUserVoteRestaurantIdList);
+      socket.removeListener('voteRestaurantResult', handleVoteRestaurantResult);
+      socket.removeListener('cancelVoteRestaurantResult', handleCancelVoteRestaurantResult);
+    }
   }, []);
 
   const voteRestaurant = () => {
