@@ -15,12 +15,12 @@ export const useUserLocationStore = create<UserLocationStoreType>((set) => ({
 
 interface MeetLocationStoreType {
   meetLocation: LocationType | null;
-  updateMeetLocation: (lat: number, lng: number) => void;
+  updateMeetLocation: (location: LocationType | null) => void;
 }
 
 export const useMeetLocationStore = create<MeetLocationStoreType>((set) => ({
   meetLocation: null,
-  updateMeetLocation: (lat, lng) => set(() => ({ meetLocation: { lat, lng } })),
+  updateMeetLocation: (location: LocationType | null) => set(() => ({ meetLocation: location })),
 }));
 
 // 식당 목록 레이어(RestaurantListLayer)의 화면 상태를 관리하는 전역 저장소

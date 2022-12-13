@@ -123,7 +123,7 @@ function MainPage() {
       setMyName(userName);
       setJoinList(convertArrayToMapByUserId(userList));
       setRestaurantData(restaurantList);
-      updateMeetLocation(lat, lng);
+      updateMeetLocation({ lat, lng });
 
       setRoomConnect(true);
 
