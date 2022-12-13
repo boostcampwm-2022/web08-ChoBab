@@ -2,8 +2,10 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import { useSocketStore } from '@store/socket';
-import { useMeetLocationStore, useRestaurantListLayerStatusStore } from '@store/index';
+import { useMeetLocationStore, useRestaurantListLayerStatusStore, useMapStore } from '@store/index';
 
+import { ReactComponent as GpsIcon } from '@assets/images/gps.svg';
+import { ReactComponent as PointCircleIcon } from '@assets/images/point-circle.svg';
 import { ReactComponent as CandidateListIcon } from '@assets/images/candidate-list.svg';
 import { ReactComponent as ListIcon } from '@assets/images/list-icon.svg';
 import { ReactComponent as MapIcon } from '@assets/images/map-icon.svg';
@@ -22,10 +24,12 @@ import RestaurantListLayer from '@components/RestaurantListLayer';
 import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
 import RestaurantCategory from '@components/RestaurantCategory';
 import LoadingScreen from '@components/LoadingScreen';
+import RestaurantPreview from '@components/RestaurantPreview';
 
 import { apiService } from '@apis/index';
 
 import {
+  MapControlBox,
   ButtonInnerTextBox,
   CandidateListButton,
   CategoryBox,
@@ -33,6 +37,8 @@ import {
   HeaderBox,
   MainPageLayout,
   MapOrListButton,
+  FooterBox,
+  ControllerBox,
 } from './styles';
 
 function MainPage() {
@@ -43,14 +49,15 @@ function MainPage() {
   const socketRef = useRef<Socket | null>(null);
 
   const { setSocket } = useSocketStore((state) => state);
+  const { map } = useMapStore((state) => state);
   const { getCurrentLocation, updateUserLocation } = useCurrentLocation();
+  const { meetLocation, updateMeetLocation } = useMeetLocationStore();
 
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<UserIdType, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const { meetLocation, updateMeetLocation } = useMeetLocationStore();
 
   const { restaurantListLayerStatus, updateRestaurantListLayerStatus } =
     useRestaurantListLayerStatusStore((state) => state);
@@ -196,20 +203,63 @@ function MainPage() {
         <RestaurantCategory />
       </CategoryBox>
 
-      {/* 식당 후보 목록 <-> 지도 화면 */}
-      {/* 식당 후보 목록 <-- 전체 식당 목록 */}
-      <CandidateListButton onClick={handleSwitchCandidateList}>
-        {isRestaurantCandidateList() ? <MapLocationIcon /> : <CandidateListIcon />}
-      </CandidateListButton>
+      <FooterBox>
+        <ControllerBox>
+          {/* 식당 후보 목록 <-> 지도 화면 */}
+          {/* 식당 후보 목록 <-- 전체 식당 목록 */}
+          <CandidateListButton onClick={handleSwitchCandidateList}>
+            {isRestaurantCandidateList() ? <MapLocationIcon /> : <CandidateListIcon />}
+          </CandidateListButton>
 
-      {/* 전체 식당 목록 <-> 지도 화면 */}
-      {/* 전체 식당 목록 <-- 식당 후보 목록 */}
-      <MapOrListButton onClick={handleSwitchRestaurantList}>
-        {isRestaurantFilteredList() ? <MapIcon /> : <ListIcon />}
-        <ButtonInnerTextBox>
-          {isRestaurantFilteredList() ? '지도보기' : '목록보기'}
-        </ButtonInnerTextBox>
-      </MapOrListButton>
+          {/* 전체 식당 목록 <-> 지도 화면 */}
+          {/* 전체 식당 목록 <-- 식당 후보 목록 */}
+          <MapOrListButton onClick={handleSwitchRestaurantList}>
+            {isRestaurantFilteredList() ? <MapIcon /> : <ListIcon />}
+            <ButtonInnerTextBox>
+              {isRestaurantFilteredList() ? '지도보기' : '목록보기'}
+            </ButtonInnerTextBox>
+          </MapOrListButton>
+
+          <MapControlBox>
+            <button
+              type="button"
+              onClick={() => {
+                if (!map || !meetLocation) {
+                  return;
+                }
+
+                map.setCenter(meetLocation);
+              }}
+            >
+              <PointCircleIcon />
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                const socket = socketRef.current;
+
+                if (!(socket instanceof Socket)) {
+                  return;
+                }
+
+                const location = await getCurrentLocation();
+                socket.emit('changeMyLocation', { userLat: location.lat, userLng: location.lng });
+                updateUserLocation(location);
+
+                if (!map) {
+                  return;
+                }
+
+                map.setCenter(location);
+              }}
+            >
+              <GpsIcon />
+            </button>
+          </MapControlBox>
+        </ControllerBox>
+
+        <RestaurantPreview />
+      </FooterBox>
 
       {/* 식당 리스트 & 식당 상세정보 Full-Screen 모달 컴포넌트 */}
       <RestaurantListLayer restaurantData={restaurantData} />

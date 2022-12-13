@@ -10,10 +10,12 @@ import hamburgerImageSrc from '@assets/images/hamburger.svg';
 import hotdogImageSrc from '@assets/images/hotdog.svg';
 import userImageSrc from '@assets/images/user.svg';
 
-import { ReactComponent as GpsIcon } from '@assets/images/gps.svg';
-import { ReactComponent as PointCircleIcon } from '@assets/images/point-circle.svg';
-
-import { useMeetLocationStore, useSelectedCategoryStore } from '@store/index';
+import {
+  useSelectedCategoryStore,
+  useMeetLocationStore,
+  useSelectedRestaurantDataStore,
+  useMapStore,
+} from '@store/index';
 import { useSocketStore } from '@store/socket';
 
 import { CATEGORY_TYPE } from '@constants/category';
@@ -21,7 +23,6 @@ import { DEFAULT_ZOOM } from '@constants/map';
 
 import LoadingScreen from '@components/LoadingScreen';
 import { useNaverMaps } from '@hooks/useNaverMaps';
-import useCurrentLocation from '@hooks/useCurrentLocation';
 
 import classes from '@styles/marker.module.css';
 
@@ -29,7 +30,7 @@ import '@utils/MarkerClustering.js';
 
 import { Socket } from 'socket.io-client';
 
-import { MapControlBox, MapLayout, MapLoadingBox, MapBox } from './styles';
+import { MapLayout, MapLoadingBox, MapBox } from './styles';
 
 interface RestaurantType {
   id: string;
@@ -73,15 +74,14 @@ function MainMap({ restaurantData, joinList }: PropsType) {
 
   const joinListMarkersRef = useRef<Map<UserIdType, naver.maps.Marker>>(new Map());
   const joinListInfoWindowsRef = useRef<Map<UserIdType, naver.maps.InfoWindow>>(new Map());
-
   const infoWindowsRef = useRef<naver.maps.InfoWindow[]>([]);
-
   const markerClusteringObjectsRef = useRef<Map<CATEGORY_TYPE, MarkerClustering>>(new Map());
 
   const { selectedCategoryData } = useSelectedCategoryStore((state) => state);
   const { socket } = useSocketStore((state) => state);
-  const { userLocation, updateUserLocation, getCurrentLocation } = useCurrentLocation();
-  const { meetLocation } = useMeetLocationStore();
+  const { updateMap } = useMapStore((state) => state);
+  const { meetLocation } = useMeetLocationStore((state) => state);
+  const { updateSelectedRestaurantData } = useSelectedRestaurantDataStore((state) => state);
 
   const setMapLocation = (location: LocationType | naver.maps.Coord | null) => {
     const map = mapRef.current;
@@ -305,8 +305,14 @@ function MainMap({ restaurantData, joinList }: PropsType) {
         infoWindowsRef.current.push(infoWindow);
 
         // 마커 클릭 이벤트 등록
-        naver.maps.Event.addListener(marker, 'click', () => {
+        naver.maps.Event.addListener(marker, 'click', (event) => {
           infoWindow.open(map, marker);
+
+          updateSelectedRestaurantData(restaurant);
+
+          map.setCenter(marker.getPosition());
+
+          event.pointerEvent.stop();
         });
       });
 
@@ -340,6 +346,7 @@ function MainMap({ restaurantData, joinList }: PropsType) {
 
       closeAllRestaurantMarkerInfoWindow();
       closeAllUserMarkerInfoWindow();
+      updateSelectedRestaurantData(null);
     });
     return onDragendListener;
   };
@@ -401,6 +408,7 @@ function MainMap({ restaurantData, joinList }: PropsType) {
       return;
     }
 
+    updateMap(mapRef.current);
     setMeetingBoundary(mapRef.current);
     const initListener = onInit(mapRef.current);
     const clickListener = onClick(mapRef.current);
@@ -449,31 +457,6 @@ function MainMap({ restaurantData, joinList }: PropsType) {
         </MapLoadingBox>
       )}
       <MapBox ref={mapDivRef} />
-      <MapControlBox>
-        <button type="button" onClick={() => setMapLocation(meetLocation)}>
-          <PointCircleIcon />
-        </button>
-        <button
-          type="button"
-          onClick={async () => {
-            /**
-             * MainPage로 이동 될 부분이라
-             * 함수로 따로 분리하지 않았습니다.
-             */
-            if (!(socket instanceof Socket)) {
-              return;
-            }
-
-            const location = await getCurrentLocation();
-            socket.emit('changeMyLocation', { userLat: location.lat, userLng: location.lng });
-            updateUserLocation(location);
-
-            setMapLocation(userLocation);
-          }}
-        >
-          <GpsIcon />
-        </button>
-      </MapControlBox>
     </MapLayout>
   );
 }
