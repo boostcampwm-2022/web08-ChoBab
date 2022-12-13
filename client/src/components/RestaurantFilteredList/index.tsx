@@ -4,7 +4,7 @@ import EmptyListPlaceholder from '@components/EmptyListPlaceholder';
 import VirtualizedRestaurantList from '@components/VirtualizedRestaurantList';
 
 import { CATEGORY_TYPE } from '@constants/category';
-import { useSelectedCategoryStore } from '@store/index';
+import { useSelectedCategoryStore, useMapStore } from '@store/index';
 import { RestaurantFilteredBox } from './styles';
 
 interface PropsType {
@@ -12,6 +12,8 @@ interface PropsType {
 }
 
 function RestaurantFiltered({ restaurantData }: PropsType) {
+  const { map } = useMapStore((state) => state);
+
   // 필터된 식당 데이터
   const [filteredRestaurantList, setFilteredRestaurantList] = useState<RestaurantType[]>([]);
 
@@ -22,12 +24,22 @@ function RestaurantFiltered({ restaurantData }: PropsType) {
   };
 
   useEffect(() => {
-    setFilteredRestaurantList(
-      restaurantData.filter(
-        (restaurant) =>
-          isNotAnyFilter() || selectedCategoryData.has(restaurant.category as CATEGORY_TYPE)
-      )
+    const newRestaurantData = restaurantData.filter(
+      (restaurant) =>
+        isNotAnyFilter() || selectedCategoryData.has(restaurant.category as CATEGORY_TYPE)
     );
+
+    if (!map) {
+      setFilteredRestaurantList(newRestaurantData);
+    } else {
+      setFilteredRestaurantList(
+        newRestaurantData.filter((restaurant) => {
+          const { lat, lng } = restaurant;
+          const mapBounds = map.getBounds() as naver.maps.LatLngBounds;
+          return mapBounds.hasLatLng(new naver.maps.LatLng(lat, lng));
+        })
+      );
+    }
   }, [selectedCategoryData]);
 
   return (
