@@ -94,6 +94,7 @@ export const MapOrListButton = styled.button`
 export const ButtonInnerTextBox = styled.div`
   font-size: 14px;
   font-weight: 500;
+  color: black;
 `;
 
 export const FooterBox = styled.div`
