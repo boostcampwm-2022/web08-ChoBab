@@ -8,8 +8,7 @@ export const RestaurantRowBox = styled(motion.div)`
   background-color: white;
   box-sizing: border-box;
   border-radius: 10px;
-  border: 0.1px solid ${palette.BORDER};
-  box-shadow: 0 0 3px 3px ${palette.BORDER};
+  box-shadow: 0 0 3px 2px ${palette.BORDER};
   flex: none;
   display: flex;
   flex-direction: row;

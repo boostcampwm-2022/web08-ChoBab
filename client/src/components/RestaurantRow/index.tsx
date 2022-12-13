@@ -7,8 +7,6 @@ import { RESTAURANT_LIST_TYPES } from '@constants/modal';
 import RestaurantVoteButton from '@components/RestaurantVoteButton';
 import { distanceToDisplay } from '@utils/distance';
 
-import { useEffect, useState } from 'react';
-import { NAVER_LAT, NAVER_LNG } from '@constants/map';
 import {
   RestaurantRowBox,
   DistanceBox,

@@ -22,6 +22,8 @@ import RestaurantListLayer from '@components/RestaurantListLayer';
 import RestaurantDetailLayer from '@components/RestaurantDetailLayer';
 import RestaurantCategory from '@components/RestaurantCategory';
 import LoadingScreen from '@components/LoadingScreen';
+import RestaurantPreview from '@components/RestaurantPreview';
+import MapController from '@components/MapController';
 
 import { apiService } from '@apis/index';
 
@@ -33,6 +35,8 @@ import {
   HeaderBox,
   MainPageLayout,
   MapOrListButton,
+  FooterBox,
+  ControllerBox,
 } from './styles';
 
 function MainPage() {
@@ -44,13 +48,13 @@ function MainPage() {
 
   const { setSocket } = useSocketStore((state) => state);
   const { getCurrentLocation, updateUserLocation } = useCurrentLocation();
+  const { updateMeetLocation } = useMeetLocationStore();
 
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
   const [myName, setMyName] = useState<string>('');
   const [joinList, setJoinList] = useState<Map<UserIdType, UserType>>(new Map());
   const [restaurantData, setRestaurantData] = useState<RestaurantType[]>([]);
-  const { meetLocation, updateMeetLocation } = useMeetLocationStore();
 
   const { restaurantListLayerStatus, updateRestaurantListLayerStatus } =
     useRestaurantListLayerStatusStore((state) => state);
@@ -196,20 +200,29 @@ function MainPage() {
         <RestaurantCategory />
       </CategoryBox>
 
-      {/* 식당 후보 목록 <-> 지도 화면 */}
-      {/* 식당 후보 목록 <-- 전체 식당 목록 */}
-      <CandidateListButton onClick={handleSwitchCandidateList}>
-        {isRestaurantCandidateList() ? <MapLocationIcon /> : <CandidateListIcon />}
-      </CandidateListButton>
+      <FooterBox>
+        <ControllerBox>
+          {/* 식당 후보 목록 <-> 지도 화면 */}
+          {/* 식당 후보 목록 <-- 전체 식당 목록 */}
+          <CandidateListButton onClick={handleSwitchCandidateList}>
+            {isRestaurantCandidateList() ? <MapLocationIcon /> : <CandidateListIcon />}
+          </CandidateListButton>
 
-      {/* 전체 식당 목록 <-> 지도 화면 */}
-      {/* 전체 식당 목록 <-- 식당 후보 목록 */}
-      <MapOrListButton onClick={handleSwitchRestaurantList}>
-        {isRestaurantFilteredList() ? <MapIcon /> : <ListIcon />}
-        <ButtonInnerTextBox>
-          {isRestaurantFilteredList() ? '지도보기' : '목록보기'}
-        </ButtonInnerTextBox>
-      </MapOrListButton>
+          {/* 전체 식당 목록 <-> 지도 화면 */}
+          {/* 전체 식당 목록 <-- 식당 후보 목록 */}
+          <MapOrListButton onClick={handleSwitchRestaurantList}>
+            {isRestaurantFilteredList() ? <MapIcon /> : <ListIcon />}
+            <ButtonInnerTextBox>
+              {isRestaurantFilteredList() ? '지도보기' : '목록보기'}
+            </ButtonInnerTextBox>
+          </MapOrListButton>
+
+          {/* 지도 컨트롤러 */}
+          <MapController />
+        </ControllerBox>
+
+        <RestaurantPreview />
+      </FooterBox>
 
       {/* 식당 리스트 & 식당 상세정보 Full-Screen 모달 컴포넌트 */}
       <RestaurantListLayer restaurantData={restaurantData} />
