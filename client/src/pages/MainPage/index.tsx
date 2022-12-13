@@ -43,7 +43,7 @@ function MainPage() {
   const socketRef = useRef<Socket | null>(null);
 
   const { setSocket } = useSocketStore((state) => state);
-  const { getCurrentLocation } = useCurrentLocation();
+  const { getCurrentLocation, updateUserLocation } = useCurrentLocation();
 
   const [isRoomConnect, setRoomConnect] = useState<boolean>(false);
   const [myId, setMyId] = useState<string>('');
@@ -170,6 +170,8 @@ function MainPage() {
       }
 
       socket.close();
+
+      updateUserLocation(null);
     };
   }, []);
 
