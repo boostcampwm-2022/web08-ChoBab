@@ -8,6 +8,8 @@ import useCurrentLocation from '@hooks/useCurrentLocation';
 import { useSocketStore } from '@store/socket';
 import { useMeetLocationStore, useMapStore } from '@store/index';
 
+import { DEFAULT_ZOOM } from '@constants/map';
+
 import { MapControlBox } from './styles';
 
 function MapController() {
@@ -18,6 +20,19 @@ function MapController() {
 
   return (
     <MapControlBox>
+      <button
+        type="button"
+        onClick={() => {
+          if (!map || !meetLocation) {
+            return;
+          }
+
+          map.setCenter(meetLocation);
+          map.setZoom(DEFAULT_ZOOM);
+        }}
+      >
+        <PointCircleIcon />
+      </button>
       <button
         type="button"
         onClick={async () => {
@@ -33,18 +48,6 @@ function MapController() {
         }}
       >
         <GpsIcon />
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          if (!map || !meetLocation) {
-            return;
-          }
-
-          map.setCenter(meetLocation);
-        }}
-      >
-        <PointCircleIcon />
       </button>
     </MapControlBox>
   );
