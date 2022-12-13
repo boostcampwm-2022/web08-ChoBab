@@ -14,6 +14,7 @@ import {
   useSelectedCategoryStore,
   useMeetLocationStore,
   useSelectedRestaurantDataStore,
+  useSelectedRestaurantPreviewDataStore,
   useMapStore,
 } from '@store/index';
 import { useSocketStore } from '@store/socket';
@@ -81,18 +82,10 @@ function MainMap({ restaurantData, joinList }: PropsType) {
   const { socket } = useSocketStore((state) => state);
   const { updateMap } = useMapStore((state) => state);
   const { meetLocation } = useMeetLocationStore((state) => state);
+  const { updateSelectedRestaurantPreviewData } = useSelectedRestaurantPreviewDataStore(
+    (state) => state
+  );
   const { updateSelectedRestaurantData } = useSelectedRestaurantDataStore((state) => state);
-
-  const setMapLocation = (location: LocationType | naver.maps.Coord | null) => {
-    const map = mapRef.current;
-
-    if (!map || !location) {
-      return;
-    }
-
-    map.setCenter(location);
-    map.setZoom(DEFAULT_ZOOM);
-  };
 
   const setMeetingBoundary = (map: naver.maps.Map): void => {
     if (!meetLocation) {
@@ -309,6 +302,7 @@ function MainMap({ restaurantData, joinList }: PropsType) {
           infoWindow.open(map, marker);
 
           updateSelectedRestaurantData(restaurant);
+          updateSelectedRestaurantPreviewData(restaurant);
 
           map.setCenter(marker.getPosition());
 
@@ -322,7 +316,7 @@ function MainMap({ restaurantData, joinList }: PropsType) {
     // map.getCenter() 와 무슨 차이지?
     // map.getCenter() 로 받아온 코드는 갱신이 되질 않는다.
     // 갱신을 위해 map 좌표를 제자리로 이동
-    setMapLocation(map.getBounds().getCenter());
+    map.setCenter(map.getBounds().getCenter());
   };
 
   const onInit = (map: naver.maps.Map): naver.maps.MapEventListener => {
@@ -346,7 +340,8 @@ function MainMap({ restaurantData, joinList }: PropsType) {
 
       closeAllRestaurantMarkerInfoWindow();
       closeAllUserMarkerInfoWindow();
-      updateSelectedRestaurantData(null);
+
+      updateSelectedRestaurantPreviewData(null);
     });
     return onDragendListener;
   };
@@ -428,7 +423,13 @@ function MainMap({ restaurantData, joinList }: PropsType) {
 
   // 모임 위치 설정 시 지도 화면 이동
   useEffect(() => {
-    setMapLocation(meetLocation);
+    const map = mapRef.current;
+
+    if (!map || !meetLocation) {
+      return;
+    }
+
+    map.setCenter(meetLocation);
   }, [meetLocation]);
 
   // 사용자의 위치 변경이 있을 경우 반영하는 소켓 이벤트

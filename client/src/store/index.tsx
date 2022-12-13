@@ -74,6 +74,25 @@ export const useSelectedRestaurantDataStore = create<SelectedRestaurantDataStore
 }));
 
 /**
+ * <선택된 식당 요약정보를 저장하는 저장소>
+ * 상세정보 페이지에서 사용되는 SelectedRestaurantDataStore
+ * 를 마커 클릭 시 나오는 미리보기 화면에서도
+ * 함께 사용할 경우 생기는 문제를 해결하기 위해 만든 저장소입니다.
+ */
+interface SelectedRestaurantPreviewDataStore {
+  selectedRestaurantPreviewData: RestaurantType | null;
+  updateSelectedRestaurantPreviewData: (restaurantType: RestaurantType | null) => void;
+}
+
+export const useSelectedRestaurantPreviewDataStore = create<SelectedRestaurantPreviewDataStore>(
+  (set) => ({
+    selectedRestaurantPreviewData: null,
+    updateSelectedRestaurantPreviewData: (restaurantType: RestaurantType | null) =>
+      set(() => ({ selectedRestaurantPreviewData: restaurantType })),
+  })
+);
+
+/**
  * <카테고리 선택정보를 저장하는 전역 저장소>
  * Set이 비어있으면 전체선택을 의미하고,
  * 비어있지 않으면 들어있는 값은 필터링 할 카테고리들을 의미한다.
