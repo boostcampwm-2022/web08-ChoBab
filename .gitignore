@@ -22,7 +22,8 @@ vite.config.ts.timestamp-*.mjs
 .vscode/
 
 # env
-.env
+.env*
+!.env.template
 
 # session file store
 sessions/
