@@ -127,7 +127,6 @@ export function RestaurantDetailBody({ address, lat, lng, phone, url }: PropsTyp
                 <td>
                   <a href={url} target="_blank" rel="noopener noreferrer">
                     {url}
-                    {url}
                   </a>
                 </td>
               </tr>
