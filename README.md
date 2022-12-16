@@ -45,7 +45,19 @@
 - `.env` 파일
   - 환경 변수 파일인 .env는 client 폴더와 server에 각각 하나씩 필요합니다. 각 폴더 하위에 환경 변수 템플릿 파일로 넣어둔 .env.template을 복사하셔서 필요한 환경 변수를 세팅하시면 됩니다.
   - [자세한 설명](https://delicious-guys.notion.site/env-7262953cd0994e5594c2ea1752ca5f04)
-
+- 로컬에서 실행하기 위한 명령어
+  - client
+    ```bash
+    cd client
+    npm ci # 필요한 패키지 설치
+    npm run dev # 개발 모드로 실행
+    ```
+  - server
+    ```bash
+    cd server
+    npm ci # 필요한 패키지 설치
+    npm run start:dev # 개발 모드로 실행
+    ```
 
 
 ## :busts_in_silhouette: 맛있는 녀석들 구성원
