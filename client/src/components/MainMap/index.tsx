@@ -32,16 +32,6 @@ import { Socket } from 'socket.io-client';
 
 import { MapLayout, MapLoadingBox, MapBox } from './styles';
 
-interface RestaurantType {
-  id: string;
-  name: string;
-  category: string;
-  phone: string;
-  lat: number;
-  lng: number;
-  address: string;
-}
-
 interface PropsType {
   restaurantData: RestaurantType[];
   joinList: Map<string, UserType>;
