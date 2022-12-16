@@ -6,6 +6,7 @@ export interface OriginRestaurantType {
   category_name: string;
   phone: string;
   place_name: string;
+  place_url: string;
   x: string;
   y: string;
 }
@@ -17,6 +18,7 @@ export interface PreprocessedRestaurantType {
   phone: string;
   lat: number;
   lng: number;
+  url: string;
   address: string;
 }
 

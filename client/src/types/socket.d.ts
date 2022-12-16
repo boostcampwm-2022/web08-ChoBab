@@ -14,6 +14,7 @@ declare interface RestaurantType {
   lat: number;
   lng: number;
   address: string;
+  url: string;
   rating?: number;
   photoUrlList?: string[];
 }
