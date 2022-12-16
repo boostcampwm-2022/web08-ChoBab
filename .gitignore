@@ -26,3 +26,6 @@ vite.config.ts.timestamp-*.mjs
 
 # session file store
 sessions/
+
+# etc
+.gitkeep

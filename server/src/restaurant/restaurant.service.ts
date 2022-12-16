@@ -135,7 +135,9 @@ export class RestaurantService {
   async getRestaurantDetail(id: string, category: string) {
     const randomRating = getRandomRating();
     try {
-      const { photoUrl: photoUrlList } = await this.restaurantCategoryModel.findOne({ category });
+      const { photoUrl: photoUrlList } = (await this.restaurantCategoryModel.findOne({
+        category,
+      })) ?? { photoUrl: [] };
 
       const photoCnt = photoUrlList.length;
       const selectedPhotoUrlList: string[] = [];
