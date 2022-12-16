@@ -2,44 +2,49 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import * as palette from '@styles/Variables';
 import { ReactComponent as FlagIcon } from '@assets/images/flag.svg';
 import { ReactComponent as PhoneIcon } from '@assets/images/phone-icon.svg';
+import { ReactComponent as ShortcutIcon } from '@assets/images/shortcut.svg';
 import RestaurantDetailDrivingInfo from '@components/RestaurantDetail/RestaurantDetailDrivingInfo';
+
 import {
-  AddressBox,
-  IconBox,
   MapBox,
   MapLayout,
   ModalBody,
   ModalBodyContent,
   ModalBodyNav,
-  PhoneBox,
+  RestaurantDetailTable,
 } from './styles';
 
 interface PropsType {
-  id: string;
   address: string;
   lat: number;
   lng: number;
   phone: string;
+  url: string;
 }
 
-export function RestaurantDetailBody({ id, address, lat, lng, phone }: PropsType) {
+export function RestaurantDetailBody({ address, lat, lng, phone, url }: PropsType) {
   const restaurantPos = { lat, lng };
   const [isSelectLeft, setSelectLeft] = useState<boolean>(true);
   const operationInfoButtonRef = useRef<HTMLDivElement>(null);
   const getDirectionButtonRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+
   const mapSetting = useCallback(() => {
     if (!isSelectLeft) {
       return;
     }
+
     if (!mapRef.current) {
       return;
     }
+
     const restaurantLocation = new naver.maps.LatLng(lat, lng);
+
     const map = new naver.maps.Map(mapRef.current, {
       center: restaurantLocation,
       scrollWheel: false,
     });
+
     const marker = new naver.maps.Marker({
       map,
       position: restaurantLocation,
@@ -49,15 +54,19 @@ export function RestaurantDetailBody({ id, address, lat, lng, phone }: PropsType
   useEffect(() => {
     const operationInfoButton = operationInfoButtonRef.current;
     const getDirectionButton = getDirectionButtonRef.current;
+
     if (!operationInfoButton || !getDirectionButton) {
       return;
     }
+
     mapSetting();
+
     if (!isSelectLeft) {
       getDirectionButton.style.color = palette.PRIMARY;
       operationInfoButton.style.color = 'black';
       return;
     }
+
     getDirectionButton.style.color = 'black';
     operationInfoButton.style.color = palette.PRIMARY;
   }, [isSelectLeft]);
@@ -69,13 +78,16 @@ export function RestaurantDetailBody({ id, address, lat, lng, phone }: PropsType
           if (!(e.target instanceof HTMLDivElement)) {
             return;
           }
+
           const eventTarget = e.target as HTMLDivElement;
+
           if (
             eventTarget !== operationInfoButtonRef.current &&
             eventTarget !== getDirectionButtonRef.current
           ) {
             return;
           }
+
           setSelectLeft(eventTarget === operationInfoButtonRef.current);
         }}
       >
@@ -84,18 +96,43 @@ export function RestaurantDetailBody({ id, address, lat, lng, phone }: PropsType
       </ModalBodyNav>
       {isSelectLeft ? (
         <ModalBodyContent>
-          <AddressBox>
-            <IconBox>
-              <FlagIcon />
-            </IconBox>
-            <p>{address}</p>
-          </AddressBox>
-          <PhoneBox>
-            <IconBox>
-              <PhoneIcon />
-            </IconBox>
-            <p>{phone}</p>
-          </PhoneBox>
+          <RestaurantDetailTable>
+            <colgroup>
+              <col style={{ width: '10%' }} />
+              <col style={{ width: '90%' }} />
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>
+                  <FlagIcon />
+                </td>
+                <td>
+                  <p>{address}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <PhoneIcon />
+                </td>
+                <td>
+                  <p>{phone}</p>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <ShortcutIcon />
+                </td>
+                <td>
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    {url}
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </RestaurantDetailTable>
+
           <MapLayout>
             <MapBox ref={mapRef} />
           </MapLayout>

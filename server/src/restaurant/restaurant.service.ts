@@ -89,18 +89,20 @@ export class RestaurantService {
         y: lat,
         x: lng,
         road_address_name: address,
+        place_url: url,
       } = restaurant;
 
       const categorySplitArr = category.split('>');
 
       const preprocessedRestaurant: PreprocessedRestaurantType = {
-        id: id,
-        name: name,
+        id,
+        name,
         category: categorySplitArr.length > 1 ? categorySplitArr[1].trim() : '',
         phone: phone || '',
         lat: Number.parseFloat(lat),
         lng: Number.parseFloat(lng),
-        address: address,
+        url,
+        address,
       };
       return preprocessedRestaurant;
     });

@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 
+// Modal 네이밍 변경 필요
 export const ModalBody = styled.div`
   width: 100%;
   height: 35%;
   padding: 30px;
 `;
 
+// Modal 네이밍 변경 필요
 export const ModalBodyNav = styled.div`
   width: 100%;
   height: 20%;
@@ -16,6 +18,7 @@ export const ModalBodyNav = styled.div`
   border-bottom: 0.1px solid gray;
 `;
 
+// Modal 네이밍 변경 필요
 export const ModalBodyContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,26 +27,28 @@ export const ModalBodyContent = styled.div`
   gap: 10px;
 `;
 
-export const AddressBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  svg {
-    height: 22px;
-  }
-`;
-
-export const IconBox = styled.div`
-  width: 26px;
-  height: 26px;
-`;
-
-export const PhoneBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  svg {
-    height: 22px;
+export const RestaurantDetailTable = styled.table`
+  width: 100%;
+  table-layout: fixed;
+  tr {
+    td:nth-child(1) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      svg {
+        height: 26px;
+        aspect-ratio: 1/1;
+      }
+    }
+    td:nth-child(2) {
+      padding-left: 5px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      a {
+        color: black;
+      }
+    }
   }
 `;
 
