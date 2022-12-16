@@ -50,11 +50,11 @@ export function RestaurantDetailModal({ updateRestaurantDetailLayerStatus }: Pro
           rating={selectedRestaurantData?.rating || 0}
         />
         <RestaurantDetailBody
-          id={selectedRestaurantData?.id || ''}
           address={selectedRestaurantData?.address || ''}
           lat={selectedRestaurantData?.lat || NaN}
           lng={selectedRestaurantData?.lng || NaN}
           phone={selectedRestaurantData?.phone || ''}
+          url={selectedRestaurantData?.url || ''}
         />
       </ModalBox>
     </ModalLayout>
