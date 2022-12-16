@@ -16,8 +16,6 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
   const throttlingTimerRef = useRef<NodeJS.Timer | null>(null);
   const THROTTLING_TIME = 1500;
 
-  console.log('image url list', imageUrlList);
-
   return (
     <ImageCarouslLayout
       // 모바일 슬라이드 이벤트 대응을 위함
