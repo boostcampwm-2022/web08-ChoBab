@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ImageCarousel = styled.div`
+export const ImageCarouslLayout = styled.div`
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -18,18 +18,40 @@ export const ImageCarousel = styled.div`
   }
 `;
 
-export const ImageBox = styled.div`
+export const ImageCarouslBox = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
   height: 100%;
 `;
 
-export const Image = styled.div`
+export const ImageBox = styled.div`
   width: 100%;
   height: 100%;
   flex: none;
+  position: relative;
+`;
+
+export const Image = styled.img`
+  width: 100%;
+  height: 100%;
   background-position: 50% 50%;
-  background-size: cover;
+  object-fit: cover;
   background-repeat: no-repeat;
+`;
+
+export const ImageFakeBox = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;

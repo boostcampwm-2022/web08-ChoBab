@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
-import RestaurantDefaultImg from '@assets/images/restaurant-default.jpg';
-import { ImageCarousel, Image, ImageBox } from './styles';
+import RestaurantDefaultImgUrl from '@assets/images/restaurant-default.jpg';
+import { ReactComponent as FakeWordIcon } from '@assets/images/fake-word.svg';
+import { ImageCarouslLayout, ImageCarouslBox, ImageFakeBox, Image, ImageBox } from './styles';
 
 interface PropsType {
   imageUrlList: string[];
@@ -13,9 +14,12 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
   const MIN_SLIDE_UNIT = 50;
 
   const throttlingTimerRef = useRef<NodeJS.Timer | null>(null);
-  const THROTTLINGTIME = 1500;
+  const THROTTLING_TIME = 1500;
+
+  console.log('image url list', imageUrlList);
+
   return (
-    <ImageCarousel
+    <ImageCarouslLayout
       // 모바일 슬라이드 이벤트 대응을 위함
       // 최소 슬라이드 거리를 추가하여 이를 넘지 않을 시에는 이벤트 발생  x
       onTouchStart={(e) => {
@@ -23,13 +27,16 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
       }}
       onTouchEnd={(e) => {
         touchPosition.current.end = e.changedTouches[0].clientX;
+
         const { start: touchStart, end: touchEnd } = touchPosition.current;
+
         if (touchStart - touchEnd > MIN_SLIDE_UNIT) {
           setVisibleImageIdx(
             visibleImageIdx < imageCount - 1 ? visibleImageIdx + 1 : visibleImageIdx
           );
           return;
         }
+
         if (touchEnd - touchStart > MIN_SLIDE_UNIT) {
           setVisibleImageIdx(visibleImageIdx > 0 ? visibleImageIdx - 1 : visibleImageIdx);
         }
@@ -40,28 +47,34 @@ export function RestaurantDetailCarousel({ imageUrlList }: PropsType) {
         if (throttlingTimerRef.current) {
           return;
         }
+
         throttlingTimerRef.current = setTimeout(() => {
           throttlingTimerRef.current = null;
-        }, THROTTLINGTIME);
+        }, THROTTLING_TIME);
+
         const isScrollLeft = e.deltaX > 0;
+
         if (isScrollLeft) {
           setVisibleImageIdx(
             visibleImageIdx < imageCount - 1 ? visibleImageIdx + 1 : visibleImageIdx
           );
           return;
         }
+
         setVisibleImageIdx(visibleImageIdx > 0 ? visibleImageIdx - 1 : visibleImageIdx);
       }}
     >
-      <ImageBox style={{ marginLeft: `-${visibleImageIdx * 100}%` }}>
+      <ImageCarouslBox style={{ marginLeft: `-${visibleImageIdx * 100}%` }}>
         {imageUrlList.map((imageUrl) => (
-          <Image
-            key={imageUrl}
-            style={{ backgroundImage: `url(${imageUrl}), url(${RestaurantDefaultImg})` }}
-          />
+          <ImageBox key={imageUrl}>
+            <Image src={imageUrl || RestaurantDefaultImgUrl} />
+            <ImageFakeBox>
+              <FakeWordIcon />
+            </ImageFakeBox>
+          </ImageBox>
         ))}
-      </ImageBox>
+      </ImageCarouslBox>
       <p>{imageCount ? `${visibleImageIdx + 1}/${imageCount}` : `0/0`}</p>
-    </ImageCarousel>
+    </ImageCarouslLayout>
   );
 }

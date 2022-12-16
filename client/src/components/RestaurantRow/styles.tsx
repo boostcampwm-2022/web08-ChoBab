@@ -21,6 +21,7 @@ export const RestaurantRowBox = styled(motion.div)`
 export const ImageBox = styled.div`
   height: 100px;
   width: 100px;
+  position: relative;
   background-color: gray;
   border-radius: 10px;
   box-sizing: content-box;
@@ -31,8 +32,24 @@ export const ThumbnailImage = styled.img`
   width: 100%;
   border-radius: 10px;
   background-position: 50% 50%;
-  background-size: cover;
+  object-fit: cover;
   background-repeat: no-repeat;
+`;
+
+export const ThumbnailFakeBox = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const InfoBox = styled.div`
