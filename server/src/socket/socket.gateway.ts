@@ -253,7 +253,7 @@ export class EventsGateway
 
     // 방안에 같은 세션 접속자가 없을 때 퇴장 처리 (DB, Client 에서 모두 제거)
     if (!roomSessionIDs.includes(sessionID)) {
-      this.redisService.joinList.delUserToJoinList(roomCode, sessionID);
+      await this.redisService.joinList.delUserToJoinList(roomCode, sessionID);
 
       client.to(roomCode).emit('leave', SOCKET_RES.LEAVE_USER(sessionID));
     }

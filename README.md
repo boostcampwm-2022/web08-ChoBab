@@ -25,10 +25,21 @@
 <br>
 
 ## :iphone: Pages: 주요 화면 소개
-<img width="893" alt="스크린샷 2022-11-25 오전 1 29 12" src="https://user-images.githubusercontent.com/55318618/203831217-f95fa078-9ee2-4ca1-a966-cd29bc9c717d.png">
+
+<img width="735" alt="스크린샷 2022-12-15 오후 6 03 17" src="https://user-images.githubusercontent.com/55318618/207817596-6a2b8c25-2fed-4048-bb81-d92ca4c82c4b.png">
+
+<img width="733" alt="스크린샷 2022-12-15 오후 6 04 45" src="https://user-images.githubusercontent.com/55318618/207817893-db5afd87-e486-42f3-abee-d6b154b098ea.png">
+
 
 ## :hammer_and_wrench: Skills: 기술스택
-(사진 추가 예정)
+<img width="600" alt="스크린샷 2022-12-15 오후 5 10 26" src="https://user-images.githubusercontent.com/55318618/207806610-123d41c6-ad6f-4a17-b213-6f96500b9c36.png">
+
+## :gear: System Architecture: 시스템 아키텍처
+
+<img width="652" alt="스크린샷 2022-12-15 오후 6 11 06" src="https://user-images.githubusercontent.com/55318618/207819197-14fdf4a9-5acc-4f9b-af93-4726d30dfbee.png">
+
+
+
 
 ## :desktop_computer: Skills: 실행방법
 (추가 예정)

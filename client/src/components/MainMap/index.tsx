@@ -20,7 +20,6 @@ import {
 import { useSocketStore } from '@store/socket';
 
 import { CATEGORY_TYPE } from '@constants/category';
-import { DEFAULT_ZOOM } from '@constants/map';
 
 import LoadingScreen from '@components/LoadingScreen';
 import { useNaverMaps } from '@hooks/useNaverMaps';
